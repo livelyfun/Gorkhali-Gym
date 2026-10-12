@@ -94,7 +94,6 @@ interface AdminUser {
 export default function AdminPortalPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
-  const [checkingAuth, setCheckingAuth] = useState(true);
 
   // Login form state
   const [loginUsername, setLoginUsername] = useState('gorkhagym');
@@ -158,30 +157,28 @@ export default function AdminPortalPage() {
   const [uploadLoading, setUploadLoading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
-  // Check auth on mount
-  useEffect(() => {
-    checkSession();
-  }, []);
 
-  const checkSession = async () => {
-    setCheckingAuth(true);
-    try {
-      const res = await fetch('/api/auth/session');
-      const data = await res.json();
-      if (data.authenticated && data.user) {
-        setIsAuthenticated(true);
-        setAdminUser(data.user);
-        fetchAllCmsData();
-      } else {
-        setIsAuthenticated(false);
-        setAdminUser(null);
-      }
-    } catch {
-      setIsAuthenticated(false);
-    } finally {
-      setCheckingAuth(false);
-    }
-  };
+
+  // Silent session check on mount (non-blocking: login form remains immediately visible)
+  useEffect(() => {
+    let ignore = false;
+    fetch('/api/auth/session')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!ignore && data?.authenticated && data?.user) {
+          setIsAuthenticated(true);
+          setAdminUser(data.user);
+          fetchAllCmsData(data.user);
+        }
+      })
+      .catch(() => {
+        // Silent: keep login form displayed
+      });
+    return () => {
+      ignore = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -199,7 +196,7 @@ export default function AdminPortalPage() {
       if (data.success && data.user) {
         setIsAuthenticated(true);
         setAdminUser(data.user);
-        fetchAllCmsData();
+        fetchAllCmsData(data.user);
       } else {
         setLoginError(data.error || 'Invalid credentials');
       }
@@ -220,7 +217,8 @@ export default function AdminPortalPage() {
     setAdminUser(null);
   };
 
-  const fetchAllCmsData = async () => {
+  async function fetchAllCmsData(currentUser?: AdminUser | null) {
+    const user = currentUser || adminUser;
     setLoadingData(true);
     try {
       const [
@@ -323,7 +321,7 @@ export default function AdminPortalPage() {
       if (medData.assets) setMediaAssets(medData.assets);
 
       // If user is superadmin, fetch admins list
-      if (adminUser?.role === 'superadmin') {
+      if (user?.role === 'superadmin') {
         const adminsRes = await fetch('/api/auth/admins');
         const adminsData = await adminsRes.json().catch(() => ({ admins: [] }));
         if (adminsData.admins) setAdminUsersList(adminsData.admins);
@@ -973,19 +971,6 @@ export default function AdminPortalPage() {
       setCreateAdminFeedback('Network error while creating administrator');
     }
   };
-
-  // --- LOADING SCREEN ---
-  if (checkingAuth) {
-    return (
-      <div className="min-h-screen bg-neutral-950 flex flex-col items-center justify-center p-4">
-        <Loader2 className="w-10 h-10 text-red-600 animate-spin mb-4" />
-        <p className="text-neutral-400 font-mono text-sm uppercase tracking-wider">
-          Verifying Administrator Session...
-        </p>
-      </div>
-    );
-  }
-
   // --- LOGIN SCREEN ---
   if (!isAuthenticated) {
     return (
@@ -1004,6 +989,7 @@ export default function AdminPortalPage() {
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-neutral-900/90 border border-neutral-800 py-8 px-6 shadow-2xl rounded-2xl sm:px-10 backdrop-blur-sm">
+
             <form onSubmit={handleLogin} className="space-y-6">
               {loginError && (
                 <div className="p-3 rounded-lg bg-red-950/50 border border-red-800/60 text-red-300 text-xs flex items-center gap-2">
@@ -1067,6 +1053,7 @@ export default function AdminPortalPage() {
       </div>
     );
   }
+
 
   // Filter inquiries
   const filteredInquiries = inquiries.filter((inq) => {
@@ -3792,6 +3779,7 @@ export default function AdminPortalPage() {
                       className="bg-neutral-900/80 border border-neutral-800 rounded-2xl p-4 flex gap-4 items-center"
                     >
                       <div className="w-20 h-20 bg-neutral-950 border border-neutral-800 rounded-xl overflow-hidden shrink-0 relative flex items-center justify-center">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={asset.url}
                           alt={asset.altText || asset.filename}
