@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, CheckCircle, MessageCircle, Send, Loader2, Sparkles, Phone, User, Calendar, MessageSquare } from 'lucide-react';
+import { X, CheckCircle, MessageCircle, Send, Loader2, Sparkles, Phone, User, MessageSquare } from 'lucide-react';
 import { store } from '@/lib/data-store';
 
 interface ApplyModalProps {
@@ -78,15 +78,18 @@ export default function ApplyModal({
   );
   const waUrl = `https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, '')}?text=${waText}`;
 
+  const label = 'block text-xs font-bold text-neutral-300 uppercase tracking-[0.14em] mb-1.5';
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-lg bg-neutral-900 border border-neutral-800 rounded-2xl shadow-2xl overflow-hidden p-6 sm:p-8"
+        className="relative w-full max-w-lg ak-panel ak-cut-tr shadow-2xl overflow-hidden p-6 sm:p-8"
         onClick={(e) => e.stopPropagation()}
       >
+        <div className="absolute inset-x-0 top-0 h-1 bg-ak-accent" />
         <button
           onClick={handleReset}
-          className="absolute top-4 right-4 p-2 text-neutral-400 hover:text-white rounded-lg hover:bg-neutral-800 transition-colors"
+          className="ak-focus absolute top-4 right-4 p-2 text-neutral-400 hover:text-white bg-ak-ink border border-ak-line hover:border-ak-accent transition-colors"
           aria-label="Close modal"
         >
           <X className="w-5 h-5" />
@@ -94,14 +97,13 @@ export default function ApplyModal({
 
         {submitted ? (
           <div className="text-center py-6 space-y-4">
-            <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 rounded-full flex items-center justify-center mx-auto text-emerald-500">
-              <CheckCircle className="w-10 h-10" />
+            <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto text-emerald-500 skew-x-[-8deg]">
+              <CheckCircle className="w-10 h-10 -skew-x-[-8deg]" />
             </div>
-            <h3 className="text-2xl font-black text-white uppercase tracking-tight">
-              Application Received!
-            </h3>
+            <h3 className="ak-heading text-2xl text-white">Application Received!</h3>
             <p className="text-neutral-300 text-sm leading-relaxed max-w-sm mx-auto">
-              Thank you, <span className="font-semibold text-white">{fullName}</span>. Our Gorkhali Gym team will contact you shortly to confirm your orientation and schedule.
+              Thank you, <span className="font-semibold text-white">{fullName}</span>. Our Gorkhali
+              Gym team will contact you shortly to confirm your orientation and schedule.
             </p>
 
             <div className="pt-4 pb-2">
@@ -109,7 +111,7 @@ export default function ApplyModal({
                 href={waUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center space-x-2 px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm uppercase tracking-wide transition-colors shadow-lg shadow-emerald-600/25"
+                className="ak-focus w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm uppercase tracking-wider transition-colors"
               >
                 <MessageCircle className="w-5 h-5" />
                 <span>Chat Instantly on WhatsApp</span>
@@ -121,7 +123,7 @@ export default function ApplyModal({
 
             <button
               onClick={handleReset}
-              className="text-xs text-neutral-400 hover:text-white underline pt-2"
+              className="ak-focus text-xs text-neutral-400 hover:text-ak-accent underline pt-2 transition-colors"
             >
               Done / Return to Website
             </button>
@@ -129,29 +131,25 @@ export default function ApplyModal({
         ) : (
           <div>
             <div className="mb-6">
-              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-red-600/20 text-red-400 text-xs font-semibold mb-2 uppercase tracking-wider">
+              <div className="ak-eyebrow mb-2">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Begin Your Fitness Journey</span>
               </div>
-              <h3 className="text-2xl font-black text-white uppercase tracking-tight">
-                Apply for Membership
-              </h3>
-              <p className="text-sm text-neutral-400 mt-1">
+              <h3 className="ak-heading text-2xl text-white">Apply for Membership</h3>
+              <p className="text-sm text-ak-muted mt-1">
                 Take the first step. Fill out this brief form and join Gorkhali Gym Itahari.
               </p>
             </div>
 
             {error && (
-              <div className="mb-4 p-3 rounded-lg bg-red-950/60 border border-red-800 text-red-300 text-xs">
+              <div className="mb-4 p-3 bg-red-950/60 border-l-2 border-ak-accent text-red-300 text-xs">
                 {error}
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-neutral-300 uppercase tracking-wider mb-1.5">
-                  Full Name *
-                </label>
+                <label className={label}>Full Name *</label>
                 <div className="relative">
                   <User className="absolute left-3 top-3 w-4 h-4 text-neutral-500" />
                   <input
@@ -160,15 +158,13 @@ export default function ApplyModal({
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="e.g. Ramesh Karki"
-                    className="w-full pl-10 pr-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-lg text-white text-sm focus:border-red-500 focus:outline-none transition-colors"
+                    className="ak-input pl-10"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-neutral-300 uppercase tracking-wider mb-1.5">
-                  Phone / WhatsApp Number *
-                </label>
+                <label className={label}>Phone / WhatsApp Number *</label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-3 w-4 h-4 text-neutral-500" />
                   <input
@@ -177,20 +173,18 @@ export default function ApplyModal({
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="e.g. +977 982-XXXXXXX"
-                    className="w-full pl-10 pr-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-lg text-white text-sm focus:border-red-500 focus:outline-none transition-colors"
+                    className="ak-input pl-10"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-neutral-300 uppercase tracking-wider mb-1.5">
-                    Program / Goal
-                  </label>
+                  <label className={label}>Program / Goal</label>
                   <select
                     value={program}
                     onChange={(e) => setProgram(e.target.value)}
-                    className="w-full px-3 py-2.5 bg-neutral-950 border border-neutral-800 rounded-lg text-white text-sm focus:border-red-500 focus:outline-none transition-colors"
+                    className="ak-input"
                   >
                     <option value="General Strength & Conditioning">Strength & Conditioning</option>
                     <option value="Personal Training (1-on-1)">1-on-1 Personal Training</option>
@@ -203,13 +197,11 @@ export default function ApplyModal({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-neutral-300 uppercase tracking-wider mb-1.5">
-                    Preferred Time Slot
-                  </label>
+                  <label className={label}>Preferred Time Slot</label>
                   <select
                     value={preferredTime}
                     onChange={(e) => setPreferredTime(e.target.value)}
-                    className="w-full px-3 py-2.5 bg-neutral-950 border border-neutral-800 rounded-lg text-white text-sm focus:border-red-500 focus:outline-none transition-colors"
+                    className="ak-input"
                   >
                     <option value="Early Morning (5:30 AM - 7:30 AM)">Early Morning (5:30 - 7:30 AM)</option>
                     <option value="Morning (7:30 AM - 10:00 AM)">Morning (7:30 - 10:00 AM)</option>
@@ -221,9 +213,7 @@ export default function ApplyModal({
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-neutral-300 uppercase tracking-wider mb-1.5">
-                  Fitness Goals / Notes (Optional)
-                </label>
+                <label className={label}>Fitness Goals / Notes (Optional)</label>
                 <div className="relative">
                   <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-neutral-500" />
                   <textarea
@@ -231,7 +221,7 @@ export default function ApplyModal({
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="Tell us about your fitness background, injuries, or target goals..."
-                    className="w-full pl-10 pr-4 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-white text-sm focus:border-red-500 focus:outline-none transition-colors resize-none"
+                    className="ak-input pl-10 resize-none"
                   />
                 </div>
               </div>
@@ -240,19 +230,21 @@ export default function ApplyModal({
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3.5 px-6 rounded-xl bg-red-600 hover:bg-red-500 active:scale-[0.99] text-white font-bold text-sm uppercase tracking-wider flex items-center justify-center space-x-2 transition-all shadow-lg shadow-red-600/30 disabled:opacity-50"
+                  className="ak-btn ak-btn-primary w-full disabled:opacity-50"
                 >
-                  {loading ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>Submitting Application...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Send className="w-4 h-4" />
-                      <span>Submit Membership Application</span>
-                    </>
-                  )}
+                  <span>
+                    {loading ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <span>Submitting Application...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        <span>Submit Membership Application</span>
+                      </>
+                    )}
+                  </span>
                 </button>
               </div>
 

@@ -64,15 +64,18 @@ export default function ReviewModal({ isOpen, onClose }: ReviewModalProps) {
     onClose();
   };
 
+  const label = 'block text-xs font-bold text-neutral-300 uppercase tracking-[0.14em] mb-1.5';
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-md bg-neutral-900 border border-neutral-800 rounded-2xl shadow-2xl overflow-hidden p-6 sm:p-8"
+        className="relative w-full max-w-md ak-panel ak-cut-tr shadow-2xl overflow-hidden p-6 sm:p-8"
         onClick={(e) => e.stopPropagation()}
       >
+        <div className="absolute inset-x-0 top-0 h-1 bg-ak-accent" />
         <button
           onClick={handleReset}
-          className="absolute top-4 right-4 p-2 text-neutral-400 hover:text-white rounded-lg hover:bg-neutral-800 transition-colors"
+          className="ak-focus absolute top-4 right-4 p-2 text-neutral-400 hover:text-white bg-ak-ink border border-ak-line hover:border-ak-accent transition-colors"
           aria-label="Close modal"
         >
           <X className="w-5 h-5" />
@@ -80,49 +83,42 @@ export default function ReviewModal({ isOpen, onClose }: ReviewModalProps) {
 
         {submitted ? (
           <div className="text-center py-6 space-y-4">
-            <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 rounded-full flex items-center justify-center mx-auto text-emerald-500">
-              <CheckCircle className="w-10 h-10" />
+            <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto text-emerald-500 skew-x-[-8deg]">
+              <CheckCircle className="w-10 h-10 -skew-x-[-8deg]" />
             </div>
-            <h3 className="text-2xl font-black text-white uppercase tracking-tight">
-              Review Submitted!
-            </h3>
+            <h3 className="ak-heading text-2xl text-white">Review Submitted!</h3>
             <p className="text-neutral-300 text-sm leading-relaxed">
               Thank you for sharing your experience at Gorkhali Gym! To maintain community authenticity, reviews are moderated by management before appearing publicly.
             </p>
-            <button
-              onClick={handleReset}
-              className="mt-4 px-6 py-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase tracking-wider transition-colors"
-            >
-              Done
+            <button onClick={handleReset} className="ak-btn ak-btn-primary mt-4">
+              <span>Done</span>
             </button>
           </div>
         ) : (
           <div>
             <div className="mb-6">
-              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 text-xs font-semibold mb-2 uppercase tracking-wider">
+              <div className="ak-eyebrow mb-2 bg-amber-500/15 border-amber-500/30 text-amber-400">
                 <Award className="w-3.5 h-3.5" />
                 <span>Member Voice</span>
               </div>
-              <h3 className="text-2xl font-black text-white uppercase tracking-tight">
-                Leave a Review
-              </h3>
-              <p className="text-sm text-neutral-400 mt-1">
+              <h3 className="ak-heading text-2xl text-white">Leave a Review</h3>
+              <p className="text-sm text-ak-muted mt-1">
                 Share your journey, coach experience, or fitness transformation at Gorkhali Gym.
               </p>
             </div>
 
             {error && (
-              <div className="mb-4 p-3 rounded-lg bg-red-950/60 border border-red-800 text-red-300 text-xs">
+              <div className="mb-4 p-3 bg-red-950/60 border-l-2 border-ak-accent text-red-300 text-xs">
                 {error}
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-neutral-300 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-bold text-neutral-300 uppercase tracking-[0.14em] mb-2">
                   Your Rating
                 </label>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-2">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
@@ -130,7 +126,7 @@ export default function ReviewModal({ isOpen, onClose }: ReviewModalProps) {
                       onClick={() => setRating(star)}
                       onMouseEnter={() => setHoverRating(star)}
                       onMouseLeave={() => setHoverRating(null)}
-                      className="p-1 focus:outline-none transition-transform hover:scale-110"
+                      className="ak-focus p-1 transition-transform hover:scale-110"
                     >
                       <Star
                         className={`w-7 h-7 ${
@@ -141,50 +137,44 @@ export default function ReviewModal({ isOpen, onClose }: ReviewModalProps) {
                       />
                     </button>
                   ))}
-                  <span className="text-xs text-neutral-400 font-semibold ml-2">
-                    {rating} of 5 Stars
+                  <span className="text-xs text-neutral-400 font-semibold ml-2 uppercase tracking-wider">
+                    {rating} / 5
                   </span>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-neutral-300 uppercase tracking-wider mb-1.5">
-                  Your Name *
-                </label>
+                <label className={label}>Your Name *</label>
                 <input
                   type="text"
                   required
                   value={authorName}
                   onChange={(e) => setAuthorName(e.target.value)}
                   placeholder="e.g. Bipin Shrestha"
-                  className="w-full px-3 py-2.5 bg-neutral-950 border border-neutral-800 rounded-lg text-white text-sm focus:border-red-500 focus:outline-none transition-colors"
+                  className="ak-input"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-neutral-300 uppercase tracking-wider mb-1.5">
-                  Program or Member Type
-                </label>
+                <label className={label}>Program or Member Type</label>
                 <input
                   type="text"
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
                   placeholder="e.g. Strength Training Member (6 Months)"
-                  className="w-full px-3 py-2.5 bg-neutral-950 border border-neutral-800 rounded-lg text-white text-sm focus:border-red-500 focus:outline-none transition-colors"
+                  className="ak-input"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-neutral-300 uppercase tracking-wider mb-1.5">
-                  Your Review / Experience *
-                </label>
+                <label className={label}>Your Review / Experience *</label>
                 <textarea
                   rows={3}
                   required
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="What do you love most about training at Gorkhali Gym? The atmosphere, coaches, equipment..."
-                  className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-white text-sm focus:border-red-500 focus:outline-none transition-colors resize-none"
+                  className="ak-input resize-none"
                 />
               </div>
 
@@ -192,19 +182,21 @@ export default function ReviewModal({ isOpen, onClose }: ReviewModalProps) {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 px-6 rounded-xl bg-red-600 hover:bg-red-500 active:scale-[0.99] text-white font-bold text-sm uppercase tracking-wider flex items-center justify-center space-x-2 transition-all shadow-lg shadow-red-600/30 disabled:opacity-50"
+                  className="ak-btn ak-btn-primary w-full disabled:opacity-50"
                 >
-                  {loading ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>Submitting Review...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Send className="w-4 h-4" />
-                      <span>Submit for Verification</span>
-                    </>
-                  )}
+                  <span>
+                    {loading ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <span>Submitting Review...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        <span>Submit for Verification</span>
+                      </>
+                    )}
+                  </span>
                 </button>
               </div>
             </form>

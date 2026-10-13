@@ -21,32 +21,33 @@ export default function EventsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-ak-ink text-white flex flex-col">
       <Header onOpenApplyModal={() => openApply('General Event')} />
 
-      <section className="relative pt-36 sm:pt-40 pb-16 bg-neutral-900 border-b border-neutral-800">
+      <section className="relative pt-36 sm:pt-40 pb-16 bg-ak-surface border-b border-ak-line">
+        <div className="absolute inset-0 ak-stripe opacity-40 pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <span className="text-red-500 font-bold text-xs uppercase tracking-wider">
+            <div className="ak-eyebrow">
               Community &bull; Competitions &bull; Gorkhali Gym
-            </span>
-            <h1 className="text-4xl sm:text-5xl font-black uppercase tracking-tight text-white mt-2">
+            </div>
+            <h1 className="font-display text-4xl sm:text-5xl text-white mt-4">
               Gym Events & Challenges
             </h1>
-            <p className="text-neutral-400 text-base sm:text-lg mt-4 leading-relaxed">
+            <p className="text-ak-muted text-base sm:text-lg mt-4 leading-relaxed">
               Join friendly gym lifting meets, deadlift challenges, fitness workshops, and outdoor bootcamps in Itahari.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="py-20">
+      <section className="py-24 bg-ak-ink">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {events.length === 0 ? (
-            <div className="text-center py-16 bg-neutral-900/40 rounded-2xl border border-neutral-800 p-8">
-              <Trophy className="w-12 h-12 text-neutral-600 mx-auto mb-3" />
-              <h3 className="text-lg font-bold text-white uppercase">Upcoming Events Announced Soon</h3>
-              <p className="text-sm text-neutral-400 mt-1 max-w-sm mx-auto">
+            <div className="ak-panel ak-cut-tr text-center py-16 p-8">
+              <Trophy className="w-12 h-12 text-ak-accent/70 mx-auto mb-3" />
+              <h3 className="font-display text-xl text-white">Upcoming Events Announced Soon</h3>
+              <p className="text-sm text-ak-muted mt-1 max-w-sm mx-auto">
                 Stay tuned to our notice board and Facebook page for the next lifting tournament.
               </p>
             </div>
@@ -55,51 +56,51 @@ export default function EventsPage() {
               {events.map((evt) => (
                 <div
                   key={evt.id}
-                  className="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden group hover:border-red-600/50 transition-all flex flex-col justify-between"
+                  className="ak-panel ak-cut-tr group hover:border-ak-accent/50 transition-colors flex flex-col justify-between"
                 >
                   <div>
-                    <div className="relative h-56 w-full bg-neutral-950">
+                    <div className="ak-frame ak-hover-group relative h-56 w-full">
                       <Image
                         src={evt.imageUrl || '/images/hero_gorkhali_gym.jpg'}
                         alt={evt.title}
                         fill
                         referrerPolicy="no-referrer"
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="ak-img"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-ak-ink via-transparent to-transparent" />
                     </div>
 
                     <div className="p-6 space-y-3">
-                      <div className="flex items-center space-x-2 text-xs text-red-400 font-semibold uppercase">
+                      <div className="flex items-center space-x-2 text-xs text-ak-accent font-bold uppercase border-l-2 border-ak-accent pl-4">
                         <Calendar className="w-3.5 h-3.5" />
                         <span>{evt.date}</span>
                       </div>
-                      <h3 className="text-xl font-bold uppercase text-white group-hover:text-red-500 transition-colors">
+                      <h3 className="font-display text-xl text-white group-hover:text-ak-accent transition-colors">
                         {evt.title}
                       </h3>
-                      <p className="text-xs text-neutral-400 leading-relaxed line-clamp-3">
+                      <p className="text-xs text-ak-muted leading-relaxed line-clamp-3">
                         {evt.shortDesc}
                       </p>
-                      <p className="text-[11px] text-neutral-500 flex items-center space-x-1.5 pt-1">
-                        <MapPin className="w-3.5 h-3.5 text-neutral-400" />
+                      <p className="text-[11px] text-ak-muted flex items-center space-x-1.5 pt-1">
+                        <MapPin className="w-3.5 h-3.5 text-ak-muted" />
                         <span>{evt.location}</span>
                       </p>
                     </div>
                   </div>
 
-                  <div className="p-6 pt-0 border-t border-neutral-800/80 mt-4 flex items-center justify-between">
+                  <div className="p-6 pt-4 border-t border-ak-line flex items-center justify-between">
                     <Link
                       href={`/events/${evt.slug}`}
-                      className="text-xs font-bold text-neutral-300 hover:text-white uppercase tracking-wider flex items-center space-x-1"
+                      className="ak-focus ak-link text-xs font-bold text-neutral-300 hover:text-white uppercase tracking-wider flex items-center space-x-1"
                     >
                       <span>Full Schedule</span>
                       <ChevronRight className="w-4 h-4" />
                     </Link>
                     <button
                       onClick={() => openApply(evt.title)}
-                      className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-md shadow-red-600/20"
+                      className="ak-btn ak-btn-primary !px-4 !py-2 !text-[11px]"
                     >
-                      RSVP / Join
+                      <span>RSVP / Join</span>
                     </button>
                   </div>
                 </div>

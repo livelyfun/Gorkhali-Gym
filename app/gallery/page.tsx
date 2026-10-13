@@ -22,26 +22,27 @@ export default function GalleryPage() {
       : galleryItems.filter((item) => item.category === filter);
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-ak-ink text-white flex flex-col">
       <Header onOpenApplyModal={() => setApplyModalOpen(true)} />
 
-      <section className="relative pt-36 sm:pt-40 pb-16 bg-neutral-900 border-b border-neutral-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative pt-36 sm:pt-40 pb-16 bg-ak-surface border-b border-ak-line">
+        <div className="absolute inset-0 ak-stripe opacity-40 pointer-events-none" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <span className="text-red-500 font-bold text-xs uppercase tracking-wider">
+            <div className="ak-eyebrow mb-4">
               Facility &bull; Brotherhood &bull; Gorkhali Gym
-            </span>
-            <h1 className="text-4xl sm:text-5xl font-black uppercase tracking-tight text-white mt-2">
+            </div>
+            <h1 className="font-display text-4xl sm:text-5xl text-white mt-2">
               Inside Gorkhali Gym
             </h1>
-            <p className="text-neutral-400 text-base sm:text-lg mt-4 leading-relaxed">
+            <p className="text-ak-muted text-base sm:text-lg mt-4 leading-relaxed">
               Explore our training floor, power racks, dumbell sections, cardio machines, and community lifting atmosphere in Itahari.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="py-20">
+      <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           {/* Category Filter Pills */}
           {categories.length > 1 && (
@@ -50,10 +51,10 @@ export default function GalleryPage() {
                 <button
                   key={cat}
                   onClick={() => setFilter(cat)}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+                  className={`ak-focus px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors ${
                     filter === cat
-                      ? 'bg-red-600 text-white shadow-lg shadow-red-600/30'
-                      : 'bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800'
+                      ? 'bg-ak-accent text-white'
+                      : 'bg-ak-surface text-ak-muted hover:text-white border border-ak-line'
                   }`}
                 >
                   {cat}
@@ -67,20 +68,20 @@ export default function GalleryPage() {
             {filteredItems.map((item) => (
               <div
                 key={item.id}
-                className="group relative rounded-2xl overflow-hidden bg-neutral-900 border border-neutral-800 aspect-[4/3] shadow-lg"
+                className="group relative ak-panel ak-cut-tr ak-frame ak-hover-group aspect-[4/3]"
               >
                 <Image
                   src={item.imageUrl}
                   alt={item.title || 'Gorkhali Gym Facility'}
                   fill
                   referrerPolicy="no-referrer"
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="ak-img object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end">
-                  <span className="text-[10px] text-red-500 font-bold uppercase tracking-widest">
+                <div className="absolute inset-0 bg-gradient-to-t from-ak-ink/90 via-ak-ink/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end">
+                  <span className="text-[10px] text-ak-accent font-bold uppercase tracking-widest">
                     {item.category || 'Facility'}
                   </span>
-                  <h3 className="text-base font-bold text-white uppercase">{item.title}</h3>
+                  <h3 className="font-display text-base text-white uppercase">{item.title}</h3>
                   {item.caption && (
                     <p className="text-xs text-neutral-300 mt-1">{item.caption}</p>
                   )}

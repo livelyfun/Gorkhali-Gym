@@ -85,26 +85,39 @@ export default function Header({
     setActiveDropdown(activeDropdown === name ? null : name);
   };
 
+  const navLink = (active: boolean) =>
+    `ak-focus ak-link transition-colors whitespace-nowrap ${
+      active ? 'text-ak-accent' : 'text-neutral-300 hover:text-white'
+    }`;
+
+  const dropdownLink =
+    'block px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-neutral-400 hover:text-white hover:bg-ak-accent/15 border-l-2 border-transparent hover:border-ak-accent transition-colors';
+  const dropdownAll =
+    'block px-4 py-2.5 text-xs font-extrabold uppercase tracking-wider text-ak-accent hover:text-white hover:bg-ak-accent/20 border-l-2 border-ak-accent transition-colors';
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ${
         isVisible ? 'translate-y-0' : '-translate-y-full'
       } ${
         isScrolled
-          ? 'bg-[#0B0E14]/95 backdrop-blur-md shadow-xl border-b border-neutral-800/80'
-          : 'bg-gradient-to-b from-[#0B0E14]/95 via-[#0B0E14]/80 to-transparent'
+          ? 'bg-ak-ink/95 backdrop-blur-md border-b border-ak-line'
+          : 'bg-gradient-to-b from-ak-ink via-ak-ink/85 to-transparent'
       }`}
     >
       {/* Announcement Banner */}
       {announcement.isActive && (
-        <div className="h-9 min-h-[36px] max-h-[36px] bg-orange-950/95 border-b border-orange-800/40 text-orange-100 px-4 text-xs font-medium backdrop-blur-md flex items-center justify-center overflow-hidden">
-          <div className="max-w-7xl mx-auto flex items-center justify-center text-center gap-2 truncate">
-            <Sparkles className="w-3.5 h-3.5 text-orange-400 shrink-0" />
-            <span className="truncate">{announcement.text}</span>
+        <div className="relative bg-ak-ink border-b border-ak-line overflow-hidden">
+          <div className="absolute inset-y-0 left-0 w-1.5 bg-ak-accent skew-x-[-18deg] -translate-x-1/2" />
+          <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-center text-center gap-2">
+            <Sparkles className="w-3.5 h-3.5 text-ak-accent shrink-0" />
+            <span className="truncate text-[11px] font-bold uppercase tracking-[0.18em] text-neutral-300">
+              {announcement.text}
+            </span>
             {announcement.linkUrl && (
               <Link
                 href={announcement.linkUrl}
-                className="underline hover:text-white font-bold ml-1.5 whitespace-nowrap shrink-0 transition-colors"
+                className="ak-focus underline decoration-ak-accent decoration-2 underline-offset-2 hover:text-white font-extrabold ml-1.5 whitespace-nowrap shrink-0 text-[11px] uppercase tracking-[0.18em] text-ak-accent transition-colors"
               >
                 {announcement.linkLabel || 'Details →'}
               </Link>
@@ -116,24 +129,18 @@ export default function Header({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 gap-8">
           {/* Zone 1: Brand Logo */}
-          <Link href="/" className="flex items-center gap-2 group shrink-0">
+          <Link href="/" className="ak-focus flex items-center gap-2 group shrink-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={settings.logoUrl || '/logo.png'}
               alt={`${settings.gymName} Logo`}
-              className="h-14 w-auto object-contain drop-shadow-lg"
+              className="h-14 w-auto object-contain transition-transform group-hover:scale-105"
             />
           </Link>
 
-
           {/* Zone 2: Navigation Links (Desktop) */}
-          <nav className="hidden lg:flex items-center gap-7 text-sm font-semibold tracking-wide">
-            <Link
-              href="/"
-              className={`transition-colors hover:text-orange-400 whitespace-nowrap ${
-                pathname === '/' ? 'text-orange-500' : 'text-neutral-200'
-              }`}
-            >
+          <nav className="hidden lg:flex items-center gap-7 text-[11px] font-extrabold uppercase tracking-[0.16em] font-display">
+            <Link href="/" className={navLink(pathname === '/')}>
               Home
             </Link>
 
@@ -145,38 +152,28 @@ export default function Header({
             >
               <button
                 type="button"
-                className={`flex items-center gap-1.5 transition-colors hover:text-orange-400 py-2 whitespace-nowrap ${
-                  pathname.startsWith('/training') ? 'text-orange-500' : 'text-neutral-200'
+                className={`ak-focus ak-link flex items-center gap-1.5 transition-colors py-2 whitespace-nowrap ${
+                  pathname.startsWith('/training')
+                    ? 'text-ak-accent'
+                    : 'text-neutral-300 hover:text-white'
                 }`}
               >
                 <span>Training</span>
                 <ChevronDown className="w-4 h-4 opacity-75" />
               </button>
               {activeDropdown === 'training' && (
-                <div className="absolute top-full left-0 w-60 py-2 bg-[#121620] border border-neutral-800 rounded-xl shadow-2xl backdrop-blur-xl z-50">
-                  <Link
-                    href="/training/personal-training"
-                    className="block px-4 py-2.5 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
-                  >
+                <div className="absolute top-full left-0 w-60 py-2 ak-panel ak-cut-tr shadow-2xl z-50">
+                  <Link href="/training/personal-training" className={dropdownLink}>
                     Personal Training
                   </Link>
-                  <Link
-                    href="/training/strength-training"
-                    className="block px-4 py-2.5 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
-                  >
+                  <Link href="/training/strength-training" className={dropdownLink}>
                     Strength Training
                   </Link>
-                  <Link
-                    href="/training/yoga-class"
-                    className="block px-4 py-2.5 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
-                  >
+                  <Link href="/training/yoga-class" className={dropdownLink}>
                     Yoga Class
                   </Link>
-                  <div className="my-1 border-t border-neutral-800" />
-                  <Link
-                    href="/training"
-                    className="block px-4 py-2 text-xs font-bold text-orange-400 hover:text-red-300 hover:bg-orange-600/20 transition-colors"
-                  >
+                  <div className="my-1 border-t border-ak-line" />
+                  <Link href="/training" className={dropdownAll}>
                     Browse All Training →
                   </Link>
                 </div>
@@ -191,32 +188,25 @@ export default function Header({
             >
               <button
                 type="button"
-                className={`flex items-center gap-1.5 transition-colors hover:text-orange-400 py-2 whitespace-nowrap ${
-                  pathname.startsWith('/membership') ? 'text-orange-500' : 'text-neutral-200'
+                className={`ak-focus ak-link flex items-center gap-1.5 transition-colors py-2 whitespace-nowrap ${
+                  pathname.startsWith('/membership')
+                    ? 'text-ak-accent'
+                    : 'text-neutral-300 hover:text-white'
                 }`}
               >
                 <span>Membership</span>
                 <ChevronDown className="w-4 h-4 opacity-75" />
               </button>
               {activeDropdown === 'membership' && (
-                <div className="absolute top-full left-0 w-56 py-2 bg-[#121620] border border-neutral-800 rounded-xl shadow-2xl backdrop-blur-xl z-50">
-                  <Link
-                    href="/membership/club"
-                    className="block px-4 py-2.5 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
-                  >
+                <div className="absolute top-full left-0 w-56 py-2 ak-panel ak-cut-tr shadow-2xl z-50">
+                  <Link href="/membership/club" className={dropdownLink}>
                     Club Membership
                   </Link>
-                  <Link
-                    href="/membership/refer-a-friend"
-                    className="block px-4 py-2.5 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
-                  >
+                  <Link href="/membership/refer-a-friend" className={dropdownLink}>
                     Refer a Friend
                   </Link>
-                  <div className="my-1 border-t border-neutral-800" />
-                  <Link
-                    href="/membership"
-                    className="block px-4 py-2 text-xs font-bold text-orange-400 hover:text-red-300 hover:bg-orange-600/20 transition-colors"
-                  >
+                  <div className="my-1 border-t border-ak-line" />
+                  <Link href="/membership" className={dropdownAll}>
                     Membership Overview →
                   </Link>
                 </div>
@@ -231,26 +221,22 @@ export default function Header({
             >
               <button
                 type="button"
-                className={`flex items-center gap-1.5 transition-colors hover:text-orange-400 py-2 whitespace-nowrap ${
-                  pathname.startsWith('/services') ? 'text-orange-500' : 'text-neutral-200'
+                className={`ak-focus ak-link flex items-center gap-1.5 transition-colors py-2 whitespace-nowrap ${
+                  pathname.startsWith('/services')
+                    ? 'text-ak-accent'
+                    : 'text-neutral-300 hover:text-white'
                 }`}
               >
                 <span>Services</span>
                 <ChevronDown className="w-4 h-4 opacity-75" />
               </button>
               {activeDropdown === 'services' && (
-                <div className="absolute top-full left-0 w-56 py-2 bg-[#121620] border border-neutral-800 rounded-xl shadow-2xl backdrop-blur-xl z-50">
-                  <Link
-                    href="/services/nutritionist"
-                    className="block px-4 py-2.5 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
-                  >
+                <div className="absolute top-full left-0 w-56 py-2 ak-panel ak-cut-tr shadow-2xl z-50">
+                  <Link href="/services/nutritionist" className={dropdownLink}>
                     Nutritionist Consultation
                   </Link>
-                  <div className="my-1 border-t border-neutral-800" />
-                  <Link
-                    href="/services"
-                    className="block px-4 py-2 text-xs font-bold text-orange-400 hover:text-red-300 hover:bg-orange-600/20 transition-colors"
-                  >
+                  <div className="my-1 border-t border-ak-line" />
+                  <Link href="/services" className={dropdownAll}>
                     All Services →
                   </Link>
                 </div>
@@ -265,7 +251,7 @@ export default function Header({
             >
               <button
                 type="button"
-                className={`flex items-center gap-1.5 transition-colors hover:text-orange-400 py-2 whitespace-nowrap ${
+                className={`ak-focus ak-link flex items-center gap-1.5 transition-colors py-2 whitespace-nowrap ${
                   pathname.startsWith('/gallery') ||
                   pathname.startsWith('/blog') ||
                   pathname.startsWith('/events') ||
@@ -274,64 +260,40 @@ export default function Header({
                   pathname.startsWith('/reviews') ||
                   pathname.startsWith('/about') ||
                   pathname.startsWith('/team')
-                    ? 'text-orange-500'
-                    : 'text-neutral-200'
+                    ? 'text-ak-accent'
+                    : 'text-neutral-300 hover:text-white'
                 }`}
               >
                 <span>Explore</span>
                 <ChevronDown className="w-4 h-4 opacity-75" />
               </button>
               {activeDropdown === 'explore' && (
-                <div className="absolute top-full left-0 w-52 py-2 bg-[#121620] border border-neutral-800 rounded-xl shadow-2xl backdrop-blur-xl grid grid-cols-1 divide-y divide-neutral-800/40 z-50">
+                <div className="absolute top-full left-0 w-52 py-2 ak-panel ak-cut-tr shadow-2xl grid grid-cols-1 divide-y divide-ak-line z-50">
                   <div className="py-1">
-                    <Link
-                      href="/gallery"
-                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
-                    >
+                    <Link href="/gallery" className={dropdownLink}>
                       Gallery
                     </Link>
-                    <Link
-                      href="/blog"
-                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
-                    >
+                    <Link href="/blog" className={dropdownLink}>
                       Blog
                     </Link>
-                    <Link
-                      href="/events"
-                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
-                    >
+                    <Link href="/events" className={dropdownLink}>
                       Events
                     </Link>
-                    <Link
-                      href="/offers"
-                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
-                    >
+                    <Link href="/offers" className={dropdownLink}>
                       Offers
                     </Link>
                   </div>
                   <div className="py-1">
-                    <Link
-                      href="/faq"
-                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
-                    >
+                    <Link href="/faq" className={dropdownLink}>
                       FAQ
                     </Link>
-                    <Link
-                      href="/reviews"
-                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
-                    >
+                    <Link href="/reviews" className={dropdownLink}>
                       Reviews
                     </Link>
-                    <Link
-                      href="/about"
-                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
-                    >
+                    <Link href="/about" className={dropdownLink}>
                       About Us
                     </Link>
-                    <Link
-                      href="/team"
-                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
-                    >
+                    <Link href="/team" className={dropdownLink}>
                       Our Team
                     </Link>
                   </div>
@@ -339,39 +301,34 @@ export default function Header({
               )}
             </div>
 
-            <Link
-              href="/contact"
-              className={`transition-colors hover:text-orange-400 whitespace-nowrap ${
-                pathname === '/contact' ? 'text-orange-500' : 'text-neutral-200'
-              }`}
-            >
+            <Link href="/contact" className={navLink(pathname === '/contact')}>
               Contact
             </Link>
           </nav>
 
           {/* Zone 3: Action Button */}
-          <div className="flex items-center gap-4 shrink-0">
+          <div className="flex items-center gap-3 shrink-0">
             {onOpenApplyModal ? (
               <button
                 type="button"
                 onClick={onOpenApplyModal}
-                className="hidden sm:inline-flex items-center justify-center px-6 py-2.5 rounded-lg text-sm font-bold text-white bg-orange-600 hover:bg-orange-500 active:scale-95 transition-all shadow-lg shadow-orange-950/40 whitespace-nowrap"
+                className="ak-btn ak-btn-primary hidden sm:inline-flex"
               >
-                {settings.applyButtonLabel || 'Apply Now'}
+                <span>{settings.applyButtonLabel || 'Apply Now'}</span>
               </button>
             ) : (
               <Link
                 href="/apply"
-                className="hidden sm:inline-flex items-center justify-center px-6 py-2.5 rounded-lg text-sm font-bold text-white bg-orange-600 hover:bg-orange-500 active:scale-95 transition-all shadow-lg shadow-orange-950/40 whitespace-nowrap"
+                className="ak-btn ak-btn-primary hidden sm:inline-flex"
               >
-                {settings.applyButtonLabel || 'Apply Now'}
+                <span>{settings.applyButtonLabel || 'Apply Now'}</span>
               </Link>
             )}
 
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2.5 rounded-lg bg-neutral-900 border border-neutral-800 text-neutral-200 hover:text-white hover:border-neutral-700 transition-colors"
+              className="ak-focus lg:hidden p-2.5 border border-ak-line bg-ak-surface text-neutral-300 hover:text-white hover:border-ak-accent transition-colors"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -382,22 +339,22 @@ export default function Header({
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#0F131B] border-b border-neutral-800 px-6 py-6 max-h-[85vh] overflow-y-auto shadow-2xl">
-          <div className="flex flex-col gap-4 text-base font-semibold">
+        <div className="lg:hidden bg-ak-ink border-b border-ak-line px-6 py-6 max-h-[85vh] overflow-y-auto shadow-2xl">
+          <div className="flex flex-col gap-4 text-sm font-extrabold uppercase tracking-[0.14em] font-display">
             <Link
               href="/"
-              className={`py-2 border-b border-neutral-800/60 ${
-                pathname === '/' ? 'text-orange-500' : 'text-neutral-200'
+              className={`ak-focus py-2 border-b border-ak-line ${
+                pathname === '/' ? 'text-ak-accent' : 'text-neutral-300'
               }`}
             >
               Home
             </Link>
 
-            <div className="py-2 border-b border-neutral-800/60">
+            <div className="py-2 border-b border-ak-line">
               <button
                 type="button"
                 onClick={() => toggleDropdown('m-training')}
-                className="flex items-center justify-between w-full text-neutral-200 py-1"
+                className="ak-focus flex items-center justify-between w-full text-neutral-300 py-1 hover:text-white"
               >
                 <span>Training</span>
                 <ChevronDown
@@ -407,7 +364,7 @@ export default function Header({
                 />
               </button>
               {activeDropdown === 'm-training' && (
-                <div className="pl-4 pt-2 flex flex-col gap-2 text-sm text-neutral-400">
+                <div className="pl-4 pt-2 flex flex-col gap-2 text-xs normal-case tracking-normal text-neutral-400">
                   <Link href="/training/personal-training" className="py-1 hover:text-white">
                     Personal Training
                   </Link>
@@ -417,18 +374,18 @@ export default function Header({
                   <Link href="/training/yoga-class" className="py-1 hover:text-white">
                     Yoga Class
                   </Link>
-                  <Link href="/training" className="py-1 font-bold text-orange-400">
+                  <Link href="/training" className="py-1 font-extrabold text-ak-accent">
                     Browse All Training →
                   </Link>
                 </div>
               )}
             </div>
 
-            <div className="py-2 border-b border-neutral-800/60">
+            <div className="py-2 border-b border-ak-line">
               <button
                 type="button"
                 onClick={() => toggleDropdown('m-membership')}
-                className="flex items-center justify-between w-full text-neutral-200 py-1"
+                className="ak-focus flex items-center justify-between w-full text-neutral-300 py-1 hover:text-white"
               >
                 <span>Membership</span>
                 <ChevronDown
@@ -438,25 +395,25 @@ export default function Header({
                 />
               </button>
               {activeDropdown === 'm-membership' && (
-                <div className="pl-4 pt-2 flex flex-col gap-2 text-sm text-neutral-400">
+                <div className="pl-4 pt-2 flex flex-col gap-2 text-xs normal-case tracking-normal text-neutral-400">
                   <Link href="/membership/club" className="py-1 hover:text-white">
                     Club Membership
                   </Link>
                   <Link href="/membership/refer-a-friend" className="py-1 hover:text-white">
                     Refer a Friend
                   </Link>
-                  <Link href="/membership" className="py-1 font-bold text-orange-400">
+                  <Link href="/membership" className="py-1 font-extrabold text-ak-accent">
                     Membership Overview →
                   </Link>
                 </div>
               )}
             </div>
 
-            <div className="py-2 border-b border-neutral-800/60">
+            <div className="py-2 border-b border-ak-line">
               <button
                 type="button"
                 onClick={() => toggleDropdown('m-services')}
-                className="flex items-center justify-between w-full text-neutral-200 py-1"
+                className="ak-focus flex items-center justify-between w-full text-neutral-300 py-1 hover:text-white"
               >
                 <span>Services</span>
                 <ChevronDown
@@ -466,22 +423,22 @@ export default function Header({
                 />
               </button>
               {activeDropdown === 'm-services' && (
-                <div className="pl-4 pt-2 flex flex-col gap-2 text-sm text-neutral-400">
+                <div className="pl-4 pt-2 flex flex-col gap-2 text-xs normal-case tracking-normal text-neutral-400">
                   <Link href="/services/nutritionist" className="py-1 hover:text-white">
                     Nutritionist Consultation
                   </Link>
-                  <Link href="/services" className="py-1 font-bold text-orange-400">
+                  <Link href="/services" className="py-1 font-extrabold text-ak-accent">
                     All Services →
                   </Link>
                 </div>
               )}
             </div>
 
-            <div className="py-2 border-b border-neutral-800/60">
+            <div className="py-2 border-b border-ak-line">
               <button
                 type="button"
                 onClick={() => toggleDropdown('m-explore')}
-                className="flex items-center justify-between w-full text-neutral-200 py-1"
+                className="ak-focus flex items-center justify-between w-full text-neutral-300 py-1 hover:text-white"
               >
                 <span>Explore</span>
                 <ChevronDown
@@ -491,7 +448,7 @@ export default function Header({
                 />
               </button>
               {activeDropdown === 'm-explore' && (
-                <div className="pl-4 pt-2 grid grid-cols-2 gap-2 text-sm text-neutral-400">
+                <div className="pl-4 pt-2 grid grid-cols-2 gap-2 text-xs normal-case tracking-normal text-neutral-400">
                   <Link href="/gallery" className="py-1 hover:text-white">
                     Gallery
                   </Link>
@@ -522,33 +479,30 @@ export default function Header({
 
             <Link
               href="/contact"
-              className={`py-2 border-b border-neutral-800/60 ${
-                pathname === '/contact' ? 'text-orange-500' : 'text-neutral-200'
+              className={`ak-focus py-2 border-b border-ak-line ${
+                pathname === '/contact' ? 'text-ak-accent' : 'text-neutral-300'
               }`}
             >
               Contact
             </Link>
 
             <div className="pt-2 flex flex-col gap-3">
-              <Link
-                href="/apply"
-                className="w-full text-center py-3 rounded-lg text-sm font-bold text-white bg-orange-600 hover:bg-orange-500 transition-colors shadow-lg shadow-orange-950/40"
-              >
-                Apply for Membership
+              <Link href="/apply" className="ak-btn ak-btn-primary w-full justify-center">
+                <span>Apply for Membership</span>
               </Link>
-              <div className="flex items-center justify-between text-xs text-neutral-400 pt-2 border-t border-neutral-800">
+              <div className="flex items-center justify-between text-[11px] normal-case tracking-normal text-neutral-400 pt-3 border-t border-ak-line">
                 <a
                   href={`tel:${settings.phone.replace(/\s+/g, '')}`}
-                  className="flex items-center gap-1.5 hover:text-white"
+                  className="ak-focus flex items-center gap-1.5 hover:text-white"
                 >
-                  <Phone className="w-3.5 h-3.5 text-orange-500" />
+                  <Phone className="w-3.5 h-3.5 text-ak-accent" />
                   <span>{settings.phone}</span>
                 </a>
                 <a
                   href={`https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, '')}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300"
+                  className="ak-focus flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300"
                 >
                   <MessageCircle className="w-3.5 h-3.5" />
                   <span>WhatsApp</span>

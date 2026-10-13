@@ -21,32 +21,33 @@ export default function OffersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-ak-ink text-white flex flex-col">
       <Header onOpenApplyModal={() => openApply('General Offer')} />
 
-      <section className="relative pt-36 sm:pt-40 pb-16 bg-neutral-900 border-b border-neutral-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative pt-36 sm:pt-40 pb-16 bg-ak-surface border-b border-ak-line">
+        <div className="absolute inset-0 ak-stripe opacity-40 pointer-events-none" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <span className="text-red-500 font-bold text-xs uppercase tracking-wider">
-              Special Deals &bull; Gorkhali Gym Itahari
-            </span>
-            <h1 className="text-4xl sm:text-5xl font-black uppercase tracking-tight text-white mt-2">
+            <div className="ak-eyebrow mb-4">
+              <span>Special Deals &bull; Gorkhali Gym Itahari</span>
+            </div>
+            <h1 className="font-display text-4xl sm:text-5xl text-white mt-2">
               Current Offers & Promotions
             </h1>
-            <p className="text-neutral-400 text-base sm:text-lg mt-4 leading-relaxed">
+            <p className="text-ak-muted text-base sm:text-lg mt-4 leading-relaxed">
               Take advantage of our seasonal discounts, student packages, and new lifter orientation bundles.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="py-20">
+      <section className="py-24 bg-ak-ink">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {offers.length === 0 ? (
-            <div className="text-center py-16 bg-neutral-900/40 rounded-2xl border border-neutral-800 p-8">
-              <Tag className="w-12 h-12 text-neutral-600 mx-auto mb-3" />
-              <h3 className="text-lg font-bold text-white uppercase">No Active Public Offers Currently</h3>
-              <p className="text-sm text-neutral-400 mt-1 max-w-sm mx-auto">
+            <div className="text-center py-16 bg-ak-surface-2 border border-ak-line p-8">
+              <Tag className="w-12 h-12 text-ak-muted mx-auto mb-3" />
+              <h3 className="font-display text-lg text-white">No Active Public Offers Currently</h3>
+              <p className="text-sm text-ak-muted mt-1 max-w-sm mx-auto">
                 Check back shortly or contact our front desk for current walk-in registration deals.
               </p>
             </div>
@@ -55,20 +56,20 @@ export default function OffersPage() {
               {offers.map((offer) => (
                 <div
                   key={offer.id}
-                  className="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden group hover:border-red-600/50 transition-all flex flex-col justify-between"
+                  className="ak-panel ak-cut-tr overflow-hidden group hover:border-ak-accent/60 transition-colors flex flex-col justify-between"
                 >
                   <div>
-                    <div className="relative h-56 w-full bg-neutral-950">
+                    <div className="ak-frame ak-hover-group relative h-56 w-full bg-ak-ink">
                       <Image
                         src={offer.imageUrl || '/images/hero_gorkhali_gym.jpg'}
                         alt={offer.title}
                         fill
                         referrerPolicy="no-referrer"
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="ak-img"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-ak-surface via-transparent to-transparent" />
                       {offer.badge && (
-                        <span className="absolute top-3 right-3 px-3 py-1 rounded bg-red-600 text-white font-extrabold text-[11px] uppercase tracking-wider">
+                        <span className="absolute top-3 right-3 px-3 py-1 bg-ak-accent text-white text-[11px] font-extrabold uppercase tracking-wider">
                           {offer.badge}
                         </span>
                       )}
@@ -76,38 +77,38 @@ export default function OffersPage() {
 
                     <div className="p-6 space-y-3">
                       {offer.discountInfo && (
-                        <span className="inline-block px-2.5 py-1 rounded bg-red-950/80 border border-red-800 text-red-300 font-bold text-xs uppercase">
+                        <span className="inline-block px-2.5 py-1 bg-ak-accent/10 border border-ak-accent/30 text-ak-accent font-bold text-xs uppercase">
                           {offer.discountInfo}
                         </span>
                       )}
-                      <h3 className="text-xl font-bold uppercase text-white group-hover:text-red-500 transition-colors">
+                      <h3 className="font-display text-xl text-white group-hover:text-ak-accent transition-colors">
                         {offer.title}
                       </h3>
-                      <p className="text-xs text-neutral-400 leading-relaxed line-clamp-3">
+                      <p className="text-xs text-ak-muted leading-relaxed line-clamp-3">
                         {offer.shortDesc}
                       </p>
                       {offer.validUntil && (
                         <p className="text-[11px] text-neutral-500 flex items-center space-x-1.5 pt-2">
-                          <Clock className="w-3.5 h-3.5 text-neutral-400" />
+                          <Clock className="w-3.5 h-3.5 text-ak-muted" />
                           <span>Valid until: {offer.validUntil}</span>
                         </p>
                       )}
                     </div>
                   </div>
 
-                  <div className="p-6 pt-0 border-t border-neutral-800/80 mt-4 flex items-center justify-between">
+                  <div className="p-6 pt-0 border-t border-ak-line mt-4 flex items-center justify-between">
                     <Link
                       href={`/offers/${offer.slug}`}
-                      className="text-xs font-bold text-neutral-300 hover:text-white uppercase tracking-wider flex items-center space-x-1"
+                      className="ak-focus ak-link text-xs font-bold text-neutral-300 hover:text-white uppercase tracking-wider flex items-center space-x-1"
                     >
                       <span>Offer Details</span>
                       <ChevronRight className="w-4 h-4" />
                     </Link>
                     <button
                       onClick={() => openApply(offer.title)}
-                      className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-md shadow-red-600/20"
+                      className="ak-btn ak-btn-primary !px-4 !py-2 !text-[11px]"
                     >
-                      Claim Deal
+                      <span>Claim Deal</span>
                     </button>
                   </div>
                 </div>

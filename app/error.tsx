@@ -10,26 +10,19 @@ export default function Error({
   reset: () => void;
 }) {
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex items-center justify-center p-6 font-sans">
-      <div className="max-w-md w-full text-center space-y-6 bg-neutral-900 border border-neutral-800 p-8 rounded-3xl shadow-2xl">
-        <h2 className="text-2xl font-black uppercase text-white tracking-tight">
-          Page Load Error
-        </h2>
-        <p className="text-neutral-400 text-sm">
+    <div className="min-h-screen ak-page flex items-center justify-center p-6 relative overflow-hidden">
+      <div className="absolute inset-0 ak-stripe opacity-40 pointer-events-none" />
+      <div className="relative max-w-md w-full text-center space-y-6 ak-panel ak-cut-both p-8 shadow-2xl">
+        <h2 className="font-display text-2xl text-white">Page Load Error</h2>
+        <p className="text-ak-muted text-sm">
           We encountered an issue loading this section of Gorkhali Gym.
         </p>
         <div className="flex justify-center gap-3">
-          <button
-            onClick={() => reset()}
-            className="px-6 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold uppercase text-xs tracking-wider transition-colors"
-          >
-            Try Again
+          <button onClick={() => reset()} className="ak-btn ak-btn-primary">
+            <span>Try Again</span>
           </button>
-          <Link
-            href="/"
-            className="px-6 py-3 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-200 font-bold uppercase text-xs tracking-wider transition-colors"
-          >
-            Home
+          <Link href="/" className="ak-btn ak-btn-outline">
+            <span>Home</span>
           </Link>
         </div>
       </div>

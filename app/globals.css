@@ -1,1 +1,290 @@
 @import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Athletic Kinetic design system
+   Near-black canvas (#0A0A0A), charcoal surfaces (#171717),
+   vibrant red accent (#EF4444), muted-gray support text (#A3A3A3).
+   Bold condensed athletic type, diagonal cuts, angular panels,
+   slanted buttons, directional motion.
+--------------------------------------------------------------------------- */
+@theme {
+  --color-ak-ink: #0a0a0a;
+  --color-ak-surface: #171717;
+  --color-ak-surface-2: #0f0f0f;
+  --color-ak-line: #262626;
+  --color-ak-accent: #ef4444;
+  --color-ak-accent-dark: #b91c1c;
+  --color-ak-muted: #a3a3a3;
+
+  --font-display:
+    "Oswald", "Arial Narrow", "Helvetica Neue Condensed",
+    "Franklin Gothic Medium", Impact, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background-color: var(--color-ak-ink);
+    color: #fff;
+  }
+}
+
+@layer components {
+  /* --- Page shell --- */
+  .ak-page {
+    background-color: var(--color-ak-ink);
+    color: #fff;
+  }
+
+  /* --- Charcoal athletic panel --- */
+  .ak-panel {
+    position: relative;
+    background-color: var(--color-ak-surface);
+    border: 1px solid var(--color-ak-line);
+  }
+
+  /* --- Angular corner cuts --- */
+  .ak-cut-tr {
+    clip-path: polygon(0 0, calc(100% - 1.25rem) 0, 100% 1.25rem, 100% 100%, 0 100%);
+  }
+  .ak-cut-bl {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 1.25rem 100%, 0 calc(100% - 1.25rem));
+  }
+  .ak-cut-both {
+    clip-path: polygon(
+      0 0,
+      calc(100% - 1.25rem) 0,
+      100% 1.25rem,
+      100% 100%,
+      1.25rem 100%,
+      0 calc(100% - 1.25rem)
+    );
+  }
+
+  /* --- Diagonal section shapers --- */
+  .ak-slant-b {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 3rem));
+  }
+  .ak-slant-t {
+    clip-path: polygon(0 3rem, 100% 0, 100% 100%, 0 100%);
+  }
+  .ak-slant-r {
+    clip-path: polygon(0 0, 100% 0, calc(100% - 3.5rem) 100%, 0 100%);
+  }
+
+  /* --- Athletic display typography --- */
+  .ak-display,
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 800;
+    text-transform: uppercase;
+    font-stretch: condensed;
+    letter-spacing: -0.005em;
+    line-height: 0.95;
+  }
+  .ak-heading {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 0.004em;
+    line-height: 1.03;
+  }
+  .ak-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-weight: 700;
+    font-size: 0.7rem;
+    color: var(--color-ak-accent);
+  }
+  .ak-eyebrow::before {
+    content: "";
+    display: inline-block;
+    width: 1.75rem;
+    height: 2px;
+    background: var(--color-ak-accent);
+    transform: skewX(-32deg);
+  }
+
+  /* --- Slanted buttons --- */
+  .ak-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    padding: 0.85rem 1.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.78rem;
+    transform: skewX(-10deg);
+    border: 1px solid transparent;
+    cursor: pointer;
+    will-change: transform;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      transform 0.18s ease,
+      background-color 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+  .ak-btn > * {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    transform: skewX(10deg);
+  }
+  .ak-btn:hover {
+    transform: skewX(-10deg) translateY(-2px);
+  }
+  .ak-btn:active {
+    transform: skewX(-10deg) translateY(0);
+  }
+  .ak-btn:disabled,
+  .ak-btn[aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: skewX(-10deg);
+    box-shadow: none;
+  }
+
+  .ak-btn-primary {
+    background-color: var(--color-ak-accent);
+    color: #fff;
+    box-shadow: 0 10px 30px -12px rgba(239, 68, 68, 0.75);
+  }
+  .ak-btn-primary:hover {
+    background-color: #f25555;
+    box-shadow: 0 18px 42px -12px rgba(239, 68, 68, 0.9);
+  }
+
+  .ak-btn-outline {
+    background-color: transparent;
+    color: #fff;
+    border-color: #404040;
+  }
+  .ak-btn-outline:hover {
+    border-color: var(--color-ak-accent);
+    background-color: rgba(239, 68, 68, 0.08);
+  }
+
+  .ak-btn-ghost {
+    background-color: transparent;
+    color: var(--color-ak-muted);
+  }
+  .ak-btn-ghost:hover {
+    color: #fff;
+  }
+
+  /* --- Keyboard focus --- */
+  .ak-focus:focus-visible,
+  .ak-btn:focus-visible,
+  .ak-input:focus-visible {
+    outline: 2px solid var(--color-ak-accent);
+    outline-offset: 3px;
+  }
+
+  /* --- Red angular accent bar --- */
+  .ak-bar {
+    position: relative;
+  }
+  .ak-bar::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--color-ak-accent);
+    transform: skewY(-8deg);
+    transform-origin: top left;
+  }
+
+  /* --- Diagonal stripe texture --- */
+  .ak-stripe {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.045) 0 1px,
+      transparent 1px 12px
+    );
+  }
+
+  /* --- Image frame with directional hover --- */
+  .ak-frame {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-ak-ink);
+  }
+  .ak-img {
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .ak-hover-group:hover .ak-img {
+    transform: scale(1.06);
+  }
+
+  /* --- Underline sweep link --- */
+  .ak-link {
+    position: relative;
+  }
+  .ak-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    height: 2px;
+    width: 100%;
+    background: var(--color-ak-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s ease;
+  }
+  .ak-link:hover::after {
+    transform: scaleX(1);
+  }
+
+  /* --- Form controls --- */
+  .ak-input {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.875rem;
+    line-height: 1.25;
+    background-color: var(--color-ak-ink);
+    border: 1px solid var(--color-ak-line);
+    color: #fff;
+    border-radius: 0;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+  .ak-input::placeholder {
+    color: #737373;
+  }
+  .ak-input:focus {
+    outline: none;
+    border-color: var(--color-ak-accent);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ak-btn,
+  .ak-btn > *,
+  .ak-img,
+  .ak-link::after {
+    transition: none !important;
+  }
+  .ak-btn:hover,
+  .ak-btn:active {
+    transform: skewX(-10deg);
+  }
+  .ak-hover-group:hover .ak-img {
+    transform: none;
+  }
+}

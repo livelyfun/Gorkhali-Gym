@@ -20,52 +20,55 @@ export default function ReviewsPage() {
       : '5.0';
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-ak-ink text-white flex flex-col">
       <Header onOpenApplyModal={() => setApplyModalOpen(true)} />
 
-      <section className="relative pt-36 sm:pt-40 pb-16 bg-neutral-900 border-b border-neutral-800">
+      <section className="relative pt-36 sm:pt-40 pb-16 bg-ak-surface border-b border-ak-line">
+        <div className="absolute inset-0 ak-stripe opacity-40 pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="max-w-2xl">
-            <span className="text-red-500 font-bold text-xs uppercase tracking-wider">
+            <div className="ak-eyebrow">
               Member Testimonials &bull; Gorkhali Gym Itahari
-            </span>
-            <h1 className="text-4xl sm:text-5xl font-black uppercase tracking-tight text-white mt-2">
+            </div>
+            <h1 className="font-display text-4xl sm:text-5xl text-white mt-4">
               Genuine Stories & Reviews
             </h1>
-            <p className="text-neutral-400 text-base mt-3 leading-relaxed">
+            <p className="text-ak-muted text-base mt-3 leading-relaxed">
               Read how members of all fitness levels found consistency, power, and mutual respect training under the Gorkhali banner.
             </p>
           </div>
 
           <div className="flex items-center space-x-4 shrink-0">
-            <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800 text-center">
+            <div className="ak-panel ak-cut-bl p-4 text-center">
               <div className="flex items-center justify-center space-x-1 text-amber-400">
                 <Star className="w-5 h-5 fill-amber-400" />
-                <span className="text-2xl font-black text-white">{avgRating}</span>
+                <span className="font-display text-2xl text-white">{avgRating}</span>
               </div>
-              <span className="text-[10px] text-neutral-400 uppercase tracking-wider">
+              <span className="text-[10px] text-ak-muted uppercase tracking-wider">
                 Overall Rating ({reviews.length})
               </span>
             </div>
 
             <button
               onClick={() => setReviewModalOpen(true)}
-              className="px-6 py-4 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-lg shadow-red-600/30 flex items-center space-x-2"
+              className="ak-btn ak-btn-primary"
             >
-              <MessageSquarePlus className="w-4 h-4" />
-              <span>Write a Review</span>
+              <span>
+                <MessageSquarePlus className="w-4 h-4" />
+                <span>Write a Review</span>
+              </span>
             </button>
           </div>
         </div>
       </section>
 
-      <section className="py-20">
+      <section className="py-24 bg-ak-ink">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {reviews.map((rev) => (
               <div
                 key={rev.id}
-                className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 flex flex-col justify-between space-y-4 hover:border-neutral-700 transition-colors"
+                className="ak-panel ak-cut-tr p-6 flex flex-col justify-between gap-4 hover:border-ak-accent/50 transition-colors"
               >
                 <div>
                   <div className="flex items-center space-x-1 mb-3">
@@ -78,12 +81,12 @@ export default function ReviewsPage() {
                   </p>
                 </div>
 
-                <div className="pt-4 border-t border-neutral-800/80 flex items-center justify-between">
+                <div className="pt-4 border-t border-ak-line flex items-center justify-between">
                   <div>
-                    <h3 className="font-bold text-white text-sm uppercase">{rev.authorName || rev.author}</h3>
-                    <p className="text-xs text-neutral-400">{rev.role || 'Gorkhali Member'}</p>
+                    <h3 className="font-bold text-white text-sm">{rev.authorName || rev.author}</h3>
+                    <p className="text-xs text-ak-muted">{rev.role || 'Gorkhali Member'}</p>
                   </div>
-                  <span className="inline-flex items-center space-x-1 text-[10px] text-emerald-400 font-semibold uppercase bg-emerald-950/60 border border-emerald-800/80 px-2 py-0.5 rounded">
+                  <span className="inline-flex items-center gap-1 text-ak-accent text-[10px] uppercase font-bold tracking-wider">
                     <ShieldCheck className="w-3 h-3" />
                     <span>Verified</span>
                   </span>
@@ -95,10 +98,12 @@ export default function ReviewsPage() {
           <div className="mt-16 text-center">
             <button
               onClick={() => setReviewModalOpen(true)}
-              className="inline-flex items-center space-x-2 px-6 py-3 rounded-xl bg-neutral-900 border border-neutral-800 text-neutral-200 hover:text-white hover:border-red-600 text-xs font-bold uppercase tracking-wider transition-colors"
+              className="ak-btn ak-btn-primary"
             >
-              <MessageSquarePlus className="w-4 h-4 text-red-500" />
-              <span>Have you trained with us? Leave your review</span>
+              <span>
+                <MessageSquarePlus className="w-4 h-4" />
+                <span>Have you trained with us? Leave your review</span>
+              </span>
             </button>
           </div>
         </div>

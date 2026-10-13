@@ -21,49 +21,50 @@ export default function TeamPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-ak-ink text-white flex flex-col">
       <Header onOpenApplyModal={() => openApplyForCoach('General Coach')} />
 
-      <section className="relative pt-36 sm:pt-40 pb-16 bg-neutral-900 border-b border-neutral-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative pt-36 sm:pt-40 pb-16 bg-ak-surface border-b border-ak-line">
+        <div className="absolute inset-0 ak-stripe opacity-40 pointer-events-none" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <span className="text-red-500 font-bold text-xs uppercase tracking-wider">
+            <div className="ak-eyebrow mb-4">
               Coaches &bull; Mentors &bull; Gorkhali Gym Itahari
-            </span>
-            <h1 className="text-4xl sm:text-5xl font-black uppercase tracking-tight text-white mt-2">
+            </div>
+            <h1 className="font-display text-4xl sm:text-5xl text-white mt-2">
               Our Certified Training Staff
             </h1>
-            <p className="text-neutral-400 text-base sm:text-lg mt-4 leading-relaxed">
+            <p className="text-ak-muted text-base sm:text-lg mt-4 leading-relaxed">
               Meet the passionate educators and conditioning specialists dedicated to guiding your form, injury prevention, and athletic performance.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="py-20">
+      <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {trainers.map((t) => (
               <div
                 key={t.id}
-                className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden group hover:border-red-600/50 transition-all flex flex-col justify-between"
+                className="ak-panel ak-cut-tr overflow-hidden group hover:border-ak-accent/50 transition-colors flex flex-col justify-between"
               >
                 <div>
-                  <div className="relative h-72 w-full bg-neutral-950">
+                  <div className="ak-frame ak-hover-group relative h-72 w-full">
                     <Image
                       src={t.imageUrl || '/images/trainer_coaching_session.jpg'}
                       alt={t.name}
                       fill
                       referrerPolicy="no-referrer"
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="ak-img object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-ak-ink via-transparent to-transparent" />
                   </div>
 
                   <div className="p-6 space-y-4">
                     <div>
-                      <h3 className="text-2xl font-black uppercase text-white">{t.name}</h3>
-                      <p className="text-xs font-bold text-red-500 uppercase tracking-wider mt-0.5">
+                      <h3 className="font-display text-2xl text-white">{t.name}</h3>
+                      <p className="text-xs font-bold text-ak-accent uppercase tracking-wider mt-0.5">
                         {t.role}
                       </p>
                     </div>
@@ -72,14 +73,14 @@ export default function TeamPage() {
 
                     {t.qualifications && t.qualifications.length > 0 && (
                       <div className="pt-2">
-                        <span className="text-[11px] font-bold text-neutral-400 uppercase tracking-wider block mb-2">
+                        <span className="text-[11px] font-bold text-ak-muted uppercase tracking-wider block mb-2">
                           Credentials & Experience:
                         </span>
                         <div className="flex flex-wrap gap-1.5">
                           {t.qualifications.map((q, idx) => (
                             <span
                               key={idx}
-                              className="px-2.5 py-1 rounded bg-neutral-950 border border-neutral-800 text-[11px] text-neutral-300"
+                              className="px-2.5 py-1 bg-ak-ink border border-ak-line text-[11px] text-neutral-300"
                             >
                               {q}
                             </span>
@@ -90,12 +91,12 @@ export default function TeamPage() {
                   </div>
                 </div>
 
-                <div className="p-6 pt-0 border-t border-neutral-800/80 mt-4 flex items-center justify-between">
+                <div className="p-6 pt-0 border-t border-ak-line mt-4 flex items-center justify-between">
                   <a
                     href={`https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, '')}?text=Hi%20Gorkhali%20Gym%2C%20I%20would%20like%20to%20train%20with%20coach%20${encodeURIComponent(t.name)}!`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs font-bold text-neutral-400 hover:text-white uppercase tracking-wider flex items-center space-x-1"
+                    className="ak-focus text-xs font-bold text-ak-muted hover:text-white uppercase tracking-wider flex items-center space-x-1"
                   >
                     <MessageCircle className="w-3.5 h-3.5 text-emerald-500" />
                     <span>WhatsApp</span>
@@ -103,9 +104,9 @@ export default function TeamPage() {
 
                   <button
                     onClick={() => openApplyForCoach(t.name)}
-                    className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-md shadow-red-600/20"
+                    className="ak-btn ak-btn-primary !px-4 !py-2 !text-[11px]"
                   >
-                    Book Personal Training
+                    <span>Book Personal Training</span>
                   </button>
                 </div>
               </div>

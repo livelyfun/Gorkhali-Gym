@@ -21,20 +21,21 @@ export default function TrainingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-ak-ink text-white flex flex-col">
       <Header onOpenApplyModal={() => openApply('General Training')} />
 
       {/* Header */}
-      <section className="relative pt-36 sm:pt-40 pb-16 bg-neutral-900 border-b border-neutral-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative pt-36 sm:pt-40 pb-16 bg-ak-surface border-b border-ak-line">
+        <div className="absolute inset-0 ak-stripe opacity-40 pointer-events-none" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <span className="text-red-500 font-bold text-xs uppercase tracking-wider">
-              Training Programs &bull; Gorkhali Gym
-            </span>
-            <h1 className="text-4xl sm:text-5xl font-black uppercase tracking-tight text-white mt-2">
+            <div className="ak-eyebrow mb-4">
+              <span>Training Programs &bull; Gorkhali Gym</span>
+            </div>
+            <h1 className="font-display text-4xl sm:text-5xl text-white mt-2">
               Transformative Training Tracks
             </h1>
-            <p className="text-neutral-400 text-base sm:text-lg mt-4 leading-relaxed">
+            <p className="text-ak-muted text-base sm:text-lg mt-4 leading-relaxed">
               Targeted, coach-led training structures tailored for building strength, stripping body fat, and cultivating athletic longevity.
             </p>
           </div>
@@ -42,26 +43,26 @@ export default function TrainingPage() {
       </section>
 
       {/* Directory Grid */}
-      <section className="py-20">
+      <section className="py-24 bg-ak-ink">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {programs.map((prog) => (
               <div
                 key={prog.id}
-                className="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden group hover:border-red-600/50 transition-all flex flex-col justify-between"
+                className="ak-panel ak-cut-tr overflow-hidden group hover:border-ak-accent/60 transition-colors flex flex-col justify-between"
               >
                 <div>
-                  <div className="relative h-60 w-full overflow-hidden bg-neutral-950">
+                  <div className="ak-frame ak-hover-group relative h-60 w-full bg-ak-ink">
                     <Image
                       src={prog.imageUrl || '/images/training_strength_gym.jpg'}
                       alt={prog.title}
                       fill
                       referrerPolicy="no-referrer"
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="ak-img"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-ak-surface via-transparent to-transparent" />
                     {prog.badge && (
-                      <span className="absolute top-3 right-3 px-3 py-1 rounded bg-red-600 text-white font-extrabold text-[11px] uppercase tracking-wider">
+                      <span className="absolute top-3 right-3 px-3 py-1 bg-ak-accent text-white text-[11px] font-extrabold uppercase tracking-wider">
                         {prog.badge}
                       </span>
                     )}
@@ -69,15 +70,15 @@ export default function TrainingPage() {
 
                   <div className="p-6 space-y-3">
                     {prog.duration && (
-                      <span className="inline-flex items-center space-x-1.5 text-xs text-red-400 font-semibold uppercase">
+                      <span className="inline-flex items-center space-x-1.5 text-xs text-ak-accent font-semibold uppercase">
                         <Clock className="w-3.5 h-3.5" />
                         <span>{prog.duration}</span>
                       </span>
                     )}
-                    <h3 className="text-xl font-bold uppercase text-white group-hover:text-red-500 transition-colors">
+                    <h3 className="font-display text-xl text-white group-hover:text-ak-accent transition-colors">
                       {prog.title}
                     </h3>
-                    <p className="text-xs text-neutral-400 leading-relaxed line-clamp-3">
+                    <p className="text-xs text-ak-muted leading-relaxed line-clamp-3">
                       {prog.shortDesc}
                     </p>
 
@@ -87,7 +88,7 @@ export default function TrainingPage() {
                         <ul className="space-y-1.5">
                           {prog.features.slice(0, 3).map((f, idx) => (
                             <li key={idx} className="flex items-center text-xs text-neutral-300 space-x-2">
-                              <CheckCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                              <CheckCircle className="w-3.5 h-3.5 text-ak-accent shrink-0" />
                               <span>{f}</span>
                             </li>
                           ))}
@@ -97,19 +98,19 @@ export default function TrainingPage() {
                   </div>
                 </div>
 
-                <div className="p-6 pt-0 border-t border-neutral-800/80 mt-4 flex items-center justify-between">
+                <div className="p-6 pt-0 border-t border-ak-line mt-4 flex items-center justify-between">
                   <Link
                     href={`/training/${prog.slug}`}
-                    className="text-xs font-bold text-neutral-300 hover:text-white uppercase tracking-wider flex items-center space-x-1"
+                    className="ak-focus ak-link text-xs font-bold text-neutral-300 hover:text-white uppercase tracking-wider flex items-center space-x-1"
                   >
                     <span>Full Details</span>
                     <ChevronRight className="w-4 h-4" />
                   </Link>
                   <button
                     onClick={() => openApply(prog.title)}
-                    className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-md shadow-red-600/20"
+                    className="ak-btn ak-btn-primary !px-4 !py-2 !text-[11px]"
                   >
-                    {prog.ctaLabel || 'Apply Now'}
+                    <span>{prog.ctaLabel || 'Apply Now'}</span>
                   </button>
                 </div>
               </div>

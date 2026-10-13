@@ -42,44 +42,45 @@ export default function ReferAFriendPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-ak-ink text-white flex flex-col">
       <Header onOpenApplyModal={() => setApplyModalOpen(true)} />
 
-      <section className="relative pt-36 sm:pt-40 pb-16 bg-neutral-900 border-b border-neutral-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative pt-36 sm:pt-40 pb-16 bg-ak-surface border-b border-ak-line">
+        <div className="absolute inset-0 ak-stripe opacity-40 pointer-events-none" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link
             href="/membership"
-            className="inline-flex items-center space-x-1.5 text-xs text-neutral-400 hover:text-white uppercase font-bold tracking-wider mb-6 transition-colors"
+            className="ak-focus inline-flex items-center space-x-1.5 text-xs text-ak-muted hover:text-white uppercase font-bold tracking-wider mb-6 transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
             <span>Back to Memberships</span>
           </Link>
 
           <div className="max-w-3xl">
-            <span className="text-red-500 font-bold text-xs uppercase tracking-wider">
+            <div className="ak-eyebrow mb-4">
               Rewards Program &bull; Gorkhali Gym
-            </span>
-            <h1 className="text-4xl sm:text-5xl font-black uppercase tracking-tight text-white mt-2">
+            </div>
+            <h1 className="font-display text-4xl sm:text-5xl text-white mt-2">
               {referral.title || 'Refer a Friend & Earn Fitness Rewards'}
             </h1>
-            <p className="text-neutral-400 text-base sm:text-lg mt-4 leading-relaxed">
+            <p className="text-ak-muted text-base sm:text-lg mt-4 leading-relaxed">
               {referral.benefitText || 'Bring a training partner and both receive exclusive membership perks.'}
             </p>
           </div>
         </div>
       </section>
 
-      <section className="py-20">
+      <section className="py-24 bg-ak-ink">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* Rewards & Details */}
             <div className="space-y-8">
-              <div className="bg-neutral-900/60 border border-neutral-800 rounded-2xl p-6 sm:p-8 space-y-4">
-                <div className="inline-flex items-center space-x-2 text-red-500 font-bold text-xs uppercase tracking-wider">
+              <div className="ak-panel ak-cut-tr p-6 sm:p-8 space-y-4">
+                <div className="inline-flex items-center space-x-2 text-ak-accent font-bold text-xs uppercase tracking-wider">
                   <Gift className="w-4 h-4" />
                   <span>How Rewards Work</span>
                 </div>
-                <h3 className="text-2xl font-black uppercase text-white">
+                <h3 className="font-display text-2xl text-white">
                   Mutual Rewards for You &amp; Your Training Partner
                 </h3>
                 <p className="text-sm text-neutral-300 leading-relaxed">
@@ -87,11 +88,11 @@ export default function ReferAFriendPage() {
                 </p>
 
                 <div className="pt-2 space-y-3">
-                  <h4 className="text-xs font-bold uppercase text-neutral-400">Current Benefit:</h4>
-                  <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800 text-sm font-semibold text-white">
+                  <h4 className="text-xs font-bold uppercase text-ak-muted">Current Benefit:</h4>
+                  <div className="p-4 bg-ak-ink border border-ak-line text-sm font-semibold text-white">
                     {referral.benefitText}
                   </div>
-                  <h4 className="text-xs font-bold uppercase text-neutral-400 pt-2">Program Rules &amp; Details:</h4>
+                  <h4 className="text-xs font-bold uppercase text-ak-muted pt-2">Program Rules &amp; Details:</h4>
                   <ul className="space-y-2">
                     {referral.rules
                       ?.split('\n')
@@ -106,43 +107,43 @@ export default function ReferAFriendPage() {
                 </div>
               </div>
 
-              <div className="p-6 rounded-2xl bg-gradient-to-r from-red-950/60 via-neutral-900 to-neutral-900 border border-red-900/30">
-                <p className="text-xs text-neutral-400">
+              <div className="p-6 bg-gradient-to-r from-red-950/60 via-ak-surface to-ak-surface border border-red-900/30">
+                <p className="text-xs text-ak-muted">
                   * Reward credits are applied directly to your membership account as soon as the referred friend completes their club registration at the front desk.
                 </p>
               </div>
             </div>
 
             {/* Referral Submission Form */}
-            <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 sm:p-8">
+            <div className="ak-panel ak-cut-tr p-6 sm:p-8">
               {submitted ? (
                 <div className="text-center py-8 space-y-4">
-                  <div className="w-14 h-14 bg-emerald-500/10 border border-emerald-500/30 rounded-full flex items-center justify-center mx-auto text-emerald-500">
+                  <div className="w-14 h-14 bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto text-emerald-500">
                     <CheckCircle className="w-8 h-8" />
                   </div>
-                  <h3 className="text-2xl font-black text-white uppercase">Referral Submitted!</h3>
+                  <h3 className="font-display text-2xl text-white">Referral Submitted!</h3>
                   <p className="text-sm text-neutral-300 max-w-sm mx-auto">
                     Thanks <strong className="text-white">{referrerName}</strong>! We will reach out to <strong className="text-white">{friendName}</strong> with an exclusive welcome invite.
                   </p>
                   <button
                     onClick={() => setSubmitted(false)}
-                    className="mt-4 px-6 py-2 rounded-lg bg-neutral-800 text-xs font-bold uppercase text-white hover:bg-neutral-700 transition-colors"
+                    className="ak-btn ak-btn-outline mt-4"
                   >
-                    Refer Another Friend
+                    <span>Refer Another Friend</span>
                   </button>
                 </div>
               ) : (
                 <form onSubmit={handleReferralSubmit} className="space-y-5">
                   <div>
-                    <span className="text-xs font-bold text-red-500 uppercase tracking-wider">Fast Claim</span>
-                    <h3 className="text-xl font-black uppercase text-white mt-1">Submit Friend Details</h3>
-                    <p className="text-xs text-neutral-400 mt-1">
+                    <span className="text-xs font-bold text-ak-accent uppercase tracking-wider">Fast Claim</span>
+                    <h3 className="font-display text-xl text-white mt-1">Submit Friend Details</h3>
+                    <p className="text-xs text-ak-muted mt-1">
                       Give us your friend&apos;s details and we&apos;ll schedule them for a complimentary orientation session!
                     </p>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-neutral-300 uppercase tracking-wider mb-1.5">
+                    <label className="block text-xs font-bold text-neutral-300 uppercase tracking-[0.14em] mb-1.5">
                       Your Name (Current Member) *
                     </label>
                     <input
@@ -151,12 +152,12 @@ export default function ReferAFriendPage() {
                       value={referrerName}
                       onChange={(e) => setReferrerName(e.target.value)}
                       placeholder="e.g. Milan Thapa"
-                      className="w-full px-3 py-2.5 bg-neutral-950 border border-neutral-800 rounded-lg text-white text-sm focus:border-red-500 focus:outline-none"
+                      className="ak-input"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-neutral-300 uppercase tracking-wider mb-1.5">
+                    <label className="block text-xs font-bold text-neutral-300 uppercase tracking-[0.14em] mb-1.5">
                       Friend&apos;s Full Name *
                     </label>
                     <input
@@ -165,12 +166,12 @@ export default function ReferAFriendPage() {
                       value={friendName}
                       onChange={(e) => setFriendName(e.target.value)}
                       placeholder="e.g. Suman Rai"
-                      className="w-full px-3 py-2.5 bg-neutral-950 border border-neutral-800 rounded-lg text-white text-sm focus:border-red-500 focus:outline-none"
+                      className="ak-input"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-neutral-300 uppercase tracking-wider mb-1.5">
+                    <label className="block text-xs font-bold text-neutral-300 uppercase tracking-[0.14em] mb-1.5">
                       Friend&apos;s Phone / WhatsApp *
                     </label>
                     <input
@@ -179,23 +180,25 @@ export default function ReferAFriendPage() {
                       value={friendPhone}
                       onChange={(e) => setFriendPhone(e.target.value)}
                       placeholder="e.g. +977 980-XXXXXXX"
-                      className="w-full px-3 py-2.5 bg-neutral-950 border border-neutral-800 rounded-lg text-white text-sm focus:border-red-500 focus:outline-none"
+                      className="ak-input"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3.5 px-6 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-sm uppercase tracking-wider transition-colors shadow-lg shadow-red-600/30 flex items-center justify-center space-x-2"
+                    className="ak-btn ak-btn-primary w-full"
                   >
-                    {loading ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : (
-                      <>
-                        <Send className="w-4 h-4" />
-                        <span>Send Referral Invitation</span>
-                      </>
-                    )}
+                    <span>
+                      {loading ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      ) : (
+                        <>
+                          <Send className="w-4 h-4" />
+                          <span>Send Referral Invitation</span>
+                        </>
+                      )}
+                    </span>
                   </button>
                 </form>
               )}

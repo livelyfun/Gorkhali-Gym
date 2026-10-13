@@ -27,39 +27,40 @@ export default function BlogDetailPage({
   }
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-ak-ink text-white flex flex-col">
       <Header onOpenApplyModal={() => setApplyModalOpen(true)} />
 
-      <section className="relative pt-36 sm:pt-40 pb-16 bg-neutral-900 border-b border-neutral-800">
+      <section className="relative pt-36 sm:pt-40 pb-16 bg-ak-surface border-b border-ak-line">
+        <div className="absolute inset-0 ak-stripe opacity-40 pointer-events-none" />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link
             href="/blog"
-            className="inline-flex items-center space-x-1.5 text-xs text-neutral-400 hover:text-white uppercase font-bold tracking-wider mb-6 transition-colors"
+            className="ak-focus ak-link inline-flex items-center space-x-1.5 text-xs text-ak-muted hover:text-white uppercase font-bold tracking-wider mb-6 transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
             <span>Back to All Articles</span>
           </Link>
 
           <div className="space-y-4">
-            <div className="flex items-center space-x-3 text-xs text-neutral-400">
+            <div className="flex items-center space-x-3 text-xs text-ak-muted">
               <span className="flex items-center space-x-1">
-                <Calendar className="w-3.5 h-3.5 text-red-500" />
+                <Calendar className="w-3.5 h-3.5 text-ak-accent" />
                 <span>{post.publishedAt || 'Published'}</span>
               </span>
               <span>&bull;</span>
               <span className="flex items-center space-x-1">
-                <User className="w-3.5 h-3.5 text-neutral-400" />
+                <User className="w-3.5 h-3.5 text-ak-muted" />
                 <span>{post.author}</span>
               </span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-white">
+            <h1 className="font-display text-4xl sm:text-6xl text-white">
               {post.title}
             </h1>
 
             {post.category && (
               <div className="flex flex-wrap gap-2 pt-2">
-                <span className="px-2.5 py-1 rounded bg-neutral-800 text-[11px] text-red-400 uppercase font-semibold">
+                <span className="px-3 py-1 bg-ak-ink border border-ak-accent/40 text-ak-accent text-[11px] uppercase font-semibold tracking-wider">
                   #{post.category}
                 </span>
               </div>
@@ -68,32 +69,34 @@ export default function BlogDetailPage({
         </div>
       </section>
 
-      <article className="py-16">
+      <article className="py-24 bg-ak-ink">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="relative h-96 w-full rounded-2xl overflow-hidden border border-neutral-800 shadow-xl bg-neutral-900">
+          <div className="ak-frame ak-hover-group relative h-96 w-full border border-ak-line bg-ak-surface">
             <Image
               src={post.coverImage || '/images/hero_gorkhali_gym.jpg'}
               alt={post.title}
               fill
               referrerPolicy="no-referrer"
-              className="object-cover"
+              className="ak-img"
             />
           </div>
 
-          <div className="prose prose-invert max-w-none text-neutral-300 text-base leading-relaxed space-y-4 whitespace-pre-line">
-            {post.content || post.excerpt}
-          </div>
+          <section className="bg-ak-surface-2 border-y border-ak-line -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-16">
+            <div className="prose prose-invert max-w-none text-neutral-300 text-base leading-relaxed space-y-4 whitespace-pre-line">
+              {post.content || post.excerpt}
+            </div>
+          </section>
 
-          <div className="pt-10 border-t border-neutral-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="pt-10 border-t border-ak-line flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
-              <p className="text-xs text-neutral-400">Written by</p>
+              <p className="text-xs text-ak-muted">Written by</p>
               <p className="text-base font-bold text-white uppercase">{post.author}</p>
             </div>
             <button
               onClick={() => setApplyModalOpen(true)}
-              className="px-6 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase tracking-wider transition-colors"
+              className="ak-btn ak-btn-primary"
             >
-              Train With Coach At Gorkhali Gym
+              <span>Train With Coach At Gorkhali Gym</span>
             </button>
           </div>
         </div>

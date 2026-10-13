@@ -66,38 +66,39 @@ export default function ApplyPage() {
   const waUrl = `https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, '')}?text=${waText}`;
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-ak-ink text-white flex flex-col">
       <Header />
 
-      <section className="relative pt-36 sm:pt-40 pb-16 bg-neutral-900 border-b border-neutral-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-3xl">
-          <span className="text-red-500 font-bold text-xs uppercase tracking-wider">
+      <section className="relative pt-36 sm:pt-40 pb-16 bg-ak-surface border-b border-ak-line">
+        <div className="absolute inset-0 ak-stripe opacity-40 pointer-events-none" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-3xl">
+          <div className="ak-eyebrow mb-4">
             Membership Application &bull; Gorkhali Gym Itahari
-          </span>
-          <h1 className="text-4xl sm:text-5xl font-black uppercase tracking-tight text-white mt-2">
+          </div>
+          <h1 className="font-display text-4xl sm:text-5xl text-white mt-2">
             Start Your Transformation
           </h1>
-          <p className="text-neutral-400 text-base sm:text-lg mt-4 leading-relaxed">
+          <p className="text-ak-muted text-base sm:text-lg mt-4 leading-relaxed">
             Apply online for quick onboarding. Our team prepares your member profile and sets up your initial gym orientation.
           </p>
         </div>
       </section>
 
-      <section className="py-20">
+      <section className="py-24 bg-ak-ink">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-8 sm:p-12 shadow-2xl">
+          <div className="ak-panel ak-cut-tr p-8 sm:p-12 shadow-2xl">
             {submitted ? (
               <div className="text-center py-10 space-y-6">
-                <div className="w-20 h-20 bg-emerald-500/10 border border-emerald-500/30 rounded-full flex items-center justify-center mx-auto text-emerald-500">
+                <div className="w-20 h-20 bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto text-emerald-500">
                   <CheckCircle className="w-12 h-12" />
                 </div>
                 <div>
-                  <h2 className="text-3xl font-black text-white uppercase tracking-tight">
+                  <h2 className="font-display text-3xl text-white">
                     Application Confirmed!
                   </h2>
                   <p className="text-neutral-300 text-sm mt-2 max-w-md mx-auto leading-relaxed">
                     Welcome, <strong className="text-white">{fullName}</strong>! Your application for{' '}
-                    <strong className="text-red-400">{program}</strong> has been logged into our member registry.
+                    <strong className="text-ak-accent">{program}</strong> has been logged into our member registry.
                   </p>
                 </div>
 
@@ -106,7 +107,7 @@ export default function ApplyPage() {
                     href={waUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full py-4 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm uppercase tracking-wider transition-colors shadow-lg shadow-emerald-600/30 flex items-center justify-center space-x-2"
+                    className="ak-focus w-full py-4 px-6 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm uppercase tracking-wider transition-colors shadow-lg shadow-emerald-600/30 flex items-center justify-center space-x-2"
                   >
                     <MessageCircle className="w-5 h-5" />
                     <span>Open WhatsApp for Instant Confirmation</span>
@@ -119,7 +120,7 @@ export default function ApplyPage() {
                 <div className="pt-4">
                   <Link
                     href="/"
-                    className="text-xs text-neutral-400 hover:text-white uppercase font-bold tracking-wider"
+                    className="ak-focus ak-link text-xs text-ak-muted hover:text-white uppercase font-bold tracking-wider"
                   >
                     Return to Homepage
                   </Link>
@@ -127,22 +128,22 @@ export default function ApplyPage() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="border-b border-neutral-800 pb-4">
-                  <h2 className="text-2xl font-black uppercase text-white">Prospective Member Profile</h2>
-                  <p className="text-xs text-neutral-400 mt-1">
+                <div className="border-b border-ak-line pb-4">
+                  <h2 className="font-display text-2xl text-white">Prospective Member Profile</h2>
+                  <p className="text-xs text-ak-muted mt-1">
                     Fill in your details to secure current rate locks and orientation scheduling.
                   </p>
                 </div>
 
                 {error && (
-                  <div className="p-4 rounded-xl bg-red-950/70 border border-red-800 text-red-300 text-xs">
+                  <div className="p-4 border-l-2 border-ak-accent bg-red-950/60 text-red-300 text-xs">
                     {error}
                   </div>
                 )}
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-xs font-bold text-neutral-300 uppercase tracking-wider mb-2">
+                    <label className="block text-xs font-bold text-neutral-300 uppercase tracking-[0.14em] mb-1.5">
                       Full Name *
                     </label>
                     <input
@@ -151,12 +152,12 @@ export default function ApplyPage() {
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       placeholder="e.g. Bishal Rai"
-                      className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-xl text-white text-sm focus:border-red-500 focus:outline-none"
+                      className="ak-input"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-neutral-300 uppercase tracking-wider mb-2">
+                    <label className="block text-xs font-bold text-neutral-300 uppercase tracking-[0.14em] mb-1.5">
                       Phone / WhatsApp Number *
                     </label>
                     <input
@@ -165,20 +166,20 @@ export default function ApplyPage() {
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="e.g. +977 982-XXXXXXX"
-                      className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-xl text-white text-sm focus:border-red-500 focus:outline-none"
+                      className="ak-input"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-xs font-bold text-neutral-300 uppercase tracking-wider mb-2">
+                    <label className="block text-xs font-bold text-neutral-300 uppercase tracking-[0.14em] mb-1.5">
                       Desired Program / Plan *
                     </label>
                     <select
                       value={program}
                       onChange={(e) => setProgram(e.target.value)}
-                      className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-xl text-white text-sm focus:border-red-500 focus:outline-none"
+                      className="ak-input"
                     >
                       <option value="Monthly Club Membership">Regular Monthly Membership</option>
                       <option value="3 Months Transformation Plan">3-Month Transformation Plan</option>
@@ -191,13 +192,13 @@ export default function ApplyPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-neutral-300 uppercase tracking-wider mb-2">
+                    <label className="block text-xs font-bold text-neutral-300 uppercase tracking-[0.14em] mb-1.5">
                       Preferred Training Time Slot
                     </label>
                     <select
                       value={preferredTime}
                       onChange={(e) => setPreferredTime(e.target.value)}
-                      className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-xl text-white text-sm focus:border-red-500 focus:outline-none"
+                      className="ak-input"
                     >
                       <option value="Early Morning (5:30 AM - 7:30 AM)">Early Morning (5:30 AM - 7:30 AM)</option>
                       <option value="Morning (7:30 AM - 10:00 AM)">Morning (7:30 AM - 10:00 AM)</option>
@@ -217,7 +218,7 @@ export default function ApplyPage() {
                     value={goals}
                     onChange={(e) => setGoals(e.target.value)}
                     placeholder="E.g., Goal is to lose 8kg and build bench press strength; previous back injury; complete beginner..."
-                    className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-xl text-white text-sm focus:border-red-500 focus:outline-none resize-none"
+                    className="ak-input resize-none"
                   />
                 </div>
 
@@ -225,23 +226,25 @@ export default function ApplyPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-4 px-8 rounded-xl bg-red-600 hover:bg-red-500 active:scale-[0.99] text-white font-extrabold text-sm uppercase tracking-wider transition-all shadow-xl shadow-red-600/30 flex items-center justify-center space-x-2 disabled:opacity-50"
+                    className="ak-btn ak-btn-primary w-full disabled:opacity-50"
                   >
-                    {loading ? (
-                      <>
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                        <span>Submitting Application...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Send className="w-4 h-4" />
-                        <span>Submit Official Membership Application</span>
-                      </>
-                    )}
+                    <span>
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          <span>Submitting Application...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-4 h-4" />
+                          <span>Submit Official Membership Application</span>
+                        </>
+                      )}
+                    </span>
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-neutral-800 text-center text-xs text-neutral-400">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-ak-line text-center text-xs text-ak-muted">
                   <div className="flex items-center justify-center space-x-1.5">
                     <ShieldCheck className="w-4 h-4 text-emerald-500" />
                     <span>No Obligation Tour</span>
@@ -251,7 +254,7 @@ export default function ApplyPage() {
                     <span>Instant WhatsApp Connect</span>
                   </div>
                   <div className="flex items-center justify-center space-x-1.5">
-                    <Dumbbell className="w-4 h-4 text-red-500" />
+                    <Dumbbell className="w-4 h-4 text-ak-accent" />
                     <span>Certified Coaching</span>
                   </div>
                 </div>

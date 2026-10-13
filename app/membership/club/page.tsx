@@ -13,101 +13,102 @@ export default function ClubMembershipPage() {
   const settings = store.getSettings();
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-ak-ink text-white flex flex-col">
       <Header onOpenApplyModal={() => setApplyModalOpen(true)} />
 
-      <section className="relative pt-36 sm:pt-40 pb-16 bg-neutral-900 border-b border-neutral-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative pt-36 sm:pt-40 pb-16 bg-ak-surface border-b border-ak-line">
+        <div className="absolute inset-0 ak-stripe opacity-40 pointer-events-none" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link
             href="/membership"
-            className="inline-flex items-center space-x-1.5 text-xs text-neutral-400 hover:text-white uppercase font-bold tracking-wider mb-6 transition-colors"
+            className="ak-focus inline-flex items-center space-x-1.5 text-xs text-ak-muted hover:text-white uppercase font-bold tracking-wider mb-6 transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
             <span>Back to Memberships</span>
           </Link>
 
           <div className="max-w-3xl">
-            <span className="text-red-500 font-bold text-xs uppercase tracking-wider">
+            <div className="ak-eyebrow mb-4">
               Club Etiquette &bull; Rules &bull; Facilities
-            </span>
-            <h1 className="text-4xl sm:text-5xl font-black uppercase tracking-tight text-white mt-2">
+            </div>
+            <h1 className="font-display text-4xl sm:text-5xl text-white mt-2">
               The Gorkhali Club Code
             </h1>
-            <p className="text-neutral-400 text-base sm:text-lg mt-4 leading-relaxed">
+            <p className="text-ak-muted text-base sm:text-lg mt-4 leading-relaxed">
               We take pride in maintaining a disciplined, hygienic, and welcoming training atmosphere for all members in Itahari.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="py-20">
+      <section className="py-24 bg-ak-ink">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           {/* Member Inclusions */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 space-y-3">
-              <div className="w-10 h-10 rounded-lg bg-red-600/20 text-red-500 flex items-center justify-center font-bold">
+            <div className="ak-panel ak-cut-tr p-6 space-y-3">
+              <div className="w-10 h-10 bg-ak-accent/20 text-ak-accent flex items-center justify-center font-bold">
                 <Dumbbell className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold uppercase text-white">Full Gym Floor Access</h3>
-              <p className="text-xs text-neutral-400 leading-relaxed">
+              <h3 className="font-display text-lg text-white">Full Gym Floor Access</h3>
+              <p className="text-xs text-ak-muted leading-relaxed">
                 Free weights, power racks, barbells, dumbbell tiers, cable machines, and cardio stations.
               </p>
             </div>
 
-            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 space-y-3">
-              <div className="w-10 h-10 rounded-lg bg-red-600/20 text-red-500 flex items-center justify-center font-bold">
+            <div className="ak-panel ak-cut-tr p-6 space-y-3">
+              <div className="w-10 h-10 bg-ak-accent/20 text-ak-accent flex items-center justify-center font-bold">
                 <ShieldCheck className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold uppercase text-white">Secure Lockers & Showers</h3>
-              <p className="text-xs text-neutral-400 leading-relaxed">
+              <h3 className="font-display text-lg text-white">Secure Lockers & Showers</h3>
+              <p className="text-xs text-ak-muted leading-relaxed">
                 Dedicated changing facilities, private day-use lockers, and clean showers for members after rigorous sessions.
               </p>
             </div>
 
-            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 space-y-3">
-              <div className="w-10 h-10 rounded-lg bg-red-600/20 text-red-500 flex items-center justify-center font-bold">
+            <div className="ak-panel ak-cut-tr p-6 space-y-3">
+              <div className="w-10 h-10 bg-ak-accent/20 text-ak-accent flex items-center justify-center font-bold">
                 <Clock className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold uppercase text-white">Flexible Entry Slots</h3>
-              <p className="text-xs text-neutral-400 leading-relaxed">
+              <h3 className="font-display text-lg text-white">Flexible Entry Slots</h3>
+              <p className="text-xs text-ak-muted leading-relaxed">
                 Open from 5:30 AM to 8:30 PM Sunday to Friday, and special Saturday morning hours.
               </p>
             </div>
           </div>
 
           {/* Club Rules */}
-          <div className="bg-neutral-900/60 border border-neutral-800 rounded-3xl p-8 sm:p-12 space-y-6">
-            <h3 className="text-2xl font-black uppercase text-white">Club Etiquette & Gym Rules</h3>
+          <div className="ak-panel ak-cut-tr p-8 sm:p-12 space-y-6">
+            <h3 className="font-display text-2xl text-white">Club Etiquette & Gym Rules</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-neutral-300">
-              <div className="flex items-start space-x-3 p-4 rounded-xl bg-neutral-950 border border-neutral-800/60">
-                <CheckCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+              <div className="flex items-start space-x-3 p-4 bg-ak-ink border border-ak-line">
+                <CheckCircle className="w-5 h-5 text-ak-accent shrink-0 mt-0.5" />
                 <div>
                   <strong className="text-white block">Rerack Your Weights:</strong>
-                  <span className="text-xs text-neutral-400">Always return plates, barbells, and dumbbells to their designated holders after each set.</span>
+                  <span className="text-xs text-ak-muted">Always return plates, barbells, and dumbbells to their designated holders after each set.</span>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-3 p-4 rounded-xl bg-neutral-950 border border-neutral-800/60">
-                <CheckCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+              <div className="flex items-start space-x-3 p-4 bg-ak-ink border border-ak-line">
+                <CheckCircle className="w-5 h-5 text-ak-accent shrink-0 mt-0.5" />
                 <div>
                   <strong className="text-white block">Clean Training Shoes:</strong>
-                  <span className="text-xs text-neutral-400">Outdoor muddy shoes are prohibited on the rubber lifting mats. Bring clean indoor training footwear.</span>
+                  <span className="text-xs text-ak-muted">Outdoor muddy shoes are prohibited on the rubber lifting mats. Bring clean indoor training footwear.</span>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-3 p-4 rounded-xl bg-neutral-950 border border-neutral-800/60">
-                <CheckCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+              <div className="flex items-start space-x-3 p-4 bg-ak-ink border border-ak-line">
+                <CheckCircle className="w-5 h-5 text-ak-accent shrink-0 mt-0.5" />
                 <div>
                   <strong className="text-white block">Personal Towel & Hygiene:</strong>
-                  <span className="text-xs text-neutral-400">Wipe down benches and machinery after intense sets to respect the next athlete.</span>
+                  <span className="text-xs text-ak-muted">Wipe down benches and machinery after intense sets to respect the next athlete.</span>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-3 p-4 rounded-xl bg-neutral-950 border border-neutral-800/60">
-                <CheckCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+              <div className="flex items-start space-x-3 p-4 bg-ak-ink border border-ak-line">
+                <CheckCircle className="w-5 h-5 text-ak-accent shrink-0 mt-0.5" />
                 <div>
                   <strong className="text-white block">Mutual Respect & Zero Harassment:</strong>
-                  <span className="text-xs text-neutral-400">We foster a welcoming sanctuary for men and women of all experience levels.</span>
+                  <span className="text-xs text-ak-muted">We foster a welcoming sanctuary for men and women of all experience levels.</span>
                 </div>
               </div>
             </div>
@@ -115,10 +116,12 @@ export default function ClubMembershipPage() {
             <div className="pt-6 text-center">
               <button
                 onClick={() => setApplyModalOpen(true)}
-                className="px-8 py-3.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-sm uppercase tracking-wider transition-colors inline-flex items-center space-x-2"
+                className="ak-btn ak-btn-primary"
               >
-                <span>Join Gorkhali Club Today</span>
-                <ArrowRight className="w-4 h-4" />
+                <span>
+                  Join Gorkhali Club Today
+                  <ArrowRight className="w-4 h-4" />
+                </span>
               </button>
             </div>
           </div>

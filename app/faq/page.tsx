@@ -21,26 +21,27 @@ export default function FaqPage() {
   const settings = store.getSettings();
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-ak-ink text-white flex flex-col">
       <Header onOpenApplyModal={() => setApplyModalOpen(true)} />
 
-      <section className="relative pt-36 sm:pt-40 pb-16 bg-neutral-900 border-b border-neutral-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative pt-36 sm:pt-40 pb-16 bg-ak-surface border-b border-ak-line">
+        <div className="absolute inset-0 ak-stripe opacity-40 pointer-events-none" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <span className="text-red-500 font-bold text-xs uppercase tracking-wider">
+            <div className="ak-eyebrow mb-4">
               Answers &bull; Information &bull; Gorkhali Gym Itahari
-            </span>
-            <h1 className="text-4xl sm:text-5xl font-black uppercase tracking-tight text-white mt-2">
+            </div>
+            <h1 className="font-display text-4xl sm:text-5xl text-white mt-2">
               Frequently Asked Questions
             </h1>
-            <p className="text-neutral-400 text-base sm:text-lg mt-4 leading-relaxed">
+            <p className="text-ak-muted text-base sm:text-lg mt-4 leading-relaxed">
               Find answers to questions regarding membership, timings, locker usage, beginner orientation, personal training, and gym policies.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="py-20">
+      <section className="py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           {categories.length > 1 && (
             <div className="flex flex-wrap gap-2">
@@ -48,10 +49,10 @@ export default function FaqPage() {
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+                  className={`ak-focus px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors ${
                     activeCategory === cat
-                      ? 'bg-red-600 text-white shadow-lg shadow-red-600/30'
-                      : 'bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800'
+                      ? 'bg-ak-accent text-white'
+                      : 'bg-ak-surface text-ak-muted hover:text-white border border-ak-line'
                   }`}
                 >
                   {cat}
@@ -64,23 +65,23 @@ export default function FaqPage() {
             {filteredFaqs.map((faq) => (
               <details
                 key={faq.id}
-                className="group p-6 rounded-2xl bg-neutral-900 border border-neutral-800 transition-colors open:border-neutral-700 open:bg-neutral-900/90"
+                className="group ak-panel ak-cut-bl p-5 border-l-2 border-l-transparent open:border-l-ak-accent transition-colors"
               >
-                <summary className="flex items-center justify-between cursor-pointer list-none text-white font-bold text-base sm:text-lg select-none">
+                <summary className="ak-focus flex items-center justify-between cursor-pointer list-none text-white font-display text-base uppercase select-none">
                   <span>{faq.question}</span>
-                  <ChevronRight className="w-5 h-5 text-neutral-500 group-open:rotate-90 transition-transform shrink-0 ml-4" />
+                  <ChevronRight className="w-5 h-5 text-ak-muted group-open:rotate-90 group-open:text-ak-accent transition-transform shrink-0 ml-4" />
                 </summary>
-                <p className="mt-4 text-sm text-neutral-300 leading-relaxed pt-3 border-t border-neutral-800">
+                <p className="mt-3 text-sm text-ak-muted leading-relaxed pt-3 border-t border-ak-line">
                   {faq.answer}
                 </p>
               </details>
             ))}
           </div>
 
-          <div className="p-8 rounded-3xl bg-neutral-900/50 border border-neutral-800 flex flex-col sm:flex-row items-center justify-between gap-6 mt-12">
+          <div className="ak-panel ak-cut-tr p-8 flex flex-col sm:flex-row items-center justify-between gap-6 mt-12">
             <div>
-              <h3 className="text-xl font-bold uppercase text-white">Have a Different Question?</h3>
-              <p className="text-xs text-neutral-400 mt-1">
+              <h3 className="font-display text-xl text-white">Have a Different Question?</h3>
+              <p className="text-xs text-ak-muted mt-1">
                 Our front desk and coaches are glad to help anytime.
               </p>
             </div>
@@ -89,16 +90,16 @@ export default function FaqPage() {
                 href={`https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, '')}?text=Hello%20Gorkhali%20Gym%2C%20I%20have%20a%20question%20about%20the%20gym.`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider flex items-center space-x-2 transition-colors"
+                className="ak-focus inline-flex items-center space-x-2 px-5 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider transition-colors"
               >
                 <MessageCircle className="w-4 h-4" />
                 <span>Ask on WhatsApp</span>
               </a>
               <Link
                 href="/contact"
-                className="px-5 py-3 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white font-bold text-xs uppercase tracking-wider transition-colors"
+                className="ak-btn ak-btn-outline"
               >
-                Contact Page
+                <span>Contact Page</span>
               </Link>
             </div>
           </div>
