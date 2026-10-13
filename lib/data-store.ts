@@ -233,8 +233,8 @@ const initialSettings: SiteSettings = {
   primaryColor: '#DC2626',
   secondaryColor: '#1F2937',
   darkBackground: '#0B0E14',
-  logoUrl: null,
-  faviconUrl: null,
+  logoUrl: '/logo.png',
+  faviconUrl: '/favicon.ico',
   applyButtonLabel: 'Apply Now',
   applyButtonUrl: '/apply',
   footerDescription:
@@ -1322,8 +1322,14 @@ class DataStore {
       }
     }
     const newMedia: MediaAssetItem = {
-      ...item,
       id: item.id || `media-${Date.now()}`,
+      url: item.url,
+      pathname: item.pathname || 'external',
+      filename: item.filename || 'external-image',
+      size: item.size || 0,
+      mimeType: item.mimeType || 'image/jpeg',
+      altText: item.altText || null,
+      caption: item.caption || null,
       createdAt: new Date().toISOString(),
     };
     this.media.unshift(newMedia);

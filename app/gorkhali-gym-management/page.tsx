@@ -43,6 +43,7 @@ import {
   Upload,
   Search,
   Filter,
+  Link2,
 } from 'lucide-react';
 import {
   SiteSettings,
@@ -62,6 +63,8 @@ import {
   InquiryItem,
   MediaAssetItem,
 } from '@/lib/data-store';
+import ImagePickerField from '@/components/cms/ImagePickerField';
+
 
 type TabType =
   | 'dashboard'
@@ -150,12 +153,20 @@ export default function AdminPortalPage() {
   const [newAdminRole, setNewAdminRole] = useState<'superadmin' | 'admin'>('admin');
   const [createAdminFeedback, setCreateAdminFeedback] = useState<string | null>(null);
 
-  // File upload state for Media Library
+  // Media Library state (support both external URL and file upload)
+  const [mediaSourceMode, setMediaSourceMode] = useState<'url' | 'file'>('url');
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploadAlt, setUploadAlt] = useState('');
   const [uploadCaption, setUploadCaption] = useState('');
   const [uploadLoading, setUploadLoading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [externalUrl, setExternalUrl] = useState('');
+  const [externalFilename, setExternalFilename] = useState('');
+  const [externalAlt, setExternalAlt] = useState('');
+  const [externalCaption, setExternalCaption] = useState('');
+  const [externalUrlLoading, setExternalUrlLoading] = useState(false);
+  const [externalUrlError, setExternalUrlError] = useState<string | null>(null);
+  const [externalImgStatus, setExternalImgStatus] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle');
 
 
 
@@ -884,11 +895,20 @@ export default function AdminPortalPage() {
     formData.append('caption', uploadCaption);
 
     try {
-      const res = await fetch('/api/upload', {
+      let res = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
       });
-      const data = await res.json();
+      let data = await res.json();
+      // If Vercel Blob is not configured, fallback gracefully to /api/upload-local
+      if (!res.ok && (data.error?.includes('BLOB_READ_WRITE_TOKEN') || res.status === 503)) {
+        res = await fetch('/api/upload-local', {
+          method: 'POST',
+          body: formData,
+        });
+        data = await res.json();
+      }
+
       if (data.success && data.asset) {
         setMediaAssets((prev) => [data.asset, ...prev]);
         setUploadFile(null);
@@ -902,6 +922,65 @@ export default function AdminPortalPage() {
       setUploadError('Network error during upload');
     } finally {
       setUploadLoading(false);
+    }
+  };
+
+  const handleSaveExternalUrl = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanUrl = externalUrl.trim();
+    if (!cleanUrl) {
+      setExternalUrlError('Please provide an image URL');
+      return;
+    }
+
+    if (!/^https?:\/\//i.test(cleanUrl) && !/^\//.test(cleanUrl) && !/^data:image\//.test(cleanUrl)) {
+      setExternalUrlError('Please enter a valid URL starting with https://, http://, or /path');
+      return;
+    }
+
+    setExternalUrlLoading(true);
+    setExternalUrlError(null);
+
+    let defaultName = 'external_image';
+    try {
+      const u = new URL(cleanUrl);
+      const seg = u.pathname.split('/').filter(Boolean).pop();
+      if (seg) defaultName = decodeURIComponent(seg).slice(0, 40);
+    } catch {
+      const seg = cleanUrl.split('/').filter(Boolean).pop();
+      if (seg) defaultName = seg.slice(0, 40);
+    }
+
+    try {
+      const res = await fetch('/api/cms/media', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          url: cleanUrl,
+          filename: (externalFilename || defaultName).trim(),
+          altText: externalAlt.trim() || null,
+          caption: externalCaption.trim() || null,
+          pathname: 'external',
+          size: 0,
+          mimeType: 'image/jpeg',
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data.asset) {
+        setMediaAssets((prev) => [data.asset, ...prev]);
+        setExternalUrl('');
+        setExternalFilename('');
+        setExternalAlt('');
+        setExternalCaption('');
+        setExternalImgStatus('idle');
+        triggerFeedback('External image successfully added to Media Library!');
+      } else {
+        setExternalUrlError(data.error || 'Failed to save media asset');
+      }
+    } catch {
+      setExternalUrlError('Network error while saving external media');
+    } finally {
+      setExternalUrlLoading(false);
     }
   };
 
@@ -974,16 +1053,19 @@ export default function AdminPortalPage() {
   // --- LOGIN SCREEN ---
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-neutral-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-[#0A0D14] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-red-600/10 border border-red-600/30 text-red-500 mb-4 shadow-xl">
-            <Lock className="w-8 h-8" />
-          </div>
-          <h2 className="text-3xl font-black text-white uppercase tracking-tight">
-            Gorkhali Gym CMS
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.png"
+            alt="Gorkhali Fitness"
+            className="h-20 w-auto mx-auto mb-4 drop-shadow-xl"
+          />
+          <h2 className="text-2xl font-black text-white uppercase tracking-tight">
+            CMS Portal
           </h2>
           <p className="mt-2 text-xs text-neutral-400 uppercase tracking-widest font-mono">
-            Authorized Personnel &bull; Dharan Road, Itahari
+            Authorized Personnel · Dharan Road, Itahari
           </p>
         </div>
 
@@ -1007,7 +1089,7 @@ export default function AdminPortalPage() {
                   required
                   value={loginUsername}
                   onChange={(e) => setLoginUsername(e.target.value)}
-                  className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-red-600 transition-colors"
+                  className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-orange-500 transition-colors"
                 />
               </div>
 
@@ -1020,14 +1102,14 @@ export default function AdminPortalPage() {
                   required
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
-                  className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-red-600 transition-colors"
+                  className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-orange-500 transition-colors"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={loginLoading}
-                className="w-full py-3 px-4 bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white font-bold text-xs uppercase tracking-wider rounded-lg shadow-lg shadow-red-600/30 transition-all flex items-center justify-center gap-2"
+                className="w-full py-3 px-4 bg-orange-600 hover:bg-orange-500 disabled:opacity-50 text-white font-bold text-xs uppercase tracking-wider rounded-lg shadow-lg shadow-orange-600/30 transition-all flex items-center justify-center gap-2"
               >
                 {loginLoading ? (
                   <>
@@ -1055,6 +1137,7 @@ export default function AdminPortalPage() {
   }
 
 
+
   // Filter inquiries
   const filteredInquiries = inquiries.filter((inq) => {
     if (inquiryStatusFilter !== 'all' && inq.status !== inquiryStatusFilter) return false;
@@ -1080,13 +1163,16 @@ export default function AdminPortalPage() {
       {/* Top Bar */}
       <header className="h-16 bg-[#0E121B] border-b border-neutral-800 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-40 shadow-md">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center font-black text-white text-base shadow-md">
-            GK
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.png"
+            alt="Gorkhali Fitness"
+            className="h-10 w-auto object-contain"
+          />
           <div>
             <h1 className="text-base font-black uppercase tracking-tight text-white flex items-center gap-2">
-              <span>Gorkhali Gym CMS</span>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-red-950 border border-red-800 text-red-300 font-mono uppercase">
+              <span>CMS Portal</span>
+              <span className="text-[10px] px-2 py-0.5 rounded bg-orange-950 border border-orange-800 text-orange-300 font-mono uppercase">
                 {adminUser?.role || 'Admin'}
               </span>
             </h1>
@@ -1138,7 +1224,7 @@ export default function AdminPortalPage() {
               onClick={() => setActiveTab('dashboard')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors text-left ${
                 activeTab === 'dashboard'
-                  ? 'bg-red-600 text-white shadow-md shadow-red-950'
+                  ? 'bg-orange-600 text-white shadow-md shadow-orange-950'
                   : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
               }`}
             >
@@ -1150,7 +1236,7 @@ export default function AdminPortalPage() {
               onClick={() => setActiveTab('inquiries')}
               className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors text-left ${
                 activeTab === 'inquiries'
-                  ? 'bg-red-600 text-white shadow-md shadow-red-950'
+                  ? 'bg-orange-600 text-white shadow-md shadow-orange-950'
                   : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
               }`}
             >
@@ -1169,7 +1255,7 @@ export default function AdminPortalPage() {
               onClick={() => setActiveTab('settings')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors text-left ${
                 activeTab === 'settings'
-                  ? 'bg-red-600 text-white shadow-md shadow-red-950'
+                  ? 'bg-orange-600 text-white shadow-md shadow-orange-950'
                   : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
               }`}
             >
@@ -1181,7 +1267,7 @@ export default function AdminPortalPage() {
               onClick={() => setActiveTab('sections')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors text-left ${
                 activeTab === 'sections'
-                  ? 'bg-red-600 text-white shadow-md shadow-red-950'
+                  ? 'bg-orange-600 text-white shadow-md shadow-orange-950'
                   : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
               }`}
             >
@@ -1193,7 +1279,7 @@ export default function AdminPortalPage() {
               onClick={() => setActiveTab('navigation')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors text-left ${
                 activeTab === 'navigation'
-                  ? 'bg-red-600 text-white shadow-md shadow-red-950'
+                  ? 'bg-orange-600 text-white shadow-md shadow-orange-950'
                   : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
               }`}
             >
@@ -1205,7 +1291,7 @@ export default function AdminPortalPage() {
               onClick={() => setActiveTab('announcement')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors text-left ${
                 activeTab === 'announcement'
-                  ? 'bg-red-600 text-white shadow-md shadow-red-950'
+                  ? 'bg-orange-600 text-white shadow-md shadow-orange-950'
                   : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
               }`}
             >
@@ -1221,7 +1307,7 @@ export default function AdminPortalPage() {
               onClick={() => setActiveTab('programs')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors text-left ${
                 activeTab === 'programs'
-                  ? 'bg-red-600 text-white shadow-md shadow-red-950'
+                  ? 'bg-orange-600 text-white shadow-md shadow-orange-950'
                   : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
               }`}
             >
@@ -1233,7 +1319,7 @@ export default function AdminPortalPage() {
               onClick={() => setActiveTab('services')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors text-left ${
                 activeTab === 'services'
-                  ? 'bg-red-600 text-white shadow-md shadow-red-950'
+                  ? 'bg-orange-600 text-white shadow-md shadow-orange-950'
                   : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
               }`}
             >
@@ -1245,7 +1331,7 @@ export default function AdminPortalPage() {
               onClick={() => setActiveTab('memberships')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors text-left ${
                 activeTab === 'memberships'
-                  ? 'bg-red-600 text-white shadow-md shadow-red-950'
+                  ? 'bg-orange-600 text-white shadow-md shadow-orange-950'
                   : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
               }`}
             >
@@ -1257,7 +1343,7 @@ export default function AdminPortalPage() {
               onClick={() => setActiveTab('offers')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors text-left ${
                 activeTab === 'offers'
-                  ? 'bg-red-600 text-white shadow-md shadow-red-950'
+                  ? 'bg-orange-600 text-white shadow-md shadow-orange-950'
                   : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
               }`}
             >
@@ -1269,7 +1355,7 @@ export default function AdminPortalPage() {
               onClick={() => setActiveTab('events')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors text-left ${
                 activeTab === 'events'
-                  ? 'bg-red-600 text-white shadow-md shadow-red-950'
+                  ? 'bg-orange-600 text-white shadow-md shadow-orange-950'
                   : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
               }`}
             >
@@ -1285,7 +1371,7 @@ export default function AdminPortalPage() {
               onClick={() => setActiveTab('trainers')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors text-left ${
                 activeTab === 'trainers'
-                  ? 'bg-red-600 text-white shadow-md shadow-red-950'
+                  ? 'bg-orange-600 text-white shadow-md shadow-orange-950'
                   : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
               }`}
             >
@@ -1297,7 +1383,7 @@ export default function AdminPortalPage() {
               onClick={() => setActiveTab('reviews')}
               className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors text-left ${
                 activeTab === 'reviews'
-                  ? 'bg-red-600 text-white shadow-md shadow-red-950'
+                  ? 'bg-orange-600 text-white shadow-md shadow-orange-950'
                   : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
               }`}
             >
@@ -1316,7 +1402,7 @@ export default function AdminPortalPage() {
               onClick={() => setActiveTab('gallery')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors text-left ${
                 activeTab === 'gallery'
-                  ? 'bg-red-600 text-white shadow-md shadow-red-950'
+                  ? 'bg-orange-600 text-white shadow-md shadow-orange-950'
                   : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
               }`}
             >
@@ -1328,7 +1414,7 @@ export default function AdminPortalPage() {
               onClick={() => setActiveTab('media')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors text-left ${
                 activeTab === 'media'
-                  ? 'bg-red-600 text-white shadow-md shadow-red-950'
+                  ? 'bg-orange-600 text-white shadow-md shadow-orange-950'
                   : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
               }`}
             >
@@ -1340,7 +1426,7 @@ export default function AdminPortalPage() {
               onClick={() => setActiveTab('blog')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors text-left ${
                 activeTab === 'blog'
-                  ? 'bg-red-600 text-white shadow-md shadow-red-950'
+                  ? 'bg-orange-600 text-white shadow-md shadow-orange-950'
                   : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
               }`}
             >
@@ -1352,7 +1438,7 @@ export default function AdminPortalPage() {
               onClick={() => setActiveTab('faqs')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors text-left ${
                 activeTab === 'faqs'
-                  ? 'bg-red-600 text-white shadow-md shadow-red-950'
+                  ? 'bg-orange-600 text-white shadow-md shadow-orange-950'
                   : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
               }`}
             >
@@ -1368,7 +1454,7 @@ export default function AdminPortalPage() {
               onClick={() => setActiveTab('security')}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors text-left ${
                 activeTab === 'security'
-                  ? 'bg-red-600 text-white shadow-md shadow-red-950'
+                  ? 'bg-orange-600 text-white shadow-md shadow-orange-950'
                   : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
               }`}
             >
@@ -1940,19 +2026,16 @@ export default function AdminPortalPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                    <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-neutral-300 mb-1">
-                        Custom Logo URL (Optional)
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="/images/logo.png or https://..."
-                        value={settings.logoUrl || ''}
-                        onChange={(e) => setSettings({ ...settings, logoUrl: e.target.value || null })}
-                        className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-2.5 text-white text-xs font-mono focus:outline-none focus:border-red-600"
-                      />
-                    </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
+                    <ImagePickerField
+                      label="Site Logo (used in header)"
+                      value={settings.logoUrl || ''}
+                      onChange={(url) => setSettings({ ...settings, logoUrl: url || null })}
+                      mediaAssets={mediaAssets}
+                      onUploadSuccess={(a) => setMediaAssets((prev) => [a as MediaAssetItem, ...prev])}
+                      placeholder="/images/logo.png or https://..."
+                      previewHeight="h-24"
+                    />
                     <div>
                       <label className="block text-xs font-bold uppercase tracking-wider text-neutral-300 mb-1">
                         Favicon URL (Optional)
@@ -1962,7 +2045,7 @@ export default function AdminPortalPage() {
                         placeholder="/favicon.ico or https://..."
                         value={settings.faviconUrl || ''}
                         onChange={(e) => setSettings({ ...settings, faviconUrl: e.target.value || null })}
-                        className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-2.5 text-white text-xs font-mono focus:outline-none focus:border-red-600"
+                        className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-2.5 text-white text-xs font-mono focus:outline-none focus:border-orange-500"
                       />
                     </div>
                   </div>
@@ -2208,17 +2291,16 @@ export default function AdminPortalPage() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
-                        <label className="block text-[11px] font-bold uppercase text-neutral-400 mb-1">
-                          Background Image URL
-                        </label>
-                        <input
-                          type="text"
+                        <ImagePickerField
+                          label="Background Image"
                           value={sec.imageUrl || ''}
-                          onChange={(e) => {
-                            const updated = { ...sec, imageUrl: e.target.value };
+                          onChange={(url) => {
+                            const updated = { ...sec, imageUrl: url };
                             setSections(sections.map((s) => (s.id === sec.id ? updated : s)));
                           }}
-                          className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white font-mono"
+                          mediaAssets={mediaAssets}
+                          onUploadSuccess={(a) => setMediaAssets((prev) => [a as MediaAssetItem, ...prev])}
+                          previewHeight="h-28"
                         />
                       </div>
                       <div>
@@ -2631,17 +2713,16 @@ export default function AdminPortalPage() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
-                        <label className="block text-[11px] font-bold uppercase text-neutral-400 mb-1">
-                          Image URL
-                        </label>
-                        <input
-                          type="text"
+                        <ImagePickerField
+                          label="Program Image"
                           value={prog.imageUrl}
-                          onChange={(e) => {
-                            const updated = { ...prog, imageUrl: e.target.value };
+                          onChange={(url) => {
+                            const updated = { ...prog, imageUrl: url };
                             setPrograms(programs.map((p) => (p.id === prog.id ? updated : p)));
                           }}
-                          className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white font-mono"
+                          mediaAssets={mediaAssets}
+                          onUploadSuccess={(a) => setMediaAssets((prev) => [a as MediaAssetItem, ...prev])}
+                          previewHeight="h-32"
                         />
                       </div>
                       <div>
@@ -3452,17 +3533,17 @@ export default function AdminPortalPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-[11px] font-bold uppercase text-neutral-400 mb-1">
-                          Profile Photo URL
-                        </label>
-                        <input
-                          type="text"
+                        <ImagePickerField
+                          label="Profile Photo"
                           value={tr.imageUrl || ''}
-                          onChange={(e) => {
-                            const updated = { ...tr, imageUrl: e.target.value };
+                          onChange={(url) => {
+                            const updated = { ...tr, imageUrl: url };
                             setTrainers(trainers.map((t) => (t.id === tr.id ? updated : t)));
                           }}
-                          className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white font-mono"
+                          mediaAssets={mediaAssets}
+                          onUploadSuccess={(a) => setMediaAssets((prev) => [a as MediaAssetItem, ...prev])}
+                          previewHeight="h-32"
+                          round={true}
                         />
                       </div>
                     </div>
@@ -3582,14 +3663,14 @@ export default function AdminPortalPage() {
 
           {/* TAB 14: FACILITY GALLERY */}
           {activeTab === 'gallery' && (
-            <div className="space-y-6 max-w-4xl">
+            <div className="space-y-6 max-w-5xl">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-black text-white uppercase tracking-tight">
                     Facility Gallery Photos
                   </h2>
                   <p className="text-xs text-neutral-400">
-                    Photos of the barbell floor, racks, coaching, and amenities.
+                    Manage photos of the barbell floor, racks, coaching, and amenities. Upload via Media Library then paste the URL here.
                   </p>
                 </div>
                 <button
@@ -3597,86 +3678,208 @@ export default function AdminPortalPage() {
                     const newGal: GalleryItem = {
                       id: `gal-${Date.now()}`,
                       title: 'New Gym Photo',
-                      caption: 'Facility deck view.',
+                      caption: '',
                       orientation: 'landscape',
-                      category: 'training',
-                      imageUrl: '/images/hero_gorkhali_gym.jpg',
+                      category: 'equipment',
+                      imageUrl: '',
                       displayOrder: gallery.length + 1,
-                      isPublished: true,
+                      isPublished: false,
                     };
-                    saveGalleryItem(newGal);
+                    setGallery((prev) => [...prev, newGal]);
                   }}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase transition-colors"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Add Photo</span>
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {gallery.map((g) => (
-                  <div
-                    key={g.id}
-                    className="bg-neutral-900/80 border border-neutral-800 rounded-2xl p-4 space-y-3"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-white text-xs">#{g.displayOrder} {g.title}</span>
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => {
-                            const updated = { ...g, isPublished: !g.isPublished };
-                            saveGalleryItem(updated);
+              {gallery.length === 0 ? (
+                <div className="bg-neutral-900/40 border border-dashed border-neutral-700 rounded-2xl p-16 text-center">
+                  <ImageIcon className="w-12 h-12 mx-auto text-neutral-600 mb-3" />
+                  <p className="text-sm font-semibold text-neutral-400">No gallery photos yet.</p>
+                  <p className="text-xs text-neutral-500 mt-1">Click &quot;Add Photo&quot; to get started.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  {gallery.map((g) => (
+                    <div
+                      key={g.id}
+                      className="bg-neutral-900/80 border border-neutral-800 rounded-2xl overflow-hidden"
+                    >
+                      {/* Image Preview */}
+                      <div className="relative w-full h-48 bg-neutral-950 flex items-center justify-center overflow-hidden">
+                        {g.imageUrl ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={g.imageUrl}
+                            alt={g.title}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <div className="flex flex-col items-center gap-2 text-neutral-600">
+                            <ImageIcon className="w-10 h-10" />
+                            <span className="text-xs">No image URL set</span>
+                          </div>
+                        )}
+                        {/* Status badge overlay */}
+                        <div className="absolute top-2 left-2">
+                          <button
+                            onClick={() => {
+                              const updated = { ...g, isPublished: !g.isPublished };
+                              setGallery(gallery.map((item) => (item.id === g.id ? updated : item)));
+                            }}
+                            className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase shadow-lg backdrop-blur-sm transition-colors ${
+                              g.isPublished
+                                ? 'bg-emerald-600/90 text-white hover:bg-emerald-500'
+                                : 'bg-neutral-800/90 text-neutral-400 hover:bg-neutral-700'
+                            }`}
+                          >
+                            {g.isPublished ? '● Visible' : '○ Hidden'}
+                          </button>
+                        </div>
+                        {/* Delete button overlay */}
+                        <div className="absolute top-2 right-2">
+                          <button
+                            onClick={() => deleteGalleryItem(g.id)}
+                            className="p-1.5 rounded-lg bg-red-950/80 border border-red-800/60 text-red-400 hover:bg-red-900 hover:text-red-300 transition-colors backdrop-blur-sm"
+                            title="Delete photo"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Edit Fields */}
+                      <div className="p-4 space-y-3">
+                        {/* Title */}
+                        <div>
+                          <label className="block text-[10px] font-bold uppercase text-neutral-500 mb-1">
+                            Title
+                          </label>
+                          <input
+                            type="text"
+                            value={g.title}
+                            onChange={(e) => {
+                              setGallery(gallery.map((item) =>
+                                item.id === g.id ? { ...item, title: e.target.value } : item
+                              ));
+                            }}
+                            placeholder="e.g. Main Strength Floor"
+                            className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-orange-500 transition-colors"
+                          />
+                        </div>
+
+                        {/* Image URL */}
+                        <ImagePickerField
+                          label="Image"
+                          value={g.imageUrl}
+                          onChange={(url) => {
+                            setGallery(gallery.map((item) =>
+                              item.id === g.id ? { ...item, imageUrl: url } : item
+                            ));
                           }}
-                          className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
-                            g.isPublished ? 'bg-emerald-950 text-emerald-300' : 'bg-neutral-800 text-neutral-400'
-                          }`}
-                        >
-                          {g.isPublished ? 'Visible' : 'Hidden'}
-                        </button>
-                        <button
-                          onClick={() => deleteGalleryItem(g.id)}
-                          className="p-1 text-neutral-500 hover:text-red-400"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                          mediaAssets={mediaAssets}
+                          onUploadSuccess={(a) => setMediaAssets((prev) => [a as MediaAssetItem, ...prev])}
+                          previewHeight="h-40"
+                        />
+
+                        {/* Caption */}
+                        <div>
+                          <label className="block text-[10px] font-bold uppercase text-neutral-500 mb-1">
+                            Caption
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="Short description shown below photo"
+                            value={g.caption || ''}
+                            onChange={(e) => {
+                              setGallery(gallery.map((item) =>
+                                item.id === g.id ? { ...item, caption: e.target.value } : item
+                              ));
+                            }}
+                            className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-1.5 text-xs text-neutral-300 focus:outline-none focus:border-orange-500 transition-colors"
+                          />
+                        </div>
+
+                        {/* Category + Orientation row */}
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <label className="block text-[10px] font-bold uppercase text-neutral-500 mb-1">
+                              Category
+                            </label>
+                            <select
+                              value={g.category}
+                              onChange={(e) => {
+                                setGallery(gallery.map((item) =>
+                                  item.id === g.id ? { ...item, category: e.target.value } : item
+                                ));
+                              }}
+                              className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-orange-500"
+                            >
+                              <option value="equipment">Equipment</option>
+                              <option value="training">Training</option>
+                              <option value="facility">Facility</option>
+                              <option value="events">Events</option>
+                              <option value="community">Community</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-bold uppercase text-neutral-500 mb-1">
+                              Orientation
+                            </label>
+                            <select
+                              value={g.orientation}
+                              onChange={(e) => {
+                                setGallery(gallery.map((item) =>
+                                  item.id === g.id ? { ...item, orientation: e.target.value as 'landscape' | 'portrait' } : item
+                                ));
+                              }}
+                              className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-orange-500"
+                            >
+                              <option value="landscape">Landscape</option>
+                              <option value="portrait">Portrait</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        {/* Order + Save row */}
+                        <div className="flex items-center gap-2 pt-1">
+                          <div className="flex items-center gap-1.5">
+                            <label className="text-[10px] font-bold uppercase text-neutral-500">Order</label>
+                            <input
+                              type="number"
+                              value={g.displayOrder}
+                              onChange={(e) => {
+                                setGallery(gallery.map((item) =>
+                                  item.id === g.id ? { ...item, displayOrder: parseInt(e.target.value) || 1 } : item
+                                ));
+                              }}
+                              className="w-16 bg-neutral-950 border border-neutral-800 rounded-lg px-2 py-1.5 text-xs text-white text-center focus:outline-none focus:border-orange-500"
+                              min={1}
+                            />
+                          </div>
+                          <div className="flex-1" />
+                          <button
+                            onClick={() => saveGalleryItem(g)}
+                            disabled={saveLoading}
+                            className="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-600 hover:bg-orange-500 disabled:opacity-50 text-white rounded-lg text-xs font-bold transition-colors"
+                          >
+                            <Save className="w-3.5 h-3.5" />
+                            <span>Save</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
-
-                    <input
-                      type="text"
-                      value={g.imageUrl}
-                      onChange={(e) => {
-                        const updated = { ...g, imageUrl: e.target.value };
-                        setGallery(gallery.map((item) => (item.id === g.id ? updated : item)));
-                      }}
-                      className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-2.5 py-1 text-xs text-white font-mono"
-                    />
-
-                    <input
-                      type="text"
-                      placeholder="Caption"
-                      value={g.caption || ''}
-                      onChange={(e) => {
-                        const updated = { ...g, caption: e.target.value };
-                        setGallery(gallery.map((item) => (item.id === g.id ? updated : item)));
-                      }}
-                      className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-2.5 py-1 text-xs text-neutral-300"
-                    />
-
-                    <div className="flex justify-end">
-                      <button
-                        onClick={() => saveGalleryItem(g)}
-                        className="inline-flex items-center gap-1 px-3 py-1 bg-neutral-800 hover:bg-neutral-700 text-white rounded-lg text-xs font-bold"
-                      >
-                        <Save className="w-3 h-3" />
-                        <span>Save</span>
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
+
 
           {/* TAB 15: MEDIA LIBRARY */}
           {activeTab === 'media' && (
@@ -3690,80 +3893,294 @@ export default function AdminPortalPage() {
                 </p>
               </div>
 
-              {/* Upload Card */}
+              {/* Media Add Card with Mode Switch */}
               <div className="bg-neutral-900/80 border border-neutral-800 rounded-2xl p-6 space-y-4">
-                <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                  <Upload className="w-4 h-4 text-red-500" />
-                  <span>Upload New Media File</span>
-                </h3>
-
-                {uploadError && (
-                  <div className="p-3 rounded-lg bg-red-950/50 border border-red-800 text-red-300 text-xs flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4 shrink-0" />
-                    <span>{uploadError}</span>
-                  </div>
-                )}
-
-                <form onSubmit={handleFileUpload} className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div className="sm:col-span-1">
-                      <label className="block text-[11px] font-bold uppercase text-neutral-400 mb-1">
-                        Select File
-                      </label>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        required
-                        onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
-                        className="w-full text-xs text-neutral-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-red-600 file:text-white hover:file:bg-red-500 cursor-pointer"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-bold uppercase text-neutral-400 mb-1">
-                        Alternative Text (SEO)
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Olympic squat rack floor"
-                        value={uploadAlt}
-                        onChange={(e) => setUploadAlt(e.target.value)}
-                        className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-bold uppercase text-neutral-400 mb-1">
-                        Caption (Optional)
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Free-weight area"
-                        value={uploadCaption}
-                        onChange={(e) => setUploadCaption(e.target.value)}
-                        className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end">
-                    <button
-                      type="submit"
-                      disabled={uploadLoading || !uploadFile}
-                      className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white font-bold text-xs uppercase shadow-md transition-all"
-                    >
-                      {uploadLoading ? (
-                        <>
-                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          <span>Uploading...</span>
-                        </>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-800/80 pb-4">
+                  <div>
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                      {mediaSourceMode === 'url' ? (
+                        <Link2 className="w-4 h-4 text-orange-500" />
                       ) : (
-                        <>
-                          <Upload className="w-3.5 h-3.5" />
-                          <span>Upload &amp; Save Asset</span>
-                        </>
+                        <Upload className="w-4 h-4 text-orange-500" />
                       )}
+                      <span>{mediaSourceMode === 'url' ? 'Add External Image URL' : 'Upload File to Storage'}</span>
+                    </h3>
+                    <p className="text-[11px] text-neutral-400 mt-0.5">
+                      {mediaSourceMode === 'url'
+                        ? 'Store direct image links from CDNs, image search engines, or public repositories.'
+                        : 'Upload image files directly to server / persistent asset storage.'}
+                    </p>
+                  </div>
+
+                  {/* Mode switcher tabs */}
+                  <div className="inline-flex rounded-xl bg-neutral-950 p-1 border border-neutral-800 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setMediaSourceMode('url')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center gap-1.5 ${
+                        mediaSourceMode === 'url'
+                          ? 'bg-orange-600 text-white shadow-md'
+                          : 'text-neutral-400 hover:text-white'
+                      }`}
+                    >
+                      <Link2 className="w-3.5 h-3.5" />
+                      <span>Image URL</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setMediaSourceMode('file')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-all flex items-center gap-1.5 ${
+                        mediaSourceMode === 'file'
+                          ? 'bg-orange-600 text-white shadow-md'
+                          : 'text-neutral-400 hover:text-white'
+                      }`}
+                    >
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>Upload File</span>
                     </button>
                   </div>
-                </form>
+                </div>
+
+                {/* --- MODE 1: EXTERNAL IMAGE URL --- */}
+                {mediaSourceMode === 'url' && (
+                  <form onSubmit={handleSaveExternalUrl} className="space-y-4">
+                    {externalUrlError && (
+                      <div className="p-3 rounded-lg bg-red-950/60 border border-red-800 text-red-300 text-xs flex items-center gap-2">
+                        <AlertCircle className="w-4 h-4 shrink-0" />
+                        <span>{externalUrlError}</span>
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                      {/* Left: Input & metadata fields */}
+                      <div className="lg:col-span-2 space-y-3.5">
+                        <div>
+                          <label className="block text-[11px] font-bold uppercase text-neutral-400 mb-1">
+                            External Image URL <span className="text-orange-500">*</span>
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              required
+                              value={externalUrl}
+                              onChange={(e) => {
+                                const val = e.target.value.trim().replace(/^["']|["']$/g, '');
+                                setExternalUrl(val);
+                                setExternalUrlError(null);
+                                if (val) setExternalImgStatus('loading');
+                                else setExternalImgStatus('idle');
+                              }}
+                              placeholder="https://example.com/photo.jpg or https://imgs.search.brave.com/..."
+                              className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono placeholder:text-neutral-600 focus:outline-none focus:border-orange-500 transition-colors"
+                            />
+                            {externalUrl && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setExternalUrl('');
+                                  setExternalImgStatus('idle');
+                                  setExternalUrlError(null);
+                                }}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white"
+                              >
+                                <X className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                          </div>
+                          <p className="text-[10px] text-neutral-500 mt-1">
+                            Accepts long external URLs directly from image CDNs, Unsplash, search engines, etc. Rendered directly.
+                          </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                          <div>
+                            <label className="block text-[11px] font-bold uppercase text-neutral-400 mb-1">
+                              Asset Label / Name
+                            </label>
+                            <input
+                              type="text"
+                              placeholder="e.g. Squat Platform"
+                              value={externalFilename}
+                              onChange={(e) => setExternalFilename(e.target.value)}
+                              className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white placeholder:text-neutral-600 focus:outline-none focus:border-orange-500"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[11px] font-bold uppercase text-neutral-400 mb-1">
+                              Alt Text (SEO)
+                            </label>
+                            <input
+                              type="text"
+                              placeholder="Description for SEO"
+                              value={externalAlt}
+                              onChange={(e) => setExternalAlt(e.target.value)}
+                              className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white placeholder:text-neutral-600 focus:outline-none focus:border-orange-500"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[11px] font-bold uppercase text-neutral-400 mb-1">
+                              Caption (Optional)
+                            </label>
+                            <input
+                              type="text"
+                              placeholder="Photo subtitle"
+                              value={externalCaption}
+                              onChange={(e) => setExternalCaption(e.target.value)}
+                              className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white placeholder:text-neutral-600 focus:outline-none focus:border-orange-500"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Right: Live Preview Box */}
+                      <div className="space-y-1.5">
+                        <label className="block text-[11px] font-bold uppercase text-neutral-400 mb-1">
+                          Live URL Preview
+                        </label>
+                        <div className="relative w-full h-36 bg-neutral-950 border border-neutral-800 rounded-xl overflow-hidden flex items-center justify-center">
+                          {externalUrl ? (
+                            <>
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={externalUrl}
+                                alt="Preview"
+                                referrerPolicy="no-referrer"
+                                className={`w-full h-full object-cover transition-opacity duration-300 ${
+                                  externalImgStatus === 'error'
+                                    ? 'opacity-20 grayscale'
+                                    : externalImgStatus === 'loading'
+                                    ? 'opacity-40'
+                                    : 'opacity-100'
+                                }`}
+                                onLoad={() => setExternalImgStatus('loaded')}
+                                onError={() => {
+                                  setExternalImgStatus('error');
+                                  setExternalUrlError(
+                                    'Unable to load image from this URL. Verify it is public, not blocked (403), and returns an image format.'
+                                  );
+                                }}
+                              />
+                              {externalImgStatus === 'loading' && (
+                                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 gap-1.5 text-neutral-300 text-[10px]">
+                                  <Loader2 className="w-5 h-5 animate-spin text-orange-500" />
+                                  <span>Testing image URL...</span>
+                                </div>
+                              )}
+                              {externalImgStatus === 'error' && (
+                                <div className="absolute inset-0 p-3 flex flex-col items-center justify-center bg-red-950/80 text-center gap-1 text-red-200">
+                                  <AlertCircle className="w-5 h-5 text-red-400" />
+                                  <span className="text-[10px] font-semibold">Image Inaccessible</span>
+                                </div>
+                              )}
+                              {externalImgStatus === 'loaded' && (
+                                <div className="absolute bottom-1.5 left-1.5 px-2 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-700/60 text-emerald-300 text-[9px] font-mono flex items-center gap-1 backdrop-blur-sm pointer-events-none">
+                                  <Check className="w-2.5 h-2.5" />
+                                  <span>Image Reachable</span>
+                                </div>
+                              )}
+                            </>
+                          ) : (
+                            <div className="flex flex-col items-center gap-1 text-neutral-600">
+                              <ImageIcon className="w-6 h-6" />
+                              <span className="text-[10px]">Paste URL above</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end pt-2">
+                      <button
+                        type="submit"
+                        disabled={externalUrlLoading || !externalUrl || externalImgStatus === 'error'}
+                        className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-500 disabled:opacity-50 text-white font-bold text-xs uppercase shadow-md transition-all"
+                      >
+                        {externalUrlLoading ? (
+                          <>
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            <span>Saving Asset...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Plus className="w-3.5 h-3.5" />
+                            <span>Add to Media Library</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </form>
+                )}
+
+                {/* --- MODE 2: FILE UPLOAD --- */}
+                {mediaSourceMode === 'file' && (
+                  <form onSubmit={handleFileUpload} className="space-y-4">
+                    {uploadError && (
+                      <div className="p-3 rounded-lg bg-red-950/50 border border-red-800 text-red-300 text-xs flex items-center gap-2">
+                        <AlertCircle className="w-4 h-4 shrink-0" />
+                        <span>{uploadError}</span>
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div className="sm:col-span-1">
+                        <label className="block text-[11px] font-bold uppercase text-neutral-400 mb-1">
+                          Select File
+                        </label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          required
+                          onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
+                          className="w-full text-xs text-neutral-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-orange-600 file:text-white hover:file:bg-orange-500 cursor-pointer"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-bold uppercase text-neutral-400 mb-1">
+                          Alternative Text (SEO)
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Olympic squat rack floor"
+                          value={uploadAlt}
+                          onChange={(e) => setUploadAlt(e.target.value)}
+                          className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-bold uppercase text-neutral-400 mb-1">
+                          Caption (Optional)
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Free-weight area"
+                          value={uploadCaption}
+                          onChange={(e) => setUploadCaption(e.target.value)}
+                          className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end">
+                      <button
+                        type="submit"
+                        disabled={uploadLoading || !uploadFile}
+                        className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-500 disabled:opacity-50 text-white font-bold text-xs uppercase shadow-md transition-all"
+                      >
+                        {uploadLoading ? (
+                          <>
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            <span>Uploading...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="w-3.5 h-3.5" />
+                            <span>Upload &amp; Save Asset</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </form>
+                )}
               </div>
 
               {/* Assets Grid */}
@@ -3783,23 +4200,40 @@ export default function AdminPortalPage() {
                         <img
                           src={asset.url}
                           alt={asset.altText || asset.filename}
+                          referrerPolicy="no-referrer"
                           className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.opacity = '0.3';
+                          }}
                         />
                       </div>
                       <div className="flex-1 min-w-0 space-y-1">
-                        <p className="text-xs font-bold text-white truncate">{asset.filename}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="text-xs font-bold text-white truncate">{asset.filename}</p>
+                          <span
+                            className={`text-[9px] px-1.5 py-0.5 rounded font-mono uppercase shrink-0 ${
+                              asset.url.startsWith('http')
+                                ? 'bg-blue-950 text-blue-300 border border-blue-800/60'
+                                : 'bg-neutral-800 text-neutral-400'
+                            }`}
+                          >
+                            {asset.url.startsWith('http') ? 'External URL' : 'Local File'}
+                          </span>
+                        </div>
                         <p className="text-[10px] text-neutral-400 font-mono truncate">{asset.url}</p>
                         <div className="flex items-center gap-2 pt-1">
                           <button
+                            type="button"
                             onClick={() => copyToClipboard(asset.url)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-[11px] font-semibold"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-[11px] font-semibold transition-colors"
                           >
                             <Copy className="w-3 h-3" />
                             <span>{copiedUrl === asset.url ? 'Copied!' : 'Copy URL'}</span>
                           </button>
                           <button
+                            type="button"
                             onClick={() => deleteMediaItem(asset.id)}
-                            className="p-1 rounded text-neutral-500 hover:text-red-400"
+                            className="p-1 rounded text-neutral-500 hover:text-red-400 transition-colors"
                             title="Delete asset"
                           >
                             <Trash2 className="w-3.5 h-3.5" />

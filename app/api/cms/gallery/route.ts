@@ -6,8 +6,8 @@ export async function GET(req: NextRequest) {
   const adminMode = req.nextUrl.searchParams.get('all') === 'true';
   const category = req.nextUrl.searchParams.get('category') || undefined;
   const orientation = req.nextUrl.searchParams.get('orientation') || undefined;
-  const items = store.getGallery(!adminMode, category, orientation);
-  return NextResponse.json({ items });
+  const gallery = store.getGallery(!adminMode, category, orientation);
+  return NextResponse.json({ gallery });
 }
 
 export async function POST(req: NextRequest) {

@@ -10,17 +10,20 @@ const nextConfig: NextConfig = {
   },
   // Allow access to remote image placeholder.
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'picsum.photos',
-        port: '',
-        pathname: '/**', // This allows any path under the hostname
+        hostname: '**',
+      },
+      {
+        protocol: 'http',
+        hostname: '**',
       },
     ],
   },
   transpilePackages: ['motion'],
-  webpack: (config, {dev}) => {
+  webpack: (config, {dev, isServer}) => {
     // HMR is disabled in AI Studio via DISABLE_HMR env var.
     // Do not modify—file watching is disabled to prevent flickering during agent edits.
     if (dev && process.env.DISABLE_HMR === 'true') {
@@ -28,6 +31,18 @@ const nextConfig: NextConfig = {
         ignored: /.*/,
       };
     }
+
+    // Prevent Prisma client from being bundled into client-side code.
+    // The data-store uses an in-memory fallback on the client; Prisma is server-only.
+    if (!isServer) {
+      config.resolve = config.resolve || {};
+      config.resolve.alias = {
+        ...(config.resolve.alias || {}),
+        '@prisma/client': false,
+        '.prisma/client': false,
+      };
+    }
+
     return config;
   },
 };

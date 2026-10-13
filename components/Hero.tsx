@@ -37,11 +37,11 @@ export default function Hero({ settings, onOpenApplyModal }: HeroProps) {
             href={settings.mapUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-neutral-900/80 border border-neutral-700/80 text-xs font-semibold text-neutral-200 hover:text-white hover:border-red-500/80 transition-all backdrop-blur-md group"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-neutral-900/80 border border-neutral-700/80 text-xs font-semibold text-neutral-200 hover:text-white hover:border-orange-600/80 transition-all backdrop-blur-md group"
           >
-            <MapPin className="w-3.5 h-3.5 text-red-500 group-hover:scale-110 transition-transform" />
+            <MapPin className="w-3.5 h-3.5 text-orange-600 group-hover:scale-110 transition-transform" />
             <span>Itahari, Koshi Province · Dharan Road</span>
-            <span className="text-[10px] text-red-400 font-bold uppercase tracking-wider">
+            <span className="text-[10px] text-orange-600 font-bold uppercase tracking-wider">
               (Opposite Soaltee Westend)
             </span>
           </a>
@@ -49,7 +49,7 @@ export default function Hero({ settings, onOpenApplyModal }: HeroProps) {
 
         {/* Main Headline */}
         <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight font-sans max-w-5xl mx-auto leading-none mb-6">
-          DISCIPLINE. <span className="text-red-600">STRENGTH.</span> RESILIENCE.
+          DISCIPLINE. <span className="text-orange-600">STRENGTH.</span> RESILIENCE.
         </h1>
 
         {/* Supporting Headline / Subtitle */}
@@ -69,7 +69,7 @@ export default function Hero({ settings, onOpenApplyModal }: HeroProps) {
             <button
               type="button"
               onClick={onOpenApplyModal}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-extrabold text-white bg-red-600 hover:bg-red-500 active:scale-95 transition-all shadow-xl shadow-red-950/60 uppercase tracking-wider"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-extrabold text-white bg-orange-600 hover:bg-orange-600 active:scale-95 transition-all shadow-xl shadow-red-950/60 uppercase tracking-wider"
             >
               <span>{settings.applyButtonLabel || 'Apply Now'}</span>
               <ArrowRight className="w-5 h-5" />
@@ -77,7 +77,7 @@ export default function Hero({ settings, onOpenApplyModal }: HeroProps) {
           ) : (
             <Link
               href="/apply"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-extrabold text-white bg-red-600 hover:bg-red-500 active:scale-95 transition-all shadow-xl shadow-red-950/60 uppercase tracking-wider"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-extrabold text-white bg-orange-600 hover:bg-orange-600 active:scale-95 transition-all shadow-xl shadow-red-950/60 uppercase tracking-wider"
             >
               <span>{settings.applyButtonLabel || 'Apply Now'}</span>
               <ArrowRight className="w-5 h-5" />
@@ -95,21 +95,21 @@ export default function Hero({ settings, onOpenApplyModal }: HeroProps) {
         {/* 3 Value Pillars */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto pt-6 border-t border-neutral-800/80 text-left">
           <div className="flex items-center gap-3 p-3 rounded-lg bg-neutral-900/40 border border-neutral-800/50">
-            <Dumbbell className="w-5 h-5 text-red-500 shrink-0" />
+            <Dumbbell className="w-5 h-5 text-orange-600 shrink-0" />
             <div>
               <div className="text-xs font-bold text-white uppercase">Olympic Free Weights</div>
               <div className="text-[11px] text-neutral-400">Power racks & calibrated iron</div>
             </div>
           </div>
           <div className="flex items-center gap-3 p-3 rounded-lg bg-neutral-900/40 border border-neutral-800/50">
-            <ShieldCheck className="w-5 h-5 text-red-500 shrink-0" />
+            <ShieldCheck className="w-5 h-5 text-orange-600 shrink-0" />
             <div>
               <div className="text-xs font-bold text-white uppercase">Certified Guidance</div>
               <div className="text-[11px] text-neutral-400">Form correction & movement safety</div>
             </div>
           </div>
           <div className="flex items-center gap-3 p-3 rounded-lg bg-neutral-900/40 border border-neutral-800/50">
-            <MapPin className="w-5 h-5 text-red-500 shrink-0" />
+            <MapPin className="w-5 h-5 text-orange-600 shrink-0" />
             <div>
               <div className="text-xs font-bold text-white uppercase">Prime Location</div>
               <div className="text-[11px] text-neutral-400">Dharan Road, opp. Soaltee Westend</div>

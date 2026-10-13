@@ -75,8 +75,8 @@ export default function HomePage() {
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
             {/* Badge */}
-            <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-red-600/20 border border-red-500/40 text-red-400 text-xs sm:text-sm font-semibold tracking-wide uppercase shadow-lg shadow-red-950/50 backdrop-blur-sm">
-              <Flame className="w-4 h-4 text-red-500 animate-pulse" />
+            <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-orange-600/20 border border-orange-500/40 text-orange-400 text-xs sm:text-sm font-semibold tracking-wide uppercase shadow-lg shadow-orange-950/50 backdrop-blur-sm">
+              <Flame className="w-4 h-4 text-orange-500 animate-pulse" />
               <span>Itahari&apos;s Elite Strength & Fitness Club &bull; Koshi Province</span>
             </div>
 
@@ -84,7 +84,7 @@ export default function HomePage() {
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-tight text-white leading-[1.08] max-w-5xl mx-auto">
               {heroSec?.heading || (
                 <>
-                  Forged in <span className="text-red-600 drop-shadow-[0_0_35px_rgba(220,38,38,0.4)]">Discipline</span>.
+                  Forged in <span className="text-orange-600 drop-shadow-[0_0_35px_rgba(234,88,12,0.4)]">Discipline</span>.
                   <br />
                   Built for <span className="text-neutral-100">Strength</span>.
                 </>
@@ -104,7 +104,7 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
               <button
                 onClick={() => openApply()}
-                className="w-full sm:w-auto px-8 py-4 rounded-xl bg-red-600 hover:bg-red-500 active:scale-[0.98] text-white font-extrabold text-base uppercase tracking-wider shadow-xl shadow-red-600/40 transition-all flex items-center justify-center space-x-3 group"
+                className="w-full sm:w-auto px-8 py-4 rounded-xl bg-orange-600 hover:bg-orange-500 active:scale-[0.98] text-white font-extrabold text-base uppercase tracking-wider shadow-xl shadow-orange-600/40 transition-all flex items-center justify-center space-x-3 group"
               >
                 <span>{heroSec?.ctaLabel || settings.applyButtonLabel || 'Apply for Membership'}</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -113,7 +113,7 @@ export default function HomePage() {
                 href={heroSec?.ctaUrl || "/training"}
                 className="w-full sm:w-auto px-8 py-4 rounded-xl bg-neutral-900/90 hover:bg-neutral-800 border border-neutral-700 text-neutral-200 font-bold text-base uppercase tracking-wider transition-all flex items-center justify-center space-x-2 backdrop-blur-sm"
               >
-                <Dumbbell className="w-5 h-5 text-red-500" />
+                <Dumbbell className="w-5 h-5 text-orange-500" />
                 <span>Explore Programs</span>
               </Link>
             </div>
@@ -121,7 +121,7 @@ export default function HomePage() {
             {/* Trust Highlights Strip */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-12 max-w-4xl mx-auto border-t border-neutral-800/80">
               <div className="flex flex-col items-center p-3 rounded-lg bg-neutral-900/40 backdrop-blur-sm border border-neutral-800/60">
-                <span className="text-2xl sm:text-3xl font-black text-red-500">5:30 AM</span>
+                <span className="text-2xl sm:text-3xl font-black text-orange-500">5:30 AM</span>
                 <span className="text-xs text-neutral-400 uppercase tracking-wider mt-1">Early Birds Opening</span>
               </div>
               <div className="flex flex-col items-center p-3 rounded-lg bg-neutral-900/40 backdrop-blur-sm border border-neutral-800/60">
@@ -133,7 +133,7 @@ export default function HomePage() {
                 <span className="text-xs text-neutral-400 uppercase tracking-wider mt-1">Real Iron & Racks</span>
               </div>
               <div className="flex flex-col items-center p-3 rounded-lg bg-neutral-900/40 backdrop-blur-sm border border-neutral-800/60">
-                <span className="text-2xl sm:text-3xl font-black text-red-500">4.9 &starf;</span>
+                <span className="text-2xl sm:text-3xl font-black text-orange-500">4.9 &starf;</span>
                 <span className="text-xs text-neutral-400 uppercase tracking-wider mt-1">Top Rated in Itahari</span>
               </div>
             </div>
@@ -147,7 +147,7 @@ export default function HomePage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-neutral-900/80 border border-neutral-800 rounded-3xl p-6 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="max-w-2xl space-y-2">
-                <span className="text-red-500 font-bold text-xs uppercase tracking-wider">
+                <span className="text-orange-500 font-bold text-xs uppercase tracking-wider">
                   {introSec.subheading || 'Why Gorkhali Gym is different'}
                 </span>
                 <h2 className="text-2xl sm:text-3xl font-black uppercase text-white">
@@ -160,7 +160,7 @@ export default function HomePage() {
               {introSec.ctaLabel && (
                 <Link
                   href={introSec.ctaUrl || '/training'}
-                  className="px-6 py-3.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-extrabold text-xs uppercase tracking-wider whitespace-nowrap transition-colors shadow-lg shadow-red-950 shrink-0"
+                  className="px-6 py-3.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-extrabold text-xs uppercase tracking-wider whitespace-nowrap transition-colors shadow-lg shadow-orange-950 shrink-0"
                 >
                   {introSec.ctaLabel} &rarr;
                 </Link>
@@ -172,15 +172,15 @@ export default function HomePage() {
 
       {/* PROMOTIONAL OFFER BANNER (If published) */}
       {offers.length > 0 && (
-        <section className="bg-gradient-to-r from-red-900/70 via-neutral-900 to-red-900/70 border-y border-red-800/50 py-5">
+        <section className="bg-gradient-to-r from-red-900/70 via-neutral-900 to-red-900/70 border-y border-orange-800/50 py-5">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center space-x-3 text-center sm:text-left">
-              <span className="px-2.5 py-1 rounded bg-red-600 text-white font-extrabold text-xs uppercase tracking-wider shrink-0">
+              <span className="px-2.5 py-1 rounded bg-orange-600 text-white font-extrabold text-xs uppercase tracking-wider shrink-0">
                 {offers[0].badge || 'Special Offer'}
               </span>
               <div>
                 <p className="font-bold text-white text-sm sm:text-base">
-                  {offers[0].title} — <span className="text-red-400">{offers[0].discountInfo || offers[0].shortDesc}</span>
+                  {offers[0].title} — <span className="text-orange-400">{offers[0].discountInfo || offers[0].shortDesc}</span>
                 </p>
                 {offers[0].validUntil && (
                   <p className="text-xs text-neutral-400">Valid until: {offers[0].validUntil}</p>
@@ -203,7 +203,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
             <div>
-              <div className="inline-flex items-center space-x-2 text-red-500 font-bold text-xs uppercase tracking-wider mb-2">
+              <div className="inline-flex items-center space-x-2 text-orange-500 font-bold text-xs uppercase tracking-wider mb-2">
                 <Flame className="w-4 h-4" />
                 <span>Engineered for Results</span>
               </div>
@@ -216,7 +216,7 @@ export default function HomePage() {
             </div>
             <Link
               href="/training"
-              className="mt-4 md:mt-0 inline-flex items-center space-x-2 text-red-500 hover:text-red-400 font-bold text-sm uppercase tracking-wider group"
+              className="mt-4 md:mt-0 inline-flex items-center space-x-2 text-orange-500 hover:text-orange-400 font-bold text-sm uppercase tracking-wider group"
             >
               <span>View All Training Programs</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -227,7 +227,7 @@ export default function HomePage() {
             {trainingPrograms.map((prog) => (
               <div
                 key={prog.id}
-                className="group relative bg-neutral-900/70 border border-neutral-800 rounded-2xl overflow-hidden hover:border-red-600/50 transition-all flex flex-col shadow-lg"
+                className="group relative bg-neutral-900/70 border border-neutral-800 rounded-2xl overflow-hidden hover:border-orange-600/50 transition-all flex flex-col shadow-lg"
               >
                 <div className="relative h-56 w-full overflow-hidden bg-neutral-950">
                   <Image
@@ -239,13 +239,13 @@ export default function HomePage() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-transparent" />
                   {prog.badge && (
-                    <span className="absolute top-3 right-3 px-3 py-1 rounded bg-red-600 text-white font-extrabold text-[11px] uppercase tracking-wider shadow">
+                    <span className="absolute top-3 right-3 px-3 py-1 rounded bg-orange-600 text-white font-extrabold text-[11px] uppercase tracking-wider shadow">
                       {prog.badge}
                     </span>
                   )}
                   {prog.duration && (
                     <span className="absolute bottom-3 left-3 px-2.5 py-1 rounded bg-black/70 backdrop-blur-sm text-neutral-300 font-medium text-xs flex items-center space-x-1">
-                      <Clock className="w-3 h-3 text-red-500" />
+                      <Clock className="w-3 h-3 text-orange-500" />
                       <span>{prog.duration}</span>
                     </span>
                   )}
@@ -253,7 +253,7 @@ export default function HomePage() {
 
                 <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                   <div>
-                    <h3 className="text-xl font-black uppercase text-white group-hover:text-red-500 transition-colors">
+                    <h3 className="text-xl font-black uppercase text-white group-hover:text-orange-500 transition-colors">
                       {prog.title}
                     </h3>
                     <p className="text-sm text-neutral-400 mt-2 line-clamp-3 leading-relaxed">
@@ -264,7 +264,7 @@ export default function HomePage() {
                       <ul className="mt-4 space-y-1.5">
                         {prog.features.slice(0, 3).map((feat, idx) => (
                           <li key={idx} className="flex items-center text-xs text-neutral-300 space-x-2">
-                            <CheckCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                            <CheckCircle className="w-3.5 h-3.5 text-orange-500 shrink-0" />
                             <span>{feat}</span>
                           </li>
                         ))}
@@ -282,7 +282,7 @@ export default function HomePage() {
                     </Link>
                     <button
                       onClick={() => openApply(prog.title)}
-                      className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-md shadow-red-600/20"
+                      className="px-4 py-2 rounded-lg bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-md shadow-orange-600/20"
                     >
                       {prog.ctaLabel || 'Apply Now'}
                     </button>
@@ -299,7 +299,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
             <div>
-              <div className="inline-flex items-center space-x-2 text-red-500 font-bold text-xs uppercase tracking-wider mb-2">
+              <div className="inline-flex items-center space-x-2 text-orange-500 font-bold text-xs uppercase tracking-wider mb-2">
                 <HeartPulse className="w-4 h-4" />
                 <span>Complete Health & Recovery</span>
               </div>
@@ -312,7 +312,7 @@ export default function HomePage() {
             </div>
             <Link
               href="/services"
-              className="mt-4 md:mt-0 inline-flex items-center space-x-2 text-red-500 hover:text-red-400 font-bold text-sm uppercase tracking-wider group"
+              className="mt-4 md:mt-0 inline-flex items-center space-x-2 text-orange-500 hover:text-orange-400 font-bold text-sm uppercase tracking-wider group"
             >
               <span>All Services</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -326,7 +326,7 @@ export default function HomePage() {
                 className="bg-neutral-950 border border-neutral-800/80 rounded-2xl p-6 hover:border-neutral-700 transition-all flex flex-col justify-between"
               >
                 <div>
-                  <div className="w-12 h-12 rounded-xl bg-red-600/10 border border-red-500/30 flex items-center justify-center text-red-500 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-orange-600/10 border border-orange-500/30 flex items-center justify-center text-orange-500 mb-4">
                     <Sparkles className="w-6 h-6" />
                   </div>
                   <h3 className="text-xl font-bold uppercase text-white mb-2">{serv.title}</h3>
@@ -367,7 +367,7 @@ export default function HomePage() {
       <section className="py-20 bg-neutral-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center space-x-2 text-red-500 font-bold text-xs uppercase tracking-wider mb-2">
+            <div className="inline-flex items-center space-x-2 text-orange-500 font-bold text-xs uppercase tracking-wider mb-2">
               <ShieldCheck className="w-4 h-4" />
               <span>Built by Gurkhas, For Champions</span>
             </div>
@@ -381,7 +381,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="p-6 rounded-2xl bg-neutral-900/60 border border-neutral-800 space-y-3">
-              <div className="w-10 h-10 rounded-lg bg-red-600/20 text-red-500 flex items-center justify-center font-black">
+              <div className="w-10 h-10 rounded-lg bg-orange-600/20 text-orange-500 flex items-center justify-center font-black">
                 01
               </div>
               <h3 className="text-lg font-bold uppercase text-white">Elite Equipment</h3>
@@ -391,7 +391,7 @@ export default function HomePage() {
             </div>
 
             <div className="p-6 rounded-2xl bg-neutral-900/60 border border-neutral-800 space-y-3">
-              <div className="w-10 h-10 rounded-lg bg-red-600/20 text-red-500 flex items-center justify-center font-black">
+              <div className="w-10 h-10 rounded-lg bg-orange-600/20 text-orange-500 flex items-center justify-center font-black">
                 02
               </div>
               <h3 className="text-lg font-bold uppercase text-white">Authentic Coaching</h3>
@@ -401,7 +401,7 @@ export default function HomePage() {
             </div>
 
             <div className="p-6 rounded-2xl bg-neutral-900/60 border border-neutral-800 space-y-3">
-              <div className="w-10 h-10 rounded-lg bg-red-600/20 text-red-500 flex items-center justify-center font-black">
+              <div className="w-10 h-10 rounded-lg bg-orange-600/20 text-orange-500 flex items-center justify-center font-black">
                 03
               </div>
               <h3 className="text-lg font-bold uppercase text-white">Discipline & Respect</h3>
@@ -411,7 +411,7 @@ export default function HomePage() {
             </div>
 
             <div className="p-6 rounded-2xl bg-neutral-900/60 border border-neutral-800 space-y-3">
-              <div className="w-10 h-10 rounded-lg bg-red-600/20 text-red-500 flex items-center justify-center font-black">
+              <div className="w-10 h-10 rounded-lg bg-orange-600/20 text-orange-500 flex items-center justify-center font-black">
                 04
               </div>
               <h3 className="text-lg font-bold uppercase text-white">Prime Location</h3>
@@ -427,7 +427,7 @@ export default function HomePage() {
       <section className="py-20 bg-neutral-900/40 border-t border-neutral-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center space-x-2 text-red-500 font-bold text-xs uppercase tracking-wider mb-2">
+            <div className="inline-flex items-center space-x-2 text-orange-500 font-bold text-xs uppercase tracking-wider mb-2">
               <Award className="w-4 h-4" />
               <span>Transparent & Accessible</span>
             </div>
@@ -445,12 +445,12 @@ export default function HomePage() {
                 key={plan.id}
                 className={`relative rounded-2xl p-8 flex flex-col justify-between transition-all ${
                   plan.isFeatured
-                    ? 'bg-neutral-900 border-2 border-red-600 shadow-2xl shadow-red-950/50 scale-105 z-10'
+                    ? 'bg-neutral-900 border-2 border-orange-600 shadow-2xl shadow-orange-950/50 scale-105 z-10'
                     : 'bg-neutral-950 border border-neutral-800'
                 }`}
               >
                 {plan.isFeatured && (
-                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-red-600 text-white font-black text-xs uppercase tracking-wider shadow">
+                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-orange-600 text-white font-black text-xs uppercase tracking-wider shadow">
                     Most Popular Choice
                   </span>
                 )}
@@ -473,7 +473,7 @@ export default function HomePage() {
                   <ul className="space-y-3 text-sm text-neutral-300">
                     {plan.features.map((feat, idx) => (
                       <li key={idx} className="flex items-center space-x-2.5">
-                        <CheckCircle className="w-4 h-4 text-red-500 shrink-0" />
+                        <CheckCircle className="w-4 h-4 text-orange-500 shrink-0" />
                         <span>{feat}</span>
                       </li>
                     ))}
@@ -485,7 +485,7 @@ export default function HomePage() {
                     onClick={() => openApply(plan.name)}
                     className={`w-full py-3.5 px-6 rounded-xl font-bold text-sm uppercase tracking-wider transition-all flex items-center justify-center space-x-2 ${
                       plan.isFeatured
-                        ? 'bg-red-600 hover:bg-red-500 text-white shadow-lg shadow-red-600/30'
+                        ? 'bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-600/30'
                         : 'bg-neutral-800 hover:bg-neutral-700 text-neutral-200'
                     }`}
                   >
@@ -500,7 +500,7 @@ export default function HomePage() {
           <div className="mt-12 text-center">
             <p className="text-xs text-neutral-400">
               Need custom corporate plans or student discounts?{' '}
-              <Link href="/membership/refer-a-friend" className="text-red-500 hover:underline font-bold">
+              <Link href="/membership/refer-a-friend" className="text-orange-500 hover:underline font-bold">
                 Check our Refer-a-Friend Rewards &rarr;
               </Link>
             </p>
@@ -513,7 +513,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
             <div>
-              <div className="inline-flex items-center space-x-2 text-red-500 font-bold text-xs uppercase tracking-wider mb-2">
+              <div className="inline-flex items-center space-x-2 text-orange-500 font-bold text-xs uppercase tracking-wider mb-2">
                 <Users className="w-4 h-4" />
                 <span>Knowledge &bull; Dedication &bull; Support</span>
               </div>
@@ -526,7 +526,7 @@ export default function HomePage() {
             </div>
             <Link
               href="/team"
-              className="mt-4 md:mt-0 inline-flex items-center space-x-2 text-red-500 hover:text-red-400 font-bold text-sm uppercase tracking-wider"
+              className="mt-4 md:mt-0 inline-flex items-center space-x-2 text-orange-500 hover:text-orange-400 font-bold text-sm uppercase tracking-wider"
             >
               <span>Meet Entire Team</span>
               <ArrowRight className="w-4 h-4" />
@@ -537,7 +537,7 @@ export default function HomePage() {
             {trainers.map((trainer) => (
               <div
                 key={trainer.id}
-                className="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden group hover:border-red-600/50 transition-all flex flex-col justify-between"
+                className="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden group hover:border-orange-600/50 transition-all flex flex-col justify-between"
               >
                 <div className="relative h-64 w-full bg-neutral-950">
                   <Image
@@ -552,7 +552,7 @@ export default function HomePage() {
                 <div className="p-6 flex-1 flex flex-col justify-between space-y-3">
                   <div>
                     <h3 className="text-xl font-bold uppercase text-white">{trainer.name}</h3>
-                    <p className="text-xs font-semibold text-red-500 uppercase tracking-wider mt-0.5">
+                    <p className="text-xs font-semibold text-orange-500 uppercase tracking-wider mt-0.5">
                       {trainer.role}
                     </p>
                     <p className="text-xs text-neutral-400 mt-2 line-clamp-3">{trainer.bio}</p>
@@ -563,7 +563,7 @@ export default function HomePage() {
                     </span>
                     <button
                       onClick={() => openApply(`PT with ${trainer.name}`)}
-                      className="text-xs font-bold text-red-500 hover:text-red-400 uppercase tracking-wider"
+                      className="text-xs font-bold text-orange-500 hover:text-orange-400 uppercase tracking-wider"
                     >
                       Book Session &rarr;
                     </button>
@@ -580,7 +580,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
             <div>
-              <div className="inline-flex items-center space-x-2 text-red-500 font-bold text-xs uppercase tracking-wider mb-2">
+              <div className="inline-flex items-center space-x-2 text-orange-500 font-bold text-xs uppercase tracking-wider mb-2">
                 <Star className="w-4 h-4 fill-red-500" />
                 <span>Authentic Member Stories</span>
               </div>
@@ -600,7 +600,7 @@ export default function HomePage() {
               </button>
               <Link
                 href="/reviews"
-                className="text-red-500 hover:text-red-400 font-bold text-xs uppercase tracking-wider flex items-center space-x-1"
+                className="text-orange-500 hover:text-orange-400 font-bold text-xs uppercase tracking-wider flex items-center space-x-1"
               >
                 <span>All Reviews ({reviews.length})</span>
                 <ChevronRight className="w-4 h-4" />
@@ -671,7 +671,7 @@ export default function HomePage() {
           <div className="mt-8 text-center">
             <Link
               href="/faq"
-              className="text-xs text-red-500 hover:underline uppercase font-bold tracking-wider"
+              className="text-xs text-orange-500 hover:underline uppercase font-bold tracking-wider"
             >
               Browse Complete FAQ Directory &rarr;
             </Link>
@@ -684,7 +684,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-gradient-to-br from-neutral-900 to-neutral-950 border border-neutral-800 rounded-3xl p-8 sm:p-12 flex flex-col lg:flex-row items-center justify-between gap-8">
             <div className="space-y-4 max-w-xl">
-              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded bg-red-600/20 text-red-400 text-xs font-semibold uppercase tracking-wider">
+              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded bg-orange-600/20 text-orange-400 text-xs font-semibold uppercase tracking-wider">
                 <MapPin className="w-3.5 h-3.5" />
                 <span>Physical Gym Location</span>
               </div>
@@ -713,7 +713,7 @@ export default function HomePage() {
                 href={`tel:${settings.phone.replace(/[^0-9+]/g, '')}`}
                 className="px-6 py-3.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white font-bold text-xs uppercase tracking-wider text-center transition-colors flex items-center justify-center space-x-2"
               >
-                <PhoneCall className="w-4 h-4 text-red-500" />
+                <PhoneCall className="w-4 h-4 text-orange-500" />
                 <span>Call Front Desk</span>
               </a>
             </div>

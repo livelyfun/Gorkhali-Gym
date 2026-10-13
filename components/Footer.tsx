@@ -26,10 +26,10 @@ export default function Footer({ settings: initialSettings, onOpenApplyModal }: 
   return (
     <footer className="bg-neutral-950 text-neutral-300 border-t border-neutral-800">
       {/* Top Banner / Call to Action Strip */}
-      <div className="bg-gradient-to-r from-red-950 via-neutral-900 to-red-950 border-b border-red-900/40">
+      <div className="bg-gradient-to-r from-red-950 via-neutral-900 to-red-950 border-b border-orange-600/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 rounded-xl bg-red-600/20 border border-red-500/40 flex items-center justify-center text-red-500">
+            <div className="w-12 h-12 rounded-xl bg-orange-600/20 border border-orange-600/40 flex items-center justify-center text-orange-600">
               <Flame className="w-6 h-6 animate-pulse" />
             </div>
             <div>
@@ -44,7 +44,7 @@ export default function Footer({ settings: initialSettings, onOpenApplyModal }: 
           <div className="flex items-center space-x-3 w-full md:w-auto">
             <button
               onClick={onOpenApplyModal}
-              className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-6 py-3 rounded-lg font-bold text-sm bg-red-600 hover:bg-red-500 text-white shadow-lg shadow-red-600/30 transition-all uppercase tracking-wider"
+              className="flex-1 md:flex-initial inline-flex items-center justify-center space-x-2 px-6 py-3 rounded-lg font-bold text-sm bg-orange-600 hover:bg-orange-600 text-white shadow-lg shadow-red-600/30 transition-all uppercase tracking-wider"
             >
               <span>Apply for Membership</span>
               <ArrowRight className="w-4 h-4" />
@@ -68,14 +68,14 @@ export default function Footer({ settings: initialSettings, onOpenApplyModal }: 
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-4">
             <Link href="/" className="inline-flex items-center space-x-3 group">
-              <div className="w-10 h-10 rounded-lg bg-red-600 flex items-center justify-center text-white font-black text-xl shadow-md group-hover:scale-105 transition-transform">
+              <div className="w-10 h-10 rounded-lg bg-orange-600 flex items-center justify-center text-white font-black text-xl shadow-md group-hover:scale-105 transition-transform">
                 <Dumbbell className="w-5 h-5" />
               </div>
               <div className="flex flex-col">
                 <span className="font-extrabold tracking-wider text-xl text-white uppercase">
                   {settings.gymName}
                 </span>
-                <span className="text-[10px] tracking-widest text-red-500 uppercase font-semibold">
+                <span className="text-[10px] tracking-widest text-orange-600 uppercase font-semibold">
                   Strength &bull; Discipline &bull; Community
                 </span>
               </div>
@@ -98,37 +98,37 @@ export default function Footer({ settings: initialSettings, onOpenApplyModal }: 
 
           {/* Programs & Services */}
           <div>
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-4 border-l-2 border-red-600 pl-2">
+            <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-4 border-l-2 border-orange-600 pl-2">
               Programs & Training
             </h4>
             <ul className="space-y-2 text-sm text-neutral-400">
               <li>
-                <Link href="/training/strength-conditioning" className="hover:text-red-400 transition-colors">
+                <Link href="/training/strength-conditioning" className="hover:text-orange-600 transition-colors">
                   Strength & Conditioning
                 </Link>
               </li>
               <li>
-                <Link href="/training/personal-training" className="hover:text-red-400 transition-colors">
+                <Link href="/training/personal-training" className="hover:text-orange-600 transition-colors">
                   Personal Training (1-on-1)
                 </Link>
               </li>
               <li>
-                <Link href="/training/weight-loss-transformation" className="hover:text-red-400 transition-colors">
+                <Link href="/training/weight-loss-transformation" className="hover:text-orange-600 transition-colors">
                   Weight Loss & Fat Burn
                 </Link>
               </li>
               <li>
-                <Link href="/services/yoga-mobility" className="hover:text-red-400 transition-colors">
+                <Link href="/services/yoga-mobility" className="hover:text-orange-600 transition-colors">
                   Yoga & Athletic Mobility
                 </Link>
               </li>
               <li>
-                <Link href="/services/nutrition-diet-consulting" className="hover:text-red-400 transition-colors">
+                <Link href="/services/nutrition-diet-consulting" className="hover:text-orange-600 transition-colors">
                   Nutrition Consultation
                 </Link>
               </li>
               <li>
-                <Link href="/training" className="text-red-500 hover:text-red-400 font-medium inline-flex items-center space-x-1">
+                <Link href="/training" className="text-orange-600 hover:text-orange-600 font-medium inline-flex items-center space-x-1">
                   <span>View All Programs</span>
                   <ArrowRight className="w-3 h-3" />
                 </Link>
@@ -138,42 +138,42 @@ export default function Footer({ settings: initialSettings, onOpenApplyModal }: 
 
           {/* Membership & Gym Life */}
           <div>
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-4 border-l-2 border-red-600 pl-2">
+            <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-4 border-l-2 border-orange-600 pl-2">
               Membership & Club
             </h4>
             <ul className="space-y-2 text-sm text-neutral-400">
               <li>
-                <Link href="/membership" className="hover:text-red-400 transition-colors">
+                <Link href="/membership" className="hover:text-orange-600 transition-colors">
                   Membership Plans
                 </Link>
               </li>
               <li>
-                <Link href="/membership/club" className="hover:text-red-400 transition-colors">
+                <Link href="/membership/club" className="hover:text-orange-600 transition-colors">
                   Club Membership & Rules
                 </Link>
               </li>
               <li>
-                <Link href="/membership/refer-a-friend" className="hover:text-red-400 transition-colors">
+                <Link href="/membership/refer-a-friend" className="hover:text-orange-600 transition-colors">
                   Refer a Friend Program
                 </Link>
               </li>
               <li>
-                <Link href="/offers" className="hover:text-red-400 transition-colors">
+                <Link href="/offers" className="hover:text-orange-600 transition-colors">
                   Promotions & Deals
                 </Link>
               </li>
               <li>
-                <Link href="/events" className="hover:text-red-400 transition-colors">
+                <Link href="/events" className="hover:text-orange-600 transition-colors">
                   Gym Events & Challenges
                 </Link>
               </li>
               <li>
-                <Link href="/reviews" className="hover:text-red-400 transition-colors">
+                <Link href="/reviews" className="hover:text-orange-600 transition-colors">
                   Member Reviews & Ratings
                 </Link>
               </li>
               <li>
-                <Link href="/gallery" className="hover:text-red-400 transition-colors">
+                <Link href="/gallery" className="hover:text-orange-600 transition-colors">
                   Photo & Facility Gallery
                 </Link>
               </li>
@@ -182,12 +182,12 @@ export default function Footer({ settings: initialSettings, onOpenApplyModal }: 
 
           {/* Visit & Connect */}
           <div>
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-4 border-l-2 border-red-600 pl-2">
+            <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-4 border-l-2 border-orange-600 pl-2">
               Visit Itahari Gym
             </h4>
             <div className="space-y-3 text-sm text-neutral-400">
               <div className="flex items-start space-x-2.5">
-                <MapPin className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                <MapPin className="w-4 h-4 text-orange-600 shrink-0 mt-0.5" />
                 <a
                   href={settings.mapUrl}
                   target="_blank"
@@ -198,13 +198,13 @@ export default function Footer({ settings: initialSettings, onOpenApplyModal }: 
                 </a>
               </div>
               <div className="flex items-center space-x-2.5">
-                <Phone className="w-4 h-4 text-red-500 shrink-0" />
+                <Phone className="w-4 h-4 text-orange-600 shrink-0" />
                 <a href={`tel:${settings.phone.replace(/[^0-9+]/g, '')}`} className="hover:text-white font-medium">
                   {settings.phone}
                 </a>
               </div>
               <div className="flex items-start space-x-2.5">
-                <Clock className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                <Clock className="w-4 h-4 text-orange-600 shrink-0 mt-0.5" />
                 <span className="text-xs text-neutral-400">
                   {settings.openingHours}
                 </span>
@@ -215,7 +215,7 @@ export default function Footer({ settings: initialSettings, onOpenApplyModal }: 
                     href={settings.facebookUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-8 h-8 rounded bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white hover:border-red-500 transition-colors"
+                    className="w-8 h-8 rounded bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white hover:border-orange-600 transition-colors"
                     title="Facebook"
                   >
                     <span className="font-bold text-xs">fb</span>
@@ -226,7 +226,7 @@ export default function Footer({ settings: initialSettings, onOpenApplyModal }: 
                     href={settings.instagramUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-8 h-8 rounded bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white hover:border-red-500 transition-colors"
+                    className="w-8 h-8 rounded bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white hover:border-orange-600 transition-colors"
                     title="Instagram"
                   >
                     <span className="font-bold text-xs">ig</span>
@@ -237,7 +237,7 @@ export default function Footer({ settings: initialSettings, onOpenApplyModal }: 
                     href={settings.tiktokUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-8 h-8 rounded bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white hover:border-red-500 transition-colors"
+                    className="w-8 h-8 rounded bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white hover:border-orange-600 transition-colors"
                     title="TikTok"
                   >
                     <span className="font-bold text-xs">tt</span>
@@ -270,7 +270,7 @@ export default function Footer({ settings: initialSettings, onOpenApplyModal }: 
             </Link>
             <Link
               href="/gorkhali-gym-management"
-              className="text-neutral-600 hover:text-red-400 transition-colors flex items-center space-x-1"
+              className="text-neutral-600 hover:text-orange-600 transition-colors flex items-center space-x-1"
             >
               <span>Admin Portal</span>
             </Link>

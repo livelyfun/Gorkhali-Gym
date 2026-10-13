@@ -95,11 +95,11 @@ export default function Header({
           : 'bg-gradient-to-b from-[#0B0E14]/95 via-[#0B0E14]/80 to-transparent'
       }`}
     >
-      {/* Announcement Banner (At very top: stays completely clear of dropdowns below and maintains consistent height) */}
+      {/* Announcement Banner */}
       {announcement.isActive && (
-        <div className="h-9 min-h-[36px] max-h-[36px] bg-red-950/95 border-b border-red-800/40 text-red-100 px-4 text-xs font-medium backdrop-blur-md flex items-center justify-center overflow-hidden">
+        <div className="h-9 min-h-[36px] max-h-[36px] bg-orange-950/95 border-b border-orange-800/40 text-orange-100 px-4 text-xs font-medium backdrop-blur-md flex items-center justify-center overflow-hidden">
           <div className="max-w-7xl mx-auto flex items-center justify-center text-center gap-2 truncate">
-            <Sparkles className="w-3.5 h-3.5 text-red-400 shrink-0" />
+            <Sparkles className="w-3.5 h-3.5 text-orange-400 shrink-0" />
             <span className="truncate">{announcement.text}</span>
             {announcement.linkUrl && (
               <Link
@@ -115,27 +115,23 @@ export default function Header({
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 gap-8">
-          {/* Zone 1: Brand Wordmark */}
-          <Link href="/" className="flex items-center gap-3 group shrink-0">
-            <div className="w-11 h-11 rounded-lg bg-red-600 flex items-center justify-center font-black text-white text-xl tracking-tighter shadow-lg shadow-red-950/50 group-hover:bg-red-500 transition-colors">
-              GK
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xl sm:text-2xl font-black tracking-tight text-white uppercase font-sans">
-                {settings.gymName}
-              </span>
-              <span className="text-[11px] tracking-widest text-neutral-400 font-medium uppercase">
-                Itahari · Nepal
-              </span>
-            </div>
+          {/* Zone 1: Brand Logo */}
+          <Link href="/" className="flex items-center gap-2 group shrink-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={settings.logoUrl || '/logo.png'}
+              alt={`${settings.gymName} Logo`}
+              className="h-14 w-auto object-contain drop-shadow-lg"
+            />
           </Link>
+
 
           {/* Zone 2: Navigation Links (Desktop) */}
           <nav className="hidden lg:flex items-center gap-7 text-sm font-semibold tracking-wide">
             <Link
               href="/"
-              className={`transition-colors hover:text-red-400 whitespace-nowrap ${
-                pathname === '/' ? 'text-red-500' : 'text-neutral-200'
+              className={`transition-colors hover:text-orange-400 whitespace-nowrap ${
+                pathname === '/' ? 'text-orange-500' : 'text-neutral-200'
               }`}
             >
               Home
@@ -149,8 +145,8 @@ export default function Header({
             >
               <button
                 type="button"
-                className={`flex items-center gap-1.5 transition-colors hover:text-red-400 py-2 whitespace-nowrap ${
-                  pathname.startsWith('/training') ? 'text-red-500' : 'text-neutral-200'
+                className={`flex items-center gap-1.5 transition-colors hover:text-orange-400 py-2 whitespace-nowrap ${
+                  pathname.startsWith('/training') ? 'text-orange-500' : 'text-neutral-200'
                 }`}
               >
                 <span>Training</span>
@@ -160,26 +156,26 @@ export default function Header({
                 <div className="absolute top-full left-0 w-60 py-2 bg-[#121620] border border-neutral-800 rounded-xl shadow-2xl backdrop-blur-xl z-50">
                   <Link
                     href="/training/personal-training"
-                    className="block px-4 py-2.5 text-xs text-neutral-300 hover:text-white hover:bg-red-600/20 transition-colors"
+                    className="block px-4 py-2.5 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
                   >
                     Personal Training
                   </Link>
                   <Link
                     href="/training/strength-training"
-                    className="block px-4 py-2.5 text-xs text-neutral-300 hover:text-white hover:bg-red-600/20 transition-colors"
+                    className="block px-4 py-2.5 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
                   >
                     Strength Training
                   </Link>
                   <Link
                     href="/training/yoga-class"
-                    className="block px-4 py-2.5 text-xs text-neutral-300 hover:text-white hover:bg-red-600/20 transition-colors"
+                    className="block px-4 py-2.5 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
                   >
                     Yoga Class
                   </Link>
                   <div className="my-1 border-t border-neutral-800" />
                   <Link
                     href="/training"
-                    className="block px-4 py-2 text-xs font-bold text-red-400 hover:text-red-300 hover:bg-red-600/20 transition-colors"
+                    className="block px-4 py-2 text-xs font-bold text-orange-400 hover:text-red-300 hover:bg-orange-600/20 transition-colors"
                   >
                     Browse All Training →
                   </Link>
@@ -195,8 +191,8 @@ export default function Header({
             >
               <button
                 type="button"
-                className={`flex items-center gap-1.5 transition-colors hover:text-red-400 py-2 whitespace-nowrap ${
-                  pathname.startsWith('/membership') ? 'text-red-500' : 'text-neutral-200'
+                className={`flex items-center gap-1.5 transition-colors hover:text-orange-400 py-2 whitespace-nowrap ${
+                  pathname.startsWith('/membership') ? 'text-orange-500' : 'text-neutral-200'
                 }`}
               >
                 <span>Membership</span>
@@ -206,20 +202,20 @@ export default function Header({
                 <div className="absolute top-full left-0 w-56 py-2 bg-[#121620] border border-neutral-800 rounded-xl shadow-2xl backdrop-blur-xl z-50">
                   <Link
                     href="/membership/club"
-                    className="block px-4 py-2.5 text-xs text-neutral-300 hover:text-white hover:bg-red-600/20 transition-colors"
+                    className="block px-4 py-2.5 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
                   >
                     Club Membership
                   </Link>
                   <Link
                     href="/membership/refer-a-friend"
-                    className="block px-4 py-2.5 text-xs text-neutral-300 hover:text-white hover:bg-red-600/20 transition-colors"
+                    className="block px-4 py-2.5 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
                   >
                     Refer a Friend
                   </Link>
                   <div className="my-1 border-t border-neutral-800" />
                   <Link
                     href="/membership"
-                    className="block px-4 py-2 text-xs font-bold text-red-400 hover:text-red-300 hover:bg-red-600/20 transition-colors"
+                    className="block px-4 py-2 text-xs font-bold text-orange-400 hover:text-red-300 hover:bg-orange-600/20 transition-colors"
                   >
                     Membership Overview →
                   </Link>
@@ -235,8 +231,8 @@ export default function Header({
             >
               <button
                 type="button"
-                className={`flex items-center gap-1.5 transition-colors hover:text-red-400 py-2 whitespace-nowrap ${
-                  pathname.startsWith('/services') ? 'text-red-500' : 'text-neutral-200'
+                className={`flex items-center gap-1.5 transition-colors hover:text-orange-400 py-2 whitespace-nowrap ${
+                  pathname.startsWith('/services') ? 'text-orange-500' : 'text-neutral-200'
                 }`}
               >
                 <span>Services</span>
@@ -246,14 +242,14 @@ export default function Header({
                 <div className="absolute top-full left-0 w-56 py-2 bg-[#121620] border border-neutral-800 rounded-xl shadow-2xl backdrop-blur-xl z-50">
                   <Link
                     href="/services/nutritionist"
-                    className="block px-4 py-2.5 text-xs text-neutral-300 hover:text-white hover:bg-red-600/20 transition-colors"
+                    className="block px-4 py-2.5 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
                   >
                     Nutritionist Consultation
                   </Link>
                   <div className="my-1 border-t border-neutral-800" />
                   <Link
                     href="/services"
-                    className="block px-4 py-2 text-xs font-bold text-red-400 hover:text-red-300 hover:bg-red-600/20 transition-colors"
+                    className="block px-4 py-2 text-xs font-bold text-orange-400 hover:text-red-300 hover:bg-orange-600/20 transition-colors"
                   >
                     All Services →
                   </Link>
@@ -269,7 +265,7 @@ export default function Header({
             >
               <button
                 type="button"
-                className={`flex items-center gap-1.5 transition-colors hover:text-red-400 py-2 whitespace-nowrap ${
+                className={`flex items-center gap-1.5 transition-colors hover:text-orange-400 py-2 whitespace-nowrap ${
                   pathname.startsWith('/gallery') ||
                   pathname.startsWith('/blog') ||
                   pathname.startsWith('/events') ||
@@ -278,7 +274,7 @@ export default function Header({
                   pathname.startsWith('/reviews') ||
                   pathname.startsWith('/about') ||
                   pathname.startsWith('/team')
-                    ? 'text-red-500'
+                    ? 'text-orange-500'
                     : 'text-neutral-200'
                 }`}
               >
@@ -290,25 +286,25 @@ export default function Header({
                   <div className="py-1">
                     <Link
                       href="/gallery"
-                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-red-600/20 transition-colors"
+                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
                     >
                       Gallery
                     </Link>
                     <Link
                       href="/blog"
-                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-red-600/20 transition-colors"
+                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
                     >
                       Blog
                     </Link>
                     <Link
                       href="/events"
-                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-red-600/20 transition-colors"
+                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
                     >
                       Events
                     </Link>
                     <Link
                       href="/offers"
-                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-red-600/20 transition-colors"
+                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
                     >
                       Offers
                     </Link>
@@ -316,25 +312,25 @@ export default function Header({
                   <div className="py-1">
                     <Link
                       href="/faq"
-                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-red-600/20 transition-colors"
+                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
                     >
                       FAQ
                     </Link>
                     <Link
                       href="/reviews"
-                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-red-600/20 transition-colors"
+                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
                     >
                       Reviews
                     </Link>
                     <Link
                       href="/about"
-                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-red-600/20 transition-colors"
+                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
                     >
                       About Us
                     </Link>
                     <Link
                       href="/team"
-                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-red-600/20 transition-colors"
+                      className="block px-4 py-2 text-xs text-neutral-300 hover:text-white hover:bg-orange-600/20 transition-colors"
                     >
                       Our Team
                     </Link>
@@ -345,8 +341,8 @@ export default function Header({
 
             <Link
               href="/contact"
-              className={`transition-colors hover:text-red-400 whitespace-nowrap ${
-                pathname === '/contact' ? 'text-red-500' : 'text-neutral-200'
+              className={`transition-colors hover:text-orange-400 whitespace-nowrap ${
+                pathname === '/contact' ? 'text-orange-500' : 'text-neutral-200'
               }`}
             >
               Contact
@@ -359,14 +355,14 @@ export default function Header({
               <button
                 type="button"
                 onClick={onOpenApplyModal}
-                className="hidden sm:inline-flex items-center justify-center px-6 py-2.5 rounded-lg text-sm font-bold text-white bg-red-600 hover:bg-red-500 active:scale-95 transition-all shadow-lg shadow-red-950/40 whitespace-nowrap"
+                className="hidden sm:inline-flex items-center justify-center px-6 py-2.5 rounded-lg text-sm font-bold text-white bg-orange-600 hover:bg-orange-500 active:scale-95 transition-all shadow-lg shadow-orange-950/40 whitespace-nowrap"
               >
                 {settings.applyButtonLabel || 'Apply Now'}
               </button>
             ) : (
               <Link
                 href="/apply"
-                className="hidden sm:inline-flex items-center justify-center px-6 py-2.5 rounded-lg text-sm font-bold text-white bg-red-600 hover:bg-red-500 active:scale-95 transition-all shadow-lg shadow-red-950/40 whitespace-nowrap"
+                className="hidden sm:inline-flex items-center justify-center px-6 py-2.5 rounded-lg text-sm font-bold text-white bg-orange-600 hover:bg-orange-500 active:scale-95 transition-all shadow-lg shadow-orange-950/40 whitespace-nowrap"
               >
                 {settings.applyButtonLabel || 'Apply Now'}
               </Link>
@@ -391,7 +387,7 @@ export default function Header({
             <Link
               href="/"
               className={`py-2 border-b border-neutral-800/60 ${
-                pathname === '/' ? 'text-red-500' : 'text-neutral-200'
+                pathname === '/' ? 'text-orange-500' : 'text-neutral-200'
               }`}
             >
               Home
@@ -421,7 +417,7 @@ export default function Header({
                   <Link href="/training/yoga-class" className="py-1 hover:text-white">
                     Yoga Class
                   </Link>
-                  <Link href="/training" className="py-1 font-bold text-red-400">
+                  <Link href="/training" className="py-1 font-bold text-orange-400">
                     Browse All Training →
                   </Link>
                 </div>
@@ -449,7 +445,7 @@ export default function Header({
                   <Link href="/membership/refer-a-friend" className="py-1 hover:text-white">
                     Refer a Friend
                   </Link>
-                  <Link href="/membership" className="py-1 font-bold text-red-400">
+                  <Link href="/membership" className="py-1 font-bold text-orange-400">
                     Membership Overview →
                   </Link>
                 </div>
@@ -474,7 +470,7 @@ export default function Header({
                   <Link href="/services/nutritionist" className="py-1 hover:text-white">
                     Nutritionist Consultation
                   </Link>
-                  <Link href="/services" className="py-1 font-bold text-red-400">
+                  <Link href="/services" className="py-1 font-bold text-orange-400">
                     All Services →
                   </Link>
                 </div>
@@ -527,7 +523,7 @@ export default function Header({
             <Link
               href="/contact"
               className={`py-2 border-b border-neutral-800/60 ${
-                pathname === '/contact' ? 'text-red-500' : 'text-neutral-200'
+                pathname === '/contact' ? 'text-orange-500' : 'text-neutral-200'
               }`}
             >
               Contact
@@ -536,7 +532,7 @@ export default function Header({
             <div className="pt-2 flex flex-col gap-3">
               <Link
                 href="/apply"
-                className="w-full text-center py-3 rounded-lg text-sm font-bold text-white bg-red-600 hover:bg-red-500 transition-colors shadow-lg shadow-red-950/40"
+                className="w-full text-center py-3 rounded-lg text-sm font-bold text-white bg-orange-600 hover:bg-orange-500 transition-colors shadow-lg shadow-orange-950/40"
               >
                 Apply for Membership
               </Link>
@@ -545,7 +541,7 @@ export default function Header({
                   href={`tel:${settings.phone.replace(/\s+/g, '')}`}
                   className="flex items-center gap-1.5 hover:text-white"
                 >
-                  <Phone className="w-3.5 h-3.5 text-red-500" />
+                  <Phone className="w-3.5 h-3.5 text-orange-500" />
                   <span>{settings.phone}</span>
                 </a>
                 <a

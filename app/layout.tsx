@@ -17,6 +17,10 @@ export const metadata: Metadata = {
     description:
       'Premier strength, conditioning, yoga, and personal training center in Itahari, Koshi Province, Nepal.',
   },
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/icon.png',
+  },
 };
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
