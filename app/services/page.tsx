@@ -7,6 +7,7 @@ import { Sparkles, CheckCircle, ArrowRight, ChevronRight, HeartPulse } from 'luc
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
+import PageHero from '@/components/PageHero';
 import { store } from '@/lib/data-store';
 
 export default function ServicesPage() {
@@ -28,17 +29,14 @@ export default function ServicesPage() {
       <section className="relative pt-36 sm:pt-40 pb-16 bg-ak-surface border-b border-ak-line">
         <div className="absolute inset-0 ak-stripe opacity-40 pointer-events-none" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <div className="ak-eyebrow mb-4">
-              <span>Specialized Services &bull; Gorkhali Gym</span>
-            </div>
-            <h1 className="font-display text-4xl sm:text-5xl text-white mt-2">
-              Holistic Fitness & Recovery
-            </h1>
-            <p className="text-ak-muted text-base sm:text-lg mt-4 leading-relaxed">
-              Elevate your athletic journey with dedicated 1-on-1 coaching, mobility and yoga sessions, customized meal plans, and body composition analytics.
-            </p>
-          </div>
+          <PageHero
+            pageSlug="services"
+            fallback={{
+              eyebrow: 'Specialized Services • Gorkhali Gym',
+              heading: 'Holistic Fitness & Recovery',
+              body: 'Elevate your athletic journey with dedicated 1-on-1 coaching, mobility and yoga sessions, customized meal plans, and body composition analytics.',
+            }}
+          />
         </div>
       </section>
 

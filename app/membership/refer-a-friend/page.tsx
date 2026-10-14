@@ -6,6 +6,7 @@ import { Users, Gift, CheckCircle, ArrowRight, ChevronLeft, Sparkles, Send, Load
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
+import PageHero from '@/components/PageHero';
 import { store } from '@/lib/data-store';
 
 export default function ReferAFriendPage() {
@@ -56,17 +57,16 @@ export default function ReferAFriendPage() {
             <span>Back to Memberships</span>
           </Link>
 
-          <div className="max-w-3xl">
-            <div className="ak-eyebrow mb-4">
-              Rewards Program &bull; Gorkhali Gym
-            </div>
-            <h1 className="font-display text-4xl sm:text-5xl text-white mt-2">
-              {referral.title || 'Refer a Friend & Earn Fitness Rewards'}
-            </h1>
-            <p className="text-ak-muted text-base sm:text-lg mt-4 leading-relaxed">
-              {referral.benefitText || 'Bring a training partner and both receive exclusive membership perks.'}
-            </p>
-          </div>
+          <PageHero
+            pageSlug="membership/refer-a-friend"
+            fallback={{
+              eyebrow: 'Rewards Program • Gorkhali Gym',
+              heading: referral.title || 'Refer a Friend & Earn Fitness Rewards',
+              body:
+                referral.benefitText ||
+                'Bring a training partner and both receive exclusive membership perks.',
+            }}
+          />
         </div>
       </section>
 

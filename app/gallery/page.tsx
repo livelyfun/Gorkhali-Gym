@@ -1,18 +1,38 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Camera, Sparkles } from 'lucide-react';
+import { Camera, Sparkles, Play } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
-import { store } from '@/lib/data-store';
+import SocialVideoEmbed from '@/components/SocialVideoEmbed';
+import PageHero from '@/components/PageHero';
+import { store, type SocialVideoItem } from '@/lib/data-store';
 
 export default function GalleryPage() {
   const [applyModalOpen, setApplyModalOpen] = useState(false);
   const [filter, setFilter] = useState('all');
+  const [videos, setVideos] = useState<SocialVideoItem[]>([]);
 
   const galleryItems = store.getGalleryItems().filter((item) => item.isPublished);
+
+  // Social videos are CMS-managed and live in the API's store instance, so the
+  // public page reads published videos from the same CMS endpoint the admin writes to.
+  useEffect(() => {
+    let ignore = false;
+    fetch('/api/cms/social-videos')
+      .then((res) => (res.ok ? res.json() : { videos: [] }))
+      .then((data) => {
+        if (!ignore && Array.isArray(data.videos)) setVideos(data.videos);
+      })
+      .catch(() => {
+        // Leave the video grid empty if the CMS is unreachable.
+      });
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   const categories = ['all', ...Array.from(new Set(galleryItems.map((g) => g.category).filter(Boolean)))];
 
@@ -28,17 +48,14 @@ export default function GalleryPage() {
       <section className="relative pt-36 sm:pt-40 pb-16 bg-ak-surface border-b border-ak-line">
         <div className="absolute inset-0 ak-stripe opacity-40 pointer-events-none" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <div className="ak-eyebrow mb-4">
-              Facility &bull; Brotherhood &bull; Gorkhali Gym
-            </div>
-            <h1 className="font-display text-4xl sm:text-5xl text-white mt-2">
-              Inside Gorkhali Gym
-            </h1>
-            <p className="text-ak-muted text-base sm:text-lg mt-4 leading-relaxed">
-              Explore our training floor, power racks, dumbell sections, cardio machines, and community lifting atmosphere in Itahari.
-            </p>
-          </div>
+          <PageHero
+            pageSlug="gallery"
+            fallback={{
+              eyebrow: 'Facility • Brotherhood • Gorkhali Gym',
+              heading: 'Inside Gorkhali Gym',
+              body: 'Explore our training floor, power racks, dumbell sections, cardio machines, and community lifting atmosphere in Itahari.',
+            }}
+          />
         </div>
       </section>
 
@@ -91,6 +108,31 @@ export default function GalleryPage() {
           </div>
         </div>
       </section>
+
+      {videos.length > 0 && (
+        <section className="py-24 bg-ak-surface border-t border-ak-line">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+            <div className="max-w-3xl">
+              <div className="ak-eyebrow mb-3 flex items-center gap-2">
+                <Play className="w-3.5 h-3.5 -skew-x-12 fill-ak-accent text-ak-accent" />
+                Social &bull; Reels &bull; Clips
+              </div>
+              <h2 className="font-display text-3xl sm:text-4xl text-white">
+                Watch the Action
+              </h2>
+              <p className="text-ak-muted mt-3 text-sm sm:text-base">
+                Training clips, transformations, and behind-the-scenes moments from our Facebook, Instagram, and TikTok.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {videos.map((video) => (
+                <SocialVideoEmbed key={video.id} video={video} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <Footer onOpenApplyModal={() => setApplyModalOpen(true)} />
       <ApplyModal isOpen={applyModalOpen} onClose={() => setApplyModalOpen(false)} />

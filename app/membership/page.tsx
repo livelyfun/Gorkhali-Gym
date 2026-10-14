@@ -6,6 +6,7 @@ import { Award, CheckCircle, ArrowRight, ShieldCheck, HeartHandshake, HelpCircle
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
+import PageHero from '@/components/PageHero';
 import { store } from '@/lib/data-store';
 
 export default function MembershipPage() {
@@ -27,17 +28,14 @@ export default function MembershipPage() {
       <section className="relative pt-36 sm:pt-40 pb-16 bg-ak-surface border-b border-ak-line">
         <div className="absolute inset-0 ak-stripe opacity-40 pointer-events-none" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <div className="ak-eyebrow mb-4">
-              Membership &bull; Gorkhali Gym Itahari
-            </div>
-            <h1 className="font-display text-4xl sm:text-5xl text-white mt-2">
-              Invest in Your Strength
-            </h1>
-            <p className="text-ak-muted text-base sm:text-lg mt-4 leading-relaxed">
-              Transparent, straightforward memberships with full access to our weight room, cardio zones, locker facilities, and expert guidance.
-            </p>
-          </div>
+          <PageHero
+            pageSlug="membership"
+            fallback={{
+              eyebrow: 'Membership • Gorkhali Gym Itahari',
+              heading: 'Invest in Your Strength',
+              body: 'Transparent, straightforward memberships with full access to our weight room, cardio zones, locker facilities, and expert guidance.',
+            }}
+          />
         </div>
       </section>
 

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { store } from '@/lib/data-store';
+import { persistStore } from '@/lib/store-persistence';
 import { requireAuth } from '@/lib/auth';
 
 export async function GET() {
@@ -14,6 +15,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const updated = store.updateReferralProgram(body);
+    await persistStore();
     return NextResponse.json({ success: true, referral: updated });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Failed to update referral program';

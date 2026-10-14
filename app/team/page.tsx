@@ -6,6 +6,7 @@ import { Users, Award, ShieldCheck, ArrowRight, MessageCircle } from 'lucide-rea
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
+import PageHero from '@/components/PageHero';
 import { store } from '@/lib/data-store';
 
 export default function TeamPage() {
@@ -27,17 +28,14 @@ export default function TeamPage() {
       <section className="relative pt-36 sm:pt-40 pb-16 bg-ak-surface border-b border-ak-line">
         <div className="absolute inset-0 ak-stripe opacity-40 pointer-events-none" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <div className="ak-eyebrow mb-4">
-              Coaches &bull; Mentors &bull; Gorkhali Gym Itahari
-            </div>
-            <h1 className="font-display text-4xl sm:text-5xl text-white mt-2">
-              Our Certified Training Staff
-            </h1>
-            <p className="text-ak-muted text-base sm:text-lg mt-4 leading-relaxed">
-              Meet the passionate educators and conditioning specialists dedicated to guiding your form, injury prevention, and athletic performance.
-            </p>
-          </div>
+          <PageHero
+            pageSlug="team"
+            fallback={{
+              eyebrow: 'Coaches • Mentors • Gorkhali Gym Itahari',
+              heading: 'Our Certified Training Staff',
+              body: 'Meet the passionate educators and conditioning specialists dedicated to guiding your form, injury prevention, and athletic performance.',
+            }}
+          />
         </div>
       </section>
 

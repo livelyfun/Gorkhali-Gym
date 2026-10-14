@@ -14,6 +14,7 @@ import {
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
+import PageHero from '@/components/PageHero';
 import { store } from '@/lib/data-store';
 
 export default function ContactPage() {
@@ -67,17 +68,14 @@ export default function ContactPage() {
       <section className="relative pt-36 sm:pt-40 pb-16 bg-ak-surface border-b border-ak-line">
         <div className="absolute inset-0 ak-stripe opacity-40 pointer-events-none" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <div className="ak-eyebrow mb-4">
-              Get in Touch &bull; Itahari Gym
-            </div>
-            <h1 className="font-display text-4xl sm:text-5xl text-white mt-2">
-              Contact Gorkhali Gym
-            </h1>
-            <p className="text-ak-muted text-base sm:text-lg mt-4 leading-relaxed">
-              We welcome you to visit our facility in person or reach out through direct WhatsApp and phone call.
-            </p>
-          </div>
+          <PageHero
+            pageSlug="contact"
+            fallback={{
+              eyebrow: 'Get in Touch • Itahari Gym',
+              heading: 'Contact Gorkhali Gym',
+              body: 'We welcome you to visit our facility in person or reach out through direct WhatsApp and phone call.',
+            }}
+          />
         </div>
       </section>
 

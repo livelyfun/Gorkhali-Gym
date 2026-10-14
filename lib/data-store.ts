@@ -1,4 +1,7 @@
 import prisma, { isDbConfigured } from './prisma';
+import type { SocialVideoPlatform } from './social-video';
+
+export type { SocialVideoPlatform } from './social-video';
 
 export interface SiteSettings {
   gymName: string;
@@ -34,6 +37,14 @@ export interface Announcement {
   endDate?: string | null;
 }
 
+export interface PageSectionItemData {
+  icon?: string | null;
+  title: string;
+  body: string;
+  ctaLabel?: string | null;
+  ctaUrl?: string | null;
+}
+
 export interface PageSectionItem {
   id: string;
   pageSlug: string;
@@ -44,6 +55,7 @@ export interface PageSectionItem {
   imageUrl?: string | null;
   ctaLabel?: string | null;
   ctaUrl?: string | null;
+  items?: PageSectionItemData[];
   displayOrder: number;
   isVisible: boolean;
 }
@@ -55,6 +67,8 @@ export interface NavigationItemType {
   displayOrder: number;
   parentId?: string | null;
   isPublished: boolean;
+  location?: 'header' | 'footer';
+  footerColumn?: string | null;
   children?: NavigationItemType[];
 }
 
@@ -150,6 +164,19 @@ export interface GalleryItemType {
 }
 
 export type GalleryItem = GalleryItemType;
+
+export interface SocialVideoItem {
+  id: string;
+  title: string;
+  platform: SocialVideoPlatform;
+  url: string;
+  embedUrl?: string | null;
+  caption: string | null;
+  thumbnailUrl: string | null;
+  displayOrder: number;
+  isPublished: boolean;
+  createdAt: string;
+}
 
 export interface ReviewItem {
   id: string;
@@ -267,6 +294,12 @@ const initialSections: PageSectionItem[] = [
     imageUrl: '/images/hero_gorkhali_gym.jpg',
     ctaLabel: 'Apply for Membership',
     ctaUrl: '/apply',
+    items: [
+      { icon: 'Clock', title: '5:30 AM', body: 'Early Birds Opening' },
+      { icon: 'Users', title: '1-on-1', body: 'Dedicated PT Coaches' },
+      { icon: 'Dumbbell', title: '100%', body: 'Real Iron & Racks' },
+      { icon: 'Star', title: '4.9 ★', body: 'Top Rated in Itahari' },
+    ],
     displayOrder: 1,
     isVisible: true,
   },
@@ -295,6 +328,439 @@ const initialSections: PageSectionItem[] = [
     ctaLabel: 'Start Training Today',
     ctaUrl: '/apply',
     displayOrder: 3,
+    isVisible: true,
+  },
+  {
+    id: 'sec-programs',
+    pageSlug: 'home',
+    sectionKey: 'programs',
+    heading: 'Featured Training Disciplines',
+    subheading: 'Engineered for Results',
+    bodyText:
+      'Whether your target is raw powerlifting strength, athletic hypertrophy, or total body fat loss, we have the specialized track for you.',
+    imageUrl: '/images/training_strength_gym.jpg',
+    ctaLabel: 'View All Training Programs',
+    ctaUrl: '/training',
+    displayOrder: 4,
+    isVisible: true,
+  },
+  {
+    id: 'sec-services',
+    pageSlug: 'home',
+    sectionKey: 'services',
+    heading: 'Specialized Gym Services',
+    subheading: 'Complete Health & Recovery',
+    bodyText:
+      'Holistic fitness requires recovery, correct mobility, and calibrated nutrition. Experience our supportive health services.',
+    imageUrl: '/images/training_yoga_wellness.jpg',
+    ctaLabel: 'All Services',
+    ctaUrl: '/services',
+    displayOrder: 5,
+    isVisible: true,
+  },
+  {
+    id: 'sec-why',
+    pageSlug: 'home',
+    sectionKey: 'why',
+    heading: 'Why Train at Gorkhali Gym?',
+    subheading: 'Built by Gurkhas, For Champions',
+    bodyText:
+      'We reject noisy gimmicks. We cultivate a serious, motivating sanctuary where everyday people transform into their strongest version.',
+    imageUrl: '/images/hero_gorkhali_gym.jpg',
+    ctaLabel: '',
+    ctaUrl: '',
+    items: [
+      {
+        icon: '01',
+        title: 'Elite Equipment',
+        body: 'Full array of Olympic bumper plates, calibrated steel barbells, power racks, dumbbell racks up to 50kg, and smooth pulley systems.',
+      },
+      {
+        icon: '02',
+        title: 'Authentic Coaching',
+        body: 'Coaches who demonstrate with proper biomechanics, safe lifting techniques, posture correction, and progressive overload.',
+      },
+      {
+        icon: '03',
+        title: 'Discipline & Respect',
+        body: 'Zero harassment, zero ego. Every member reracks weights and supports fellow lifters, creating a safe family environment for women and men.',
+      },
+      {
+        icon: '04',
+        title: 'Prime Location',
+        body: 'Strategically located right on Dharan Road opposite Soaltee Westend Hotel, easily accessible with ample two-wheeler and vehicle parking.',
+      },
+    ],
+    displayOrder: 6,
+    isVisible: true,
+  },
+  {
+    id: 'sec-membership',
+    pageSlug: 'home',
+    sectionKey: 'membership',
+    heading: 'Membership Options',
+    subheading: 'Transparent & Accessible',
+    bodyText:
+      'Flexible options crafted to fit your lifestyle, budget, and long-term athletic goals.',
+    imageUrl: '/images/trainer_coaching_session.jpg',
+    ctaLabel: '',
+    ctaUrl: '',
+    displayOrder: 7,
+    isVisible: true,
+  },
+  {
+    id: 'sec-trainers',
+    pageSlug: 'home',
+    sectionKey: 'trainers',
+    heading: 'Our Certified Trainers',
+    subheading: 'Knowledge • Dedication • Support',
+    bodyText:
+      'Real mentors who guide your lifts, refine your nutrition, and hold you accountable to your personal best.',
+    imageUrl: '/images/trainer_coaching_session.jpg',
+    ctaLabel: 'Meet Entire Team',
+    ctaUrl: '/team',
+    displayOrder: 8,
+    isVisible: true,
+  },
+  {
+    id: 'sec-gallery',
+    pageSlug: 'home',
+    sectionKey: 'gallery',
+    heading: 'From the Floor',
+    subheading: 'Inside the Gym • Facility • Brotherhood',
+    bodyText:
+      'A look inside Gorkhali Gym — the training floor, power racks, and the community that shows up every day.',
+    imageUrl: '/images/hero_gorkhali_gym.jpg',
+    ctaLabel: 'View All Photos',
+    ctaUrl: '/gallery',
+    displayOrder: 9,
+    isVisible: true,
+  },
+  {
+    id: 'sec-videos',
+    pageSlug: 'home',
+    sectionKey: 'videos',
+    heading: 'Watch the Action',
+    subheading: 'Social • Reels • Clips',
+    bodyText:
+      'Training clips, transformations, and behind-the-scenes moments from our Facebook, Instagram, and TikTok.',
+    imageUrl: '/images/training_strength_gym.jpg',
+    ctaLabel: 'View All Videos',
+    ctaUrl: '/gallery',
+    displayOrder: 10,
+    isVisible: true,
+  },
+  {
+    id: 'sec-reviews',
+    pageSlug: 'home',
+    sectionKey: 'reviews',
+    heading: 'What Our Members Say',
+    subheading: 'Authentic Member Stories',
+    bodyText:
+      'Real lifters from Itahari, Dharan, and across Koshi Province who achieved genuine strength and physique goals.',
+    imageUrl: '/images/training_strength_gym.jpg',
+    ctaLabel: 'All Reviews',
+    ctaUrl: '/reviews',
+    displayOrder: 11,
+    isVisible: true,
+  },
+  {
+    id: 'sec-faq',
+    pageSlug: 'home',
+    sectionKey: 'faq',
+    heading: 'Got Questions?',
+    subheading: 'Answers',
+    bodyText: 'Everything you need to know about joining Gorkhali Gym Itahari.',
+    imageUrl: '/images/hero_gorkhali_gym.jpg',
+    ctaLabel: 'Browse Complete FAQ Directory',
+    ctaUrl: '/faq',
+    displayOrder: 12,
+    isVisible: true,
+  },
+  {
+    id: 'sec-hero-about',
+    pageSlug: 'about',
+    sectionKey: 'hero',
+    heading: 'The Brotherhood of Strength & Discipline',
+    subheading: 'About Gorkhali Gym • Itahari',
+    bodyText:
+      "Founded on the legendary Gurkha principles of valor, honesty, and uncompromising endurance, Gorkhali Gym is Itahari's most respected fitness club.",
+    displayOrder: 1,
+    isVisible: true,
+  },
+  {
+    id: 'sec-hero-services',
+    pageSlug: 'services',
+    sectionKey: 'hero',
+    heading: 'Holistic Fitness & Recovery',
+    subheading: 'Specialized Services • Gorkhali Gym',
+    bodyText:
+      'Elevate your athletic journey with dedicated 1-on-1 coaching, mobility and yoga sessions, customized meal plans, and body composition analytics.',
+    displayOrder: 1,
+    isVisible: true,
+  },
+  {
+    id: 'sec-hero-training',
+    pageSlug: 'training',
+    sectionKey: 'hero',
+    heading: 'Transformative Training Tracks',
+    subheading: 'Training Programs • Gorkhali Gym',
+    bodyText:
+      'Targeted, coach-led training structures tailored for building strength, stripping body fat, and cultivating athletic longevity.',
+    displayOrder: 1,
+    isVisible: true,
+  },
+  {
+    id: 'sec-hero-membership',
+    pageSlug: 'membership',
+    sectionKey: 'hero',
+    heading: 'Invest in Your Strength',
+    subheading: 'Membership • Gorkhali Gym Itahari',
+    bodyText:
+      'Transparent, straightforward memberships with full access to our weight room, cardio zones, locker facilities, and expert guidance.',
+    displayOrder: 1,
+    isVisible: true,
+  },
+  {
+    id: 'sec-hero-membership-club',
+    pageSlug: 'membership/club',
+    sectionKey: 'hero',
+    heading: 'The Gorkhali Club Code',
+    subheading: 'Club Etiquette • Rules • Facilities',
+    bodyText:
+      'We take pride in maintaining a disciplined, hygienic, and welcoming training atmosphere for all members in Itahari.',
+    displayOrder: 1,
+    isVisible: true,
+  },
+  {
+    id: 'sec-hero-membership-refer',
+    pageSlug: 'membership/refer-a-friend',
+    sectionKey: 'hero',
+    heading: 'Refer a Friend & Earn Fitness Rewards',
+    subheading: 'Rewards Program • Gorkhali Gym',
+    bodyText: 'Bring a training partner and both receive exclusive membership perks.',
+    displayOrder: 1,
+    isVisible: true,
+  },
+  {
+    id: 'sec-hero-team',
+    pageSlug: 'team',
+    sectionKey: 'hero',
+    heading: 'Our Certified Training Staff',
+    subheading: 'Coaches • Mentors • Gorkhali Gym Itahari',
+    bodyText:
+      'Meet the passionate educators and conditioning specialists dedicated to guiding your form, injury prevention, and athletic performance.',
+    displayOrder: 1,
+    isVisible: true,
+  },
+  {
+    id: 'sec-hero-gallery',
+    pageSlug: 'gallery',
+    sectionKey: 'hero',
+    heading: 'Inside Gorkhali Gym',
+    subheading: 'Facility • Brotherhood • Gorkhali Gym',
+    bodyText:
+      'Explore our training floor, power racks, dumbell sections, cardio machines, and community lifting atmosphere in Itahari.',
+    displayOrder: 1,
+    isVisible: true,
+  },
+  {
+    id: 'sec-hero-blog',
+    pageSlug: 'blog',
+    sectionKey: 'hero',
+    heading: 'Fitness & Training Insights',
+    subheading: 'Knowledge • Education • Gorkhali Gym',
+    bodyText:
+      'Practical guides on progressive overload, recovery nutrition, injury avoidance, and building lasting fitness habits in Nepal.',
+    displayOrder: 1,
+    isVisible: true,
+  },
+  {
+    id: 'sec-hero-faq',
+    pageSlug: 'faq',
+    sectionKey: 'hero',
+    heading: 'Frequently Asked Questions',
+    subheading: 'Answers • Information • Gorkhali Gym Itahari',
+    bodyText:
+      'Find answers to questions regarding membership, timings, locker usage, beginner orientation, personal training, and gym policies.',
+    displayOrder: 1,
+    isVisible: true,
+  },
+  {
+    id: 'sec-hero-offers',
+    pageSlug: 'offers',
+    sectionKey: 'hero',
+    heading: 'Current Offers & Promotions',
+    subheading: 'Special Deals • Gorkhali Gym Itahari',
+    bodyText:
+      'Take advantage of our seasonal discounts, student packages, and new lifter orientation bundles.',
+    displayOrder: 1,
+    isVisible: true,
+  },
+  {
+    id: 'sec-hero-events',
+    pageSlug: 'events',
+    sectionKey: 'hero',
+    heading: 'Gym Events & Challenges',
+    subheading: 'Community • Competitions • Gorkhali Gym',
+    bodyText:
+      'Join friendly gym lifting meets, deadlift challenges, fitness workshops, and outdoor bootcamps in Itahari.',
+    displayOrder: 1,
+    isVisible: true,
+  },
+  {
+    id: 'sec-hero-reviews',
+    pageSlug: 'reviews',
+    sectionKey: 'hero',
+    heading: 'Genuine Stories & Reviews',
+    subheading: 'Member Testimonials • Gorkhali Gym Itahari',
+    bodyText:
+      'Read how members of all fitness levels found consistency, power, and mutual respect training under the Gorkhali banner.',
+    displayOrder: 1,
+    isVisible: true,
+  },
+  {
+    id: 'sec-hero-contact',
+    pageSlug: 'contact',
+    sectionKey: 'hero',
+    heading: 'Contact Gorkhali Gym',
+    subheading: 'Get in Touch • Itahari Gym',
+    bodyText:
+      'We welcome you to visit our facility in person or reach out through direct WhatsApp and phone call.',
+    displayOrder: 1,
+    isVisible: true,
+  },
+  {
+    id: 'sec-hero-apply',
+    pageSlug: 'apply',
+    sectionKey: 'hero',
+    heading: 'Start Your Transformation',
+    subheading: 'Membership Application • Gorkhali Gym Itahari',
+    bodyText:
+      'Apply online for quick onboarding. Our team prepares your member profile and sets up your initial gym orientation.',
+    displayOrder: 1,
+    isVisible: true,
+  },
+  {
+    id: 'sec-about-heritage',
+    pageSlug: 'about',
+    sectionKey: 'heritage',
+    heading: 'Not Just a Gym. A Sanctuary for Personal Transformation.',
+    subheading: 'Our Heritage & Identity',
+    bodyText:
+      'In a world flooded with soft shortcuts, Gorkhali Gym stands for authentic effort. Located prominently on Dharan Road opposite the Soaltee Westend Hotel, our gym was built to provide athletes, working professionals, students, and beginners with the ultimate training ecosystem.|We believe that physical power breeds mental calm and resilience. Whether you are stepping under a barbell for the very first time or training for competitive physique or powerlifting goals, our coaches will treat your ambitions with deep respect and unwavering guidance.',
+    imageUrl: '/images/training_strength_gym.jpg',
+    items: [
+      { title: '100%', body: 'Commitment to Member Form & Health' },
+      { title: 'Zero Ego', body: 'Respectful, Welcoming Brotherhood' },
+      { title: 'Facility Standard', body: 'Precision Barbells, Heavy Iron & Modern Biomechanics' },
+    ],
+    displayOrder: 2,
+    isVisible: true,
+  },
+  {
+    id: 'sec-about-values',
+    pageSlug: 'about',
+    sectionKey: 'values',
+    heading: 'Our Non-Negotiable Core Values',
+    subheading: 'Pillars of Culture',
+    items: [
+      {
+        icon: 'ShieldCheck',
+        title: 'Safety First, Always',
+        body: 'Heavy weight means nothing with poor technique. We instruct every lifter on spinal bracing, hip hinges, and proper mobility before adding resistance.',
+      },
+      {
+        icon: 'Award',
+        title: 'Consistency Over Hype',
+        body: "Transformations don't happen overnight. We celebrate daily dedication, showing up at 5:30 AM, and holding each other accountable.",
+      },
+      {
+        icon: 'Users',
+        title: 'Inclusive Community',
+        body: 'From teenagers starting high school fitness to grandfathers staying mobile, Gorkhali Gym is proud to be a family-friendly space for everyone.',
+      },
+    ],
+    displayOrder: 3,
+    isVisible: true,
+  },
+  {
+    id: 'sec-about-cta',
+    pageSlug: 'about',
+    sectionKey: 'cta',
+    heading: 'Come Tour the Facility in Person',
+    bodyText:
+      'Meet our head coach, test our equipment, and talk through your personal goals. We are opposite Soaltee Westend Hotel on Dharan Road, Itahari.',
+    ctaLabel: 'Schedule Free Gym Walkthrough',
+    ctaUrl: '/apply',
+    displayOrder: 4,
+    isVisible: true,
+  },
+  {
+    id: 'sec-club-inclusions',
+    pageSlug: 'membership/club',
+    sectionKey: 'inclusions',
+    heading: 'Member Inclusions',
+    subheading: 'What Your Club Membership Covers',
+    items: [
+      {
+        icon: 'Dumbbell',
+        title: 'Full Gym Floor Access',
+        body: 'Unlimited access to free weights, power racks, cardio machines, and functional training zones during all opening hours.',
+      },
+      {
+        icon: 'ShieldCheck',
+        title: 'Secure Lockers & Showers',
+        body: 'Clean, supervised locker rooms with hot showers so you can train before work or study and head out fresh.',
+      },
+      {
+        icon: 'Clock',
+        title: 'Flexible Entry Slots',
+        body: 'Morning and evening batches designed around Itahari work and college schedules — train when it suits you.',
+      },
+    ],
+    displayOrder: 2,
+    isVisible: true,
+  },
+  {
+    id: 'sec-club-rules',
+    pageSlug: 'membership/club',
+    sectionKey: 'rules',
+    heading: 'Club Etiquette & Gym Rules',
+    subheading: 'The Gorkhali Club Code',
+    items: [
+      { icon: 'Dumbbell', title: 'Rerack Your Weights:', body: 'Always return dumbbells, plates, and bars to their racks. A tidy floor keeps every lifter safe and the gym ready for the next member.' },
+      { icon: 'ShieldCheck', title: 'Clean Training Shoes:', body: 'Use dedicated indoor training shoes on the gym floor to protect mats and equipment and keep the environment hygienic.' },
+      { icon: 'Users', title: 'Personal Towel & Hygiene:', body: 'Carry a personal towel, wipe down benches after use, and maintain good personal hygiene out of respect for fellow members.' },
+      { icon: 'Award', title: 'Mutual Respect & Zero Harassment:', body: 'No ego, no harassment, no unsolicited advice. We lift each other up and maintain a welcoming family atmosphere for everyone.' },
+    ],
+    displayOrder: 3,
+    isVisible: true,
+  },
+  {
+    id: 'sec-membership-quicklinks',
+    pageSlug: 'membership',
+    sectionKey: 'quicklinks',
+    heading: 'Explore Membership Details',
+    subheading: 'More Ways to Train With Us',
+    items: [
+      { title: 'Club Membership & Gym Etiquette', body: 'Understand your inclusions, house rules, and the Gorkhali Club Code.', ctaLabel: 'View Club Details', ctaUrl: '/membership/club' },
+      { title: 'Refer a Friend Program', body: 'Bring a training partner and both of you unlock exclusive membership rewards.', ctaLabel: 'See Rewards', ctaUrl: '/membership/refer-a-friend' },
+    ],
+    displayOrder: 2,
+    isVisible: true,
+  },
+  {
+    id: 'sec-apply-reassurance',
+    pageSlug: 'apply',
+    sectionKey: 'reassurance',
+    heading: 'Simple, Supportive Onboarding',
+    items: [
+      { icon: 'ShieldCheck', title: 'No Obligation Tour', body: 'Tour the facility and meet the coaches before you commit to anything.' },
+      { icon: 'PhoneCall', title: 'Instant WhatsApp Connect', body: 'We reply quickly on WhatsApp to confirm your slot and answer questions.' },
+      { icon: 'Award', title: 'Certified Coaching', body: 'Every new member gets a form assessment and a personalised starting plan.' },
+    ],
+    displayOrder: 2,
     isVisible: true,
   },
 ];
@@ -355,6 +821,76 @@ const initialNavigation: NavigationItemType[] = [
     ],
   },
   { id: 'nav-contact', label: 'Contact', href: '/contact', displayOrder: 6, isPublished: true },
+];
+
+const initialFooterNavigation: NavigationItemType[] = [
+  {
+    id: 'nav-foot-plans',
+    label: 'Membership Plans',
+    href: '/membership',
+    displayOrder: 1,
+    isPublished: true,
+    location: 'footer',
+    footerColumn: 'Membership & Club',
+  },
+  {
+    id: 'nav-foot-club',
+    label: 'Club Membership & Rules',
+    href: '/membership/club',
+    displayOrder: 2,
+    isPublished: true,
+    location: 'footer',
+    footerColumn: 'Membership & Club',
+  },
+  {
+    id: 'nav-foot-refer',
+    label: 'Refer a Friend Program',
+    href: '/membership/refer-a-friend',
+    displayOrder: 3,
+    isPublished: true,
+    location: 'footer',
+    footerColumn: 'Membership & Club',
+  },
+  {
+    id: 'nav-foot-offers',
+    label: 'Promotions & Deals',
+    href: '/offers',
+    displayOrder: 4,
+    isPublished: true,
+    location: 'footer',
+    footerColumn: 'Membership & Club',
+  },
+  {
+    id: 'nav-foot-events',
+    label: 'Gym Events & Challenges',
+    href: '/events',
+    displayOrder: 5,
+    isPublished: true,
+    location: 'footer',
+    footerColumn: 'Membership & Club',
+  },
+  {
+    id: 'nav-foot-reviews',
+    label: 'Member Reviews & Ratings',
+    href: '/reviews',
+    displayOrder: 6,
+    isPublished: true,
+    location: 'footer',
+    footerColumn: 'Membership & Club',
+  },
+  {
+    id: 'nav-foot-gallery',
+    label: 'Photo & Facility Gallery',
+    href: '/gallery',
+    displayOrder: 7,
+    isPublished: true,
+    location: 'footer',
+    footerColumn: 'Membership & Club',
+  },
+  { id: 'nav-foot-about', label: 'About Us', href: '/about', displayOrder: 8, isPublished: true, location: 'footer' },
+  { id: 'nav-foot-team', label: 'Trainers', href: '/team', displayOrder: 9, isPublished: true, location: 'footer' },
+  { id: 'nav-foot-faq', label: 'FAQ', href: '/faq', displayOrder: 10, isPublished: true, location: 'footer' },
+  { id: 'nav-foot-contact', label: 'Contact', href: '/contact', displayOrder: 11, isPublished: true, location: 'footer' },
 ];
 
 const initialPrograms: ProgramItem[] = [
@@ -614,6 +1150,51 @@ const initialGallery: GalleryItemType[] = [
   },
 ];
 
+// Social videos are CMS-managed (Facebook / Instagram / TikTok). These initial
+// entries are seeded once per store instance via stable IDs, so they never
+// duplicate, and admins can edit, unpublish, reorder, or delete them. Original
+// URLs (including query parameters) are preserved; embedUrl is the official
+// embed resolved on the server (Facebook share link -> canonical Reel).
+const initialSocialVideos: SocialVideoItem[] = [
+  {
+    id: 'vid-seed-fb',
+    title: 'Facebook Video',
+    platform: 'facebook',
+    url: 'https://www.facebook.com/share/r/1DpquBshnD/',
+    embedUrl:
+      'https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1141237738243697%2F&show_text=false&width=560&autoplay=false',
+    caption: null,
+    thumbnailUrl: null,
+    displayOrder: 1,
+    isPublished: true,
+    createdAt: '2026-01-01T00:00:00.000Z',
+  },
+  {
+    id: 'vid-seed-ig',
+    title: 'Instagram Reel',
+    platform: 'instagram',
+    url: 'https://www.instagram.com/reel/DeYJzR3Ii2P/?dlrf=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA==',
+    embedUrl: 'https://www.instagram.com/reel/DeYJzR3Ii2P/embed/',
+    caption: null,
+    thumbnailUrl: null,
+    displayOrder: 2,
+    isPublished: true,
+    createdAt: '2026-01-01T00:00:01.000Z',
+  },
+  {
+    id: 'vid-seed-tt',
+    title: 'TikTok Video',
+    platform: 'tiktok',
+    url: 'https://www.tiktok.com/@gorkhali.fitness/video/7659777793491848469?is_from_webapp=1&sender_device=pc&web_id=7695321401867765249',
+    embedUrl: 'https://www.tiktok.com/embed/v2/7659777793491848469',
+    caption: null,
+    thumbnailUrl: null,
+    displayOrder: 3,
+    isPublished: true,
+    createdAt: '2026-01-01T00:00:02.000Z',
+  },
+];
+
 const initialReviews: ReviewItem[] = [
   {
     id: 'rev-1',
@@ -808,7 +1389,7 @@ class DataStore {
   settings: SiteSettings = { ...initialSettings };
   announcement: Announcement = { ...initialAnnouncement };
   sections: PageSectionItem[] = [...initialSections];
-  navigation: NavigationItemType[] = [...initialNavigation];
+  navigation: NavigationItemType[] = [...initialNavigation, ...initialFooterNavigation];
   programs: ProgramItem[] = [...initialPrograms];
   offers: OfferItem[] = [...initialOffers];
   events: EventItem[] = [...initialEvents];
@@ -821,6 +1402,7 @@ class DataStore {
   faqs: FaqItem[] = [...initialFaqs];
   inquiries: InquiryItem[] = [];
   media: MediaAssetItem[] = [...initialMedia];
+  videos: SocialVideoItem[] = [...initialSocialVideos];
 
   isPostgresConnected(): boolean {
     return isDbConfigured;
@@ -860,9 +1442,10 @@ class DataStore {
   }
 
   // --- Page Sections ---
-  getSections(pageSlug = 'home'): PageSectionItem[] {
+  getSections(pageSlug = 'home', visibleOnly = true): PageSectionItem[] {
     return this.sections
       .filter((s) => s.pageSlug === pageSlug)
+      .filter((s) => (visibleOnly ? s.isVisible : true))
       .sort((a, b) => a.displayOrder - b.displayOrder);
   }
 
@@ -895,7 +1478,13 @@ class DataStore {
   }
 
   // --- Navigation Items ---
-  getNavigation(): NavigationItemType[] {
+  getNavigation(publishedOnly = true): NavigationItemType[] {
+    return [...this.navigation]
+      .filter((n) => (publishedOnly ? n.isPublished : true))
+      .sort((a, b) => a.displayOrder - b.displayOrder);
+  }
+
+  getAllNavigation(): NavigationItemType[] {
     return [...this.navigation].sort((a, b) => a.displayOrder - b.displayOrder);
   }
 
@@ -1160,6 +1749,49 @@ class DataStore {
     return this.gallery.length < len;
   }
 
+  // --- Social Videos (Facebook / Instagram / TikTok) ---
+  getSocialVideos(publishedOnly = true, platform?: SocialVideoPlatform): SocialVideoItem[] {
+    return this.videos
+      .filter((v) => {
+        if (publishedOnly && !v.isPublished) return false;
+        if (platform && v.platform !== platform) return false;
+        return true;
+      })
+      .sort((a, b) => a.displayOrder - b.displayOrder);
+  }
+
+  getSocialVideosAll(): SocialVideoItem[] {
+    return [...this.videos].sort((a, b) => a.displayOrder - b.displayOrder);
+  }
+
+  saveSocialVideo(item: Omit<SocialVideoItem, 'id'> & { id?: string }): SocialVideoItem {
+    if (item.id) {
+      const idx = this.videos.findIndex((v) => v.id === item.id);
+      if (idx !== -1) {
+        this.videos[idx] = { ...this.videos[idx], ...item };
+        return this.videos[idx];
+      }
+    }
+    const newVideo: SocialVideoItem = {
+      ...item,
+      id: item.id || `vid-${Date.now()}`,
+      embedUrl: item.embedUrl ?? null,
+      caption: item.caption ?? null,
+      thumbnailUrl: item.thumbnailUrl ?? null,
+      isPublished: item.isPublished ?? false,
+      displayOrder: item.displayOrder ?? this.videos.length + 1,
+      createdAt: item.createdAt || new Date().toISOString(),
+    };
+    this.videos.push(newVideo);
+    return newVideo;
+  }
+
+  deleteSocialVideo(id: string): boolean {
+    const len = this.videos.length;
+    this.videos = this.videos.filter((v) => v.id !== id);
+    return this.videos.length < len;
+  }
+
   // --- Reviews ---
   getReviews(publishedOnly = true, moderationFilter?: 'all' | 'pending' | 'published'): ReviewItem[] {
     return this.reviews
@@ -1420,7 +2052,69 @@ class DataStore {
       },
     };
   }
+
+  // --- Persistence (single JSONB snapshot) ---
+  // Serializes the entire store into a plain JSON-safe object so it can be
+  // stored as a single row in Postgres. Used by lib/store-persistence.ts.
+  snapshot(): Record<string, unknown> {
+    return {
+      version: 1,
+      updatedAt: new Date().toISOString(),
+      settings: this.settings,
+      announcement: this.announcement,
+      sections: this.sections,
+      navigation: this.navigation,
+      programs: this.programs,
+      offers: this.offers,
+      events: this.events,
+      plans: this.plans,
+      referral: this.referral,
+      trainers: this.trainers,
+      gallery: this.gallery,
+      reviews: this.reviews,
+      blog: this.blog,
+      faqs: this.faqs,
+      inquiries: this.inquiries,
+      media: this.media,
+      videos: this.videos,
+    };
+  }
+
+  // Restores the store from a snapshot. Unknown/partial data degrades
+  // gracefully to the current (seed) values.
+  hydrate(data: unknown): void {
+    if (!data || typeof data !== 'object') return;
+    const d = data as Record<string, unknown>;
+    const obj = <T extends object>(value: unknown, fallback: T): T =>
+      value && typeof value === 'object' ? { ...fallback, ...(value as T) } : fallback;
+    const arr = <T>(value: unknown): T[] | undefined =>
+      Array.isArray(value) ? (value as T[]) : undefined;
+
+    this.settings = obj(d.settings, this.settings);
+    this.announcement = obj(d.announcement, this.announcement);
+    this.referral = obj(d.referral, this.referral);
+    this.sections = arr<PageSectionItem>(d.sections) ?? this.sections;
+    this.navigation = arr<NavigationItemType>(d.navigation) ?? this.navigation;
+    this.programs = arr<ProgramItem>(d.programs) ?? this.programs;
+    this.offers = arr<OfferItem>(d.offers) ?? this.offers;
+    this.events = arr<EventItem>(d.events) ?? this.events;
+    this.plans = arr<MembershipPlanItem>(d.plans) ?? this.plans;
+    this.trainers = arr<TrainerItem>(d.trainers) ?? this.trainers;
+    this.gallery = arr<GalleryItemType>(d.gallery) ?? this.gallery;
+    this.reviews = arr<ReviewItem>(d.reviews) ?? this.reviews;
+    this.blog = arr<BlogPostItem>(d.blog) ?? this.blog;
+    this.faqs = arr<FaqItem>(d.faqs) ?? this.faqs;
+    this.inquiries = arr<InquiryItem>(d.inquiries) ?? this.inquiries;
+    this.media = arr<MediaAssetItem>(d.media) ?? this.media;
+    this.videos = arr<SocialVideoItem>(d.videos) ?? this.videos;
+  }
 }
 
-export const store = new DataStore();
+// Next.js compiles every route handler and server component as a separate
+// module graph, so a plain `new DataStore()` here would be duplicated per route
+// and mutations would never be visible across routes. Store the singleton on
+// globalThis so every module in the same Node process shares one instance.
+const globalForStore = globalThis as unknown as { __gorkhaliStore?: DataStore };
+
+export const store: DataStore = globalForStore.__gorkhaliStore ?? (globalForStore.__gorkhaliStore = new DataStore());
 export default store;

@@ -7,6 +7,7 @@ import { Calendar, MapPin, ArrowRight, ChevronRight, Trophy } from 'lucide-react
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
+import PageHero from '@/components/PageHero';
 import { store } from '@/lib/data-store';
 
 export default function EventsPage() {
@@ -27,17 +28,14 @@ export default function EventsPage() {
       <section className="relative pt-36 sm:pt-40 pb-16 bg-ak-surface border-b border-ak-line">
         <div className="absolute inset-0 ak-stripe opacity-40 pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <div className="ak-eyebrow">
-              Community &bull; Competitions &bull; Gorkhali Gym
-            </div>
-            <h1 className="font-display text-4xl sm:text-5xl text-white mt-4">
-              Gym Events & Challenges
-            </h1>
-            <p className="text-ak-muted text-base sm:text-lg mt-4 leading-relaxed">
-              Join friendly gym lifting meets, deadlift challenges, fitness workshops, and outdoor bootcamps in Itahari.
-            </p>
-          </div>
+          <PageHero
+            pageSlug="events"
+            fallback={{
+              eyebrow: 'Community • Competitions • Gorkhali Gym',
+              heading: 'Gym Events & Challenges',
+              body: 'Join friendly gym lifting meets, deadlift challenges, fitness workshops, and outdoor bootcamps in Itahari.',
+            }}
+          />
         </div>
       </section>
 

@@ -11,22 +11,27 @@ import {
   MessageCircle,
   Sparkles,
 } from 'lucide-react';
-import { store, SiteSettings, Announcement } from '@/lib/data-store';
+import { store, SiteSettings, Announcement, NavigationItemType } from '@/lib/data-store';
 
 interface HeaderProps {
   initialSettings?: SiteSettings;
   initialAnnouncement?: Announcement;
+  initialNavigation?: NavigationItemType[];
   onOpenApplyModal?: () => void;
 }
 
 export default function Header({
   initialSettings,
   initialAnnouncement,
+  initialNavigation,
   onOpenApplyModal,
 }: HeaderProps) {
   const [settings, setSettings] = useState<SiteSettings>(initialSettings || store.getSettings());
   const [announcement, setAnnouncement] = useState<Announcement>(
     initialAnnouncement || store.getAnnouncement()
+  );
+  const [navigation, setNavigation] = useState<NavigationItemType[]>(
+    initialNavigation || store.getNavigation()
   );
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -72,6 +77,15 @@ export default function Header({
         if (data.announcement) setAnnouncement(data.announcement);
       })
       .catch(() => {});
+
+    fetch('/api/cms/navigation')
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data.navigation) && data.navigation.length > 0) {
+          setNavigation(data.navigation);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const [prevPathname, setPrevPathname] = useState(pathname);
@@ -84,6 +98,21 @@ export default function Header({
   const toggleDropdown = (name: string) => {
     setActiveDropdown(activeDropdown === name ? null : name);
   };
+
+  const publishedChildren = (item: NavigationItemType): NavigationItemType[] =>
+    (item.children || []).filter((c) => c.isPublished !== false);
+
+  const headerNav = navigation.filter((item) => item.location !== 'footer');
+
+  const isItemActive = (item: NavigationItemType): boolean => {
+    if (item.href === '/') return pathname === '/';
+    if (pathname === item.href || pathname.startsWith(`${item.href}/`)) return true;
+    return publishedChildren(item).some(
+      (c) => c.href !== '/' && (pathname === c.href || pathname.startsWith(`${c.href}/`))
+    );
+  };
+
+  const isChildAll = (label: string) => label.trim().endsWith('→');
 
   const navLink = (active: boolean) =>
     `ak-focus ak-link transition-colors whitespace-nowrap ${
@@ -140,170 +169,72 @@ export default function Header({
 
           {/* Zone 2: Navigation Links (Desktop) */}
           <nav className="hidden lg:flex items-center gap-7 text-[11px] font-extrabold uppercase tracking-[0.16em] font-display">
-            <Link href="/" className={navLink(pathname === '/')}>
-              Home
-            </Link>
+            {headerNav.map((item) => {
+              const children = publishedChildren(item);
+              const active = isItemActive(item);
 
-            {/* Training Dropdown */}
-            <div
-              className="relative"
-              onMouseEnter={() => setActiveDropdown('training')}
-              onMouseLeave={() => setActiveDropdown(null)}
-            >
-              <button
-                type="button"
-                className={`ak-focus ak-link flex items-center gap-1.5 transition-colors py-2 whitespace-nowrap ${
-                  pathname.startsWith('/training')
-                    ? 'text-ak-accent'
-                    : 'text-neutral-300 hover:text-white'
-                }`}
-              >
-                <span>Training</span>
-                <ChevronDown className="w-4 h-4 opacity-75" />
-              </button>
-              {activeDropdown === 'training' && (
-                <div className="absolute top-full left-0 w-60 py-2 ak-panel ak-cut-tr shadow-2xl z-50">
-                  <Link href="/training/personal-training" className={dropdownLink}>
-                    Personal Training
+              if (children.length === 0) {
+                return (
+                  <Link key={item.id} href={item.href} className={navLink(active)}>
+                    {item.label}
                   </Link>
-                  <Link href="/training/strength-training" className={dropdownLink}>
-                    Strength Training
-                  </Link>
-                  <Link href="/training/yoga-class" className={dropdownLink}>
-                    Yoga Class
-                  </Link>
-                  <div className="my-1 border-t border-ak-line" />
-                  <Link href="/training" className={dropdownAll}>
-                    Browse All Training →
-                  </Link>
+                );
+              }
+
+              const allChild = children.find((c) => isChildAll(c.label));
+              const regular = children.filter((c) => c !== allChild);
+              const twoColumn = regular.length > 5;
+
+              return (
+                <div
+                  key={item.id}
+                  className="relative"
+                  onMouseEnter={() => setActiveDropdown(item.id)}
+                  onMouseLeave={() => setActiveDropdown(null)}
+                >
+                  <button
+                    type="button"
+                    className={`ak-focus ak-link flex items-center gap-1.5 transition-colors py-2 whitespace-nowrap ${
+                      active ? 'text-ak-accent' : 'text-neutral-300 hover:text-white'
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                    <ChevronDown className="w-4 h-4 opacity-75" />
+                  </button>
+                  {activeDropdown === item.id && (
+                    <div
+                      className={`absolute top-full left-0 py-2 ak-panel ak-cut-tr shadow-2xl z-50 ${
+                        twoColumn ? 'w-[22rem]' : 'w-56'
+                      }`}
+                    >
+                      {twoColumn ? (
+                        <div className="grid grid-cols-2 divide-x divide-ak-line">
+                          {regular.map((child) => (
+                            <Link key={child.id} href={child.href} className={dropdownLink}>
+                              {child.label}
+                            </Link>
+                          ))}
+                        </div>
+                      ) : (
+                        regular.map((child) => (
+                          <Link key={child.id} href={child.href} className={dropdownLink}>
+                            {child.label}
+                          </Link>
+                        ))
+                      )}
+                      {allChild && (
+                        <>
+                          <div className="my-1 border-t border-ak-line" />
+                          <Link href={allChild.href} className={dropdownAll}>
+                            {allChild.label}
+                          </Link>
+                        </>
+                      )}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-
-            {/* Membership Dropdown */}
-            <div
-              className="relative"
-              onMouseEnter={() => setActiveDropdown('membership')}
-              onMouseLeave={() => setActiveDropdown(null)}
-            >
-              <button
-                type="button"
-                className={`ak-focus ak-link flex items-center gap-1.5 transition-colors py-2 whitespace-nowrap ${
-                  pathname.startsWith('/membership')
-                    ? 'text-ak-accent'
-                    : 'text-neutral-300 hover:text-white'
-                }`}
-              >
-                <span>Membership</span>
-                <ChevronDown className="w-4 h-4 opacity-75" />
-              </button>
-              {activeDropdown === 'membership' && (
-                <div className="absolute top-full left-0 w-56 py-2 ak-panel ak-cut-tr shadow-2xl z-50">
-                  <Link href="/membership/club" className={dropdownLink}>
-                    Club Membership
-                  </Link>
-                  <Link href="/membership/refer-a-friend" className={dropdownLink}>
-                    Refer a Friend
-                  </Link>
-                  <div className="my-1 border-t border-ak-line" />
-                  <Link href="/membership" className={dropdownAll}>
-                    Membership Overview →
-                  </Link>
-                </div>
-              )}
-            </div>
-
-            {/* Services Dropdown */}
-            <div
-              className="relative"
-              onMouseEnter={() => setActiveDropdown('services')}
-              onMouseLeave={() => setActiveDropdown(null)}
-            >
-              <button
-                type="button"
-                className={`ak-focus ak-link flex items-center gap-1.5 transition-colors py-2 whitespace-nowrap ${
-                  pathname.startsWith('/services')
-                    ? 'text-ak-accent'
-                    : 'text-neutral-300 hover:text-white'
-                }`}
-              >
-                <span>Services</span>
-                <ChevronDown className="w-4 h-4 opacity-75" />
-              </button>
-              {activeDropdown === 'services' && (
-                <div className="absolute top-full left-0 w-56 py-2 ak-panel ak-cut-tr shadow-2xl z-50">
-                  <Link href="/services/nutritionist" className={dropdownLink}>
-                    Nutritionist Consultation
-                  </Link>
-                  <div className="my-1 border-t border-ak-line" />
-                  <Link href="/services" className={dropdownAll}>
-                    All Services →
-                  </Link>
-                </div>
-              )}
-            </div>
-
-            {/* Explore Dropdown */}
-            <div
-              className="relative"
-              onMouseEnter={() => setActiveDropdown('explore')}
-              onMouseLeave={() => setActiveDropdown(null)}
-            >
-              <button
-                type="button"
-                className={`ak-focus ak-link flex items-center gap-1.5 transition-colors py-2 whitespace-nowrap ${
-                  pathname.startsWith('/gallery') ||
-                  pathname.startsWith('/blog') ||
-                  pathname.startsWith('/events') ||
-                  pathname.startsWith('/offers') ||
-                  pathname.startsWith('/faq') ||
-                  pathname.startsWith('/reviews') ||
-                  pathname.startsWith('/about') ||
-                  pathname.startsWith('/team')
-                    ? 'text-ak-accent'
-                    : 'text-neutral-300 hover:text-white'
-                }`}
-              >
-                <span>Explore</span>
-                <ChevronDown className="w-4 h-4 opacity-75" />
-              </button>
-              {activeDropdown === 'explore' && (
-                <div className="absolute top-full left-0 w-52 py-2 ak-panel ak-cut-tr shadow-2xl grid grid-cols-1 divide-y divide-ak-line z-50">
-                  <div className="py-1">
-                    <Link href="/gallery" className={dropdownLink}>
-                      Gallery
-                    </Link>
-                    <Link href="/blog" className={dropdownLink}>
-                      Blog
-                    </Link>
-                    <Link href="/events" className={dropdownLink}>
-                      Events
-                    </Link>
-                    <Link href="/offers" className={dropdownLink}>
-                      Offers
-                    </Link>
-                  </div>
-                  <div className="py-1">
-                    <Link href="/faq" className={dropdownLink}>
-                      FAQ
-                    </Link>
-                    <Link href="/reviews" className={dropdownLink}>
-                      Reviews
-                    </Link>
-                    <Link href="/about" className={dropdownLink}>
-                      About Us
-                    </Link>
-                    <Link href="/team" className={dropdownLink}>
-                      Our Team
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <Link href="/contact" className={navLink(pathname === '/contact')}>
-              Contact
-            </Link>
+              );
+            })}
           </nav>
 
           {/* Zone 3: Action Button */}
@@ -341,154 +272,70 @@ export default function Header({
       {mobileMenuOpen && (
         <div className="lg:hidden bg-ak-ink border-b border-ak-line px-6 py-6 max-h-[85vh] overflow-y-auto shadow-2xl">
           <div className="flex flex-col gap-4 text-sm font-extrabold uppercase tracking-[0.14em] font-display">
-            <Link
-              href="/"
-              className={`ak-focus py-2 border-b border-ak-line ${
-                pathname === '/' ? 'text-ak-accent' : 'text-neutral-300'
-              }`}
-            >
-              Home
-            </Link>
+            {headerNav.map((item) => {
+              const children = publishedChildren(item);
+              const active = isItemActive(item);
 
-            <div className="py-2 border-b border-ak-line">
-              <button
-                type="button"
-                onClick={() => toggleDropdown('m-training')}
-                className="ak-focus flex items-center justify-between w-full text-neutral-300 py-1 hover:text-white"
-              >
-                <span>Training</span>
-                <ChevronDown
-                  className={`w-4 h-4 transition-transform ${
-                    activeDropdown === 'm-training' ? 'rotate-180' : ''
-                  }`}
-                />
-              </button>
-              {activeDropdown === 'm-training' && (
-                <div className="pl-4 pt-2 flex flex-col gap-2 text-xs normal-case tracking-normal text-neutral-400">
-                  <Link href="/training/personal-training" className="py-1 hover:text-white">
-                    Personal Training
+              if (children.length === 0) {
+                return (
+                  <Link
+                    key={item.id}
+                    href={item.href}
+                    className={`ak-focus py-2 border-b border-ak-line ${
+                      active ? 'text-ak-accent' : 'text-neutral-300'
+                    }`}
+                  >
+                    {item.label}
                   </Link>
-                  <Link href="/training/strength-training" className="py-1 hover:text-white">
-                    Strength Training
-                  </Link>
-                  <Link href="/training/yoga-class" className="py-1 hover:text-white">
-                    Yoga Class
-                  </Link>
-                  <Link href="/training" className="py-1 font-extrabold text-ak-accent">
-                    Browse All Training →
-                  </Link>
+                );
+              }
+
+              const twoColumn = children.length > 5;
+
+              return (
+                <div key={item.id} className="py-2 border-b border-ak-line">
+                  <button
+                    type="button"
+                    onClick={() => toggleDropdown(`m-${item.id}`)}
+                    className={`ak-focus flex items-center justify-between w-full py-1 ${
+                      active ? 'text-ak-accent' : 'text-neutral-300 hover:text-white'
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                    <ChevronDown
+                      className={`w-4 h-4 transition-transform ${
+                        activeDropdown === `m-${item.id}` ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </button>
+                  {activeDropdown === `m-${item.id}` && (
+                    <div
+                      className={`pl-4 pt-2 text-xs normal-case tracking-normal text-neutral-400 ${
+                        twoColumn ? 'grid grid-cols-2 gap-2' : 'flex flex-col gap-2'
+                      }`}
+                    >
+                      {children.map((child) => (
+                        <Link
+                          key={child.id}
+                          href={child.href}
+                          className={`py-1 ${
+                            isChildAll(child.label)
+                              ? 'font-extrabold text-ak-accent'
+                              : 'hover:text-white'
+                          }`}
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-
-            <div className="py-2 border-b border-ak-line">
-              <button
-                type="button"
-                onClick={() => toggleDropdown('m-membership')}
-                className="ak-focus flex items-center justify-between w-full text-neutral-300 py-1 hover:text-white"
-              >
-                <span>Membership</span>
-                <ChevronDown
-                  className={`w-4 h-4 transition-transform ${
-                    activeDropdown === 'm-membership' ? 'rotate-180' : ''
-                  }`}
-                />
-              </button>
-              {activeDropdown === 'm-membership' && (
-                <div className="pl-4 pt-2 flex flex-col gap-2 text-xs normal-case tracking-normal text-neutral-400">
-                  <Link href="/membership/club" className="py-1 hover:text-white">
-                    Club Membership
-                  </Link>
-                  <Link href="/membership/refer-a-friend" className="py-1 hover:text-white">
-                    Refer a Friend
-                  </Link>
-                  <Link href="/membership" className="py-1 font-extrabold text-ak-accent">
-                    Membership Overview →
-                  </Link>
-                </div>
-              )}
-            </div>
-
-            <div className="py-2 border-b border-ak-line">
-              <button
-                type="button"
-                onClick={() => toggleDropdown('m-services')}
-                className="ak-focus flex items-center justify-between w-full text-neutral-300 py-1 hover:text-white"
-              >
-                <span>Services</span>
-                <ChevronDown
-                  className={`w-4 h-4 transition-transform ${
-                    activeDropdown === 'm-services' ? 'rotate-180' : ''
-                  }`}
-                />
-              </button>
-              {activeDropdown === 'm-services' && (
-                <div className="pl-4 pt-2 flex flex-col gap-2 text-xs normal-case tracking-normal text-neutral-400">
-                  <Link href="/services/nutritionist" className="py-1 hover:text-white">
-                    Nutritionist Consultation
-                  </Link>
-                  <Link href="/services" className="py-1 font-extrabold text-ak-accent">
-                    All Services →
-                  </Link>
-                </div>
-              )}
-            </div>
-
-            <div className="py-2 border-b border-ak-line">
-              <button
-                type="button"
-                onClick={() => toggleDropdown('m-explore')}
-                className="ak-focus flex items-center justify-between w-full text-neutral-300 py-1 hover:text-white"
-              >
-                <span>Explore</span>
-                <ChevronDown
-                  className={`w-4 h-4 transition-transform ${
-                    activeDropdown === 'm-explore' ? 'rotate-180' : ''
-                  }`}
-                />
-              </button>
-              {activeDropdown === 'm-explore' && (
-                <div className="pl-4 pt-2 grid grid-cols-2 gap-2 text-xs normal-case tracking-normal text-neutral-400">
-                  <Link href="/gallery" className="py-1 hover:text-white">
-                    Gallery
-                  </Link>
-                  <Link href="/blog" className="py-1 hover:text-white">
-                    Blog
-                  </Link>
-                  <Link href="/events" className="py-1 hover:text-white">
-                    Events
-                  </Link>
-                  <Link href="/offers" className="py-1 hover:text-white">
-                    Offers
-                  </Link>
-                  <Link href="/faq" className="py-1 hover:text-white">
-                    FAQ
-                  </Link>
-                  <Link href="/reviews" className="py-1 hover:text-white">
-                    Reviews
-                  </Link>
-                  <Link href="/about" className="py-1 hover:text-white">
-                    About
-                  </Link>
-                  <Link href="/team" className="py-1 hover:text-white">
-                    Our Team
-                  </Link>
-                </div>
-              )}
-            </div>
-
-            <Link
-              href="/contact"
-              className={`ak-focus py-2 border-b border-ak-line ${
-                pathname === '/contact' ? 'text-ak-accent' : 'text-neutral-300'
-              }`}
-            >
-              Contact
-            </Link>
+              );
+            })}
 
             <div className="pt-2 flex flex-col gap-3">
               <Link href="/apply" className="ak-btn ak-btn-primary w-full justify-center">
-                <span>Apply for Membership</span>
+                <span>{settings.applyButtonLabel || 'Apply Now'}</span>
               </Link>
               <div className="flex items-center justify-between text-[11px] normal-case tracking-normal text-neutral-400 pt-3 border-t border-ak-line">
                 <a

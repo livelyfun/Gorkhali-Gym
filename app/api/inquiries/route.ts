@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { store } from '@/lib/data-store';
+import { persistStore } from '@/lib/store-persistence';
 import { requireAuth } from '@/lib/auth';
 
 export async function POST(req: NextRequest) {
@@ -24,6 +25,7 @@ export async function POST(req: NextRequest) {
       message: message?.trim() || null,
       selectedOffer: selectedOffer || null,
     });
+    await persistStore();
 
     const settings = store.getSettings();
     const cleanPhone = settings.whatsapp.replace(/[^0-9]/g, '');
@@ -62,6 +64,7 @@ export async function PATCH(req: NextRequest) {
     if (!id) return NextResponse.json({ error: 'Inquiry ID is required' }, { status: 400 });
 
     const updated = store.updateInquiry(id, { status, adminNotes });
+    await persistStore();
     if (!updated) return NextResponse.json({ error: 'Inquiry not found' }, { status: 404 });
 
     return NextResponse.json({ success: true, inquiry: updated });
@@ -79,5 +82,6 @@ export async function DELETE(req: NextRequest) {
   if (!id) return NextResponse.json({ error: 'Inquiry ID is required' }, { status: 400 });
 
   const deleted = store.deleteInquiry(id);
+  await persistStore();
   return NextResponse.json({ success: deleted });
 }

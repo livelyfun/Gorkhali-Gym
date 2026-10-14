@@ -6,6 +6,7 @@ import { ShieldCheck, Dumbbell, Award, Clock, ArrowRight, CheckCircle, ChevronLe
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
+import PageHero from '@/components/PageHero';
 import { store } from '@/lib/data-store';
 
 export default function ClubMembershipPage() {
@@ -27,17 +28,14 @@ export default function ClubMembershipPage() {
             <span>Back to Memberships</span>
           </Link>
 
-          <div className="max-w-3xl">
-            <div className="ak-eyebrow mb-4">
-              Club Etiquette &bull; Rules &bull; Facilities
-            </div>
-            <h1 className="font-display text-4xl sm:text-5xl text-white mt-2">
-              The Gorkhali Club Code
-            </h1>
-            <p className="text-ak-muted text-base sm:text-lg mt-4 leading-relaxed">
-              We take pride in maintaining a disciplined, hygienic, and welcoming training atmosphere for all members in Itahari.
-            </p>
-          </div>
+          <PageHero
+            pageSlug="membership/club"
+            fallback={{
+              eyebrow: 'Club Etiquette • Rules • Facilities',
+              heading: 'The Gorkhali Club Code',
+              body: 'We take pride in maintaining a disciplined, hygienic, and welcoming training atmosphere for all members in Itahari.',
+            }}
+          />
         </div>
       </section>
 

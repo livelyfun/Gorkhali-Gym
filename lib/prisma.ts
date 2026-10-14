@@ -21,7 +21,7 @@ function getPrismaClient(): PrismaClient {
   if (typeof window !== 'undefined') {
     throw new Error('PrismaClient cannot be used in browser context');
   }
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
+   
   const { PrismaClient: PC } = require('@prisma/client');
   return globalThis.prisma || new PC({
     log: process.env.NODE_ENV === 'development' ? ['warn', 'error'] : ['error'],

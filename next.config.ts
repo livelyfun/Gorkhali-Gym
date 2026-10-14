@@ -2,6 +2,9 @@ import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Prisma must be loaded from node_modules at runtime (native query engine),
+  // not bundled. This keeps it working in serverless/Vercel deployments.
+  serverExternalPackages: ['@prisma/client', 'prisma'],
   eslint: {
     ignoreDuringBuilds: true,
   },

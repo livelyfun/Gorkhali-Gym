@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { store } from '@/lib/data-store';
+import { persistStore } from '@/lib/store-persistence';
 
 export async function POST(req: NextRequest) {
   try {
@@ -35,6 +36,7 @@ export async function POST(req: NextRequest) {
       publishedAt: null,
       displayOrder: 99,
     });
+    await persistStore();
 
     return NextResponse.json({
       success: true,

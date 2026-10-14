@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
   MapPin,
@@ -13,7 +13,7 @@ import {
   Award,
   Flame,
 } from 'lucide-react';
-import { store, SiteSettings } from '@/lib/data-store';
+import { store, SiteSettings, ProgramItem, NavigationItemType } from '@/lib/data-store';
 
 interface FooterProps {
   settings?: SiteSettings;
@@ -22,6 +22,53 @@ interface FooterProps {
 
 export default function Footer({ settings: initialSettings, onOpenApplyModal }: FooterProps) {
   const settings = initialSettings || store.getSettings();
+  const [programs, setPrograms] = useState<ProgramItem[]>(() => store.getPrograms(true));
+  const [footerNav, setFooterNav] = useState<NavigationItemType[]>(() =>
+    store.getAllNavigation().filter((n) => n.location === 'footer' && n.isPublished !== false)
+  );
+
+  useEffect(() => {
+    fetch('/api/cms/programs')
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data.programs)) setPrograms(data.programs);
+      })
+      .catch(() => {});
+
+    fetch('/api/cms/navigation')
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data.navigation)) {
+          setFooterNav(
+            data.navigation.filter(
+              (n: NavigationItemType) => n.location === 'footer' && n.isPublished !== false
+            )
+          );
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const footerColumns = useMemo(() => {
+    const groups = new Map<string, NavigationItemType[]>();
+    for (const item of footerNav) {
+      const column = item.footerColumn?.trim();
+      if (!column) continue;
+      if (!groups.has(column)) groups.set(column, []);
+      groups.get(column)!.push(item);
+    }
+    return Array.from(groups.entries()).map(([title, items]) => ({ title, items }));
+  }, [footerNav]);
+
+  const footerUtility = useMemo(
+    () => footerNav.filter((n) => !n.footerColumn?.trim()),
+    [footerNav]
+  );
+
+  const gridColsClass =
+    ['lg:grid-cols-4', 'lg:grid-cols-5', 'lg:grid-cols-6', 'lg:grid-cols-7'][
+      Math.min(footerColumns.length, 3)
+    ] || 'lg:grid-cols-5';
 
   const columnTitle =
     'ak-heading text-xs text-white tracking-[0.18em] mb-4 flex items-center gap-2';
@@ -49,7 +96,7 @@ export default function Footer({ settings: initialSettings, onOpenApplyModal }: 
           <div className="flex items-center gap-3 w-full md:w-auto">
             <button onClick={onOpenApplyModal} className="ak-btn ak-btn-primary flex-1 md:flex-initial">
               <span>
-                Apply for Membership
+                {settings.applyButtonLabel || 'Apply Now'}
                 <ArrowRight className="w-4 h-4" />
               </span>
             </button>
@@ -68,7 +115,7 @@ export default function Footer({ settings: initialSettings, onOpenApplyModal }: 
 
       {/* Main Footer Links */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
+        <div className={`grid grid-cols-1 md:grid-cols-2 ${gridColsClass} gap-10`}>
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-4">
             <Link href="/" className="ak-focus inline-flex items-center gap-3 group">
@@ -105,31 +152,16 @@ export default function Footer({ settings: initialSettings, onOpenApplyModal }: 
               Programs &amp; Training
             </h4>
             <ul className="space-y-2.5 text-sm text-ak-muted">
-              <li>
-                <Link href="/training/strength-conditioning" className={footLink}>
-                  Strength &amp; Conditioning
-                </Link>
-              </li>
-              <li>
-                <Link href="/training/personal-training" className={footLink}>
-                  Personal Training (1-on-1)
-                </Link>
-              </li>
-              <li>
-                <Link href="/training/weight-loss-transformation" className={footLink}>
-                  Weight Loss &amp; Fat Burn
-                </Link>
-              </li>
-              <li>
-                <Link href="/services/yoga-mobility" className={footLink}>
-                  Yoga &amp; Athletic Mobility
-                </Link>
-              </li>
-              <li>
-                <Link href="/services/nutrition-diet-consulting" className={footLink}>
-                  Nutrition Consultation
-                </Link>
-              </li>
+              {programs.slice(0, 5).map((program) => {
+                const href = program.category === 'service' ? `/services/${program.slug}` : `/training/${program.slug}`;
+                return (
+                  <li key={program.id}>
+                    <Link href={href} className={footLink}>
+                      {program.title}
+                    </Link>
+                  </li>
+                );
+              })}
               <li>
                 <Link
                   href="/training"
@@ -142,50 +174,24 @@ export default function Footer({ settings: initialSettings, onOpenApplyModal }: 
             </ul>
           </div>
 
-          {/* Membership & Gym Life */}
-          <div>
-            <h4 className={columnTitle}>
-              <span className="w-5 h-0.5 bg-ak-accent skew-x-[-30deg]" />
-              Membership &amp; Club
-            </h4>
-            <ul className="space-y-2.5 text-sm text-ak-muted">
-              <li>
-                <Link href="/membership" className={footLink}>
-                  Membership Plans
-                </Link>
-              </li>
-              <li>
-                <Link href="/membership/club" className={footLink}>
-                  Club Membership &amp; Rules
-                </Link>
-              </li>
-              <li>
-                <Link href="/membership/refer-a-friend" className={footLink}>
-                  Refer a Friend Program
-                </Link>
-              </li>
-              <li>
-                <Link href="/offers" className={footLink}>
-                  Promotions &amp; Deals
-                </Link>
-              </li>
-              <li>
-                <Link href="/events" className={footLink}>
-                  Gym Events &amp; Challenges
-                </Link>
-              </li>
-              <li>
-                <Link href="/reviews" className={footLink}>
-                  Member Reviews &amp; Ratings
-                </Link>
-              </li>
-              <li>
-                <Link href="/gallery" className={footLink}>
-                  Photo &amp; Facility Gallery
-                </Link>
-              </li>
-            </ul>
-          </div>
+          {/* Footer link columns (from Navigation CMS) */}
+          {footerColumns.map((column) => (
+            <div key={column.title}>
+              <h4 className={columnTitle}>
+                <span className="w-5 h-0.5 bg-ak-accent skew-x-[-30deg]" />
+                {column.title}
+              </h4>
+              <ul className="space-y-2.5 text-sm text-ak-muted">
+                {column.items.map((item) => (
+                  <li key={item.id}>
+                    <Link href={item.href} className={footLink}>
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
 
           {/* Visit & Connect */}
           <div>
@@ -266,18 +272,15 @@ export default function Footer({ settings: initialSettings, onOpenApplyModal }: 
             {settings.copyrightText || 'All rights reserved. Itahari, Koshi Province, Nepal.'}
           </p>
           <div className="flex items-center gap-6 uppercase tracking-wider">
-            <Link href="/about" className="ak-focus hover:text-ak-accent transition-colors">
-              About Us
-            </Link>
-            <Link href="/team" className="ak-focus hover:text-ak-accent transition-colors">
-              Trainers
-            </Link>
-            <Link href="/faq" className="ak-focus hover:text-ak-accent transition-colors">
-              FAQ
-            </Link>
-            <Link href="/contact" className="ak-focus hover:text-ak-accent transition-colors">
-              Contact
-            </Link>
+            {footerUtility.map((item) => (
+              <Link
+                key={item.id}
+                href={item.href}
+                className="ak-focus hover:text-ak-accent transition-colors"
+              >
+                {item.label}
+              </Link>
+            ))}
             <Link
               href="/gorkhali-gym-management"
               className="ak-focus text-neutral-600 hover:text-ak-accent transition-colors flex items-center gap-1"

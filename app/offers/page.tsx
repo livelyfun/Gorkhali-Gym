@@ -7,6 +7,7 @@ import { Tag, Clock, ArrowRight, ChevronRight, Sparkles } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
+import PageHero from '@/components/PageHero';
 import { store } from '@/lib/data-store';
 
 export default function OffersPage() {
@@ -27,17 +28,14 @@ export default function OffersPage() {
       <section className="relative pt-36 sm:pt-40 pb-16 bg-ak-surface border-b border-ak-line">
         <div className="absolute inset-0 ak-stripe opacity-40 pointer-events-none" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <div className="ak-eyebrow mb-4">
-              <span>Special Deals &bull; Gorkhali Gym Itahari</span>
-            </div>
-            <h1 className="font-display text-4xl sm:text-5xl text-white mt-2">
-              Current Offers & Promotions
-            </h1>
-            <p className="text-ak-muted text-base sm:text-lg mt-4 leading-relaxed">
-              Take advantage of our seasonal discounts, student packages, and new lifter orientation bundles.
-            </p>
-          </div>
+          <PageHero
+            pageSlug="offers"
+            fallback={{
+              eyebrow: 'Special Deals • Gorkhali Gym Itahari',
+              heading: 'Current Offers & Promotions',
+              body: 'Take advantage of our seasonal discounts, student packages, and new lifter orientation bundles.',
+            }}
+          />
         </div>
       </section>
 

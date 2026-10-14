@@ -60,13 +60,19 @@ export default function ImagePickerField({
   const [savingToLibrary, setSavingToLibrary] = useState(false);
   const [savedToLibrary, setSavedToLibrary] = useState(false);
 
-  // Validate URL format and track loading state
   useEffect(() => {
+    let cancelled = false;
     const trimmed = (value || '').trim();
     if (!trimmed) {
-      setImgLoading(false);
-      setImgError(null);
-      return;
+      const t = setTimeout(() => {
+        if (cancelled) return;
+        setImgLoading(false);
+        setImgError(null);
+      }, 0);
+      return () => {
+        cancelled = true;
+        clearTimeout(t);
+      };
     }
 
     // Check basic URL or path structure
@@ -75,13 +81,26 @@ export default function ImagePickerField({
     const isDataUri = /^data:image\//i.test(trimmed);
 
     if (!isHttp && !isLocalPath && !isDataUri) {
-      setImgLoading(false);
-      setImgError('Please enter a valid URL (starting with https://, http://, or /path).');
-      return;
+      const t = setTimeout(() => {
+        if (cancelled) return;
+        setImgLoading(false);
+        setImgError('Please enter a valid URL (starting with https://, http://, or /path).');
+      }, 0);
+      return () => {
+        cancelled = true;
+        clearTimeout(t);
+      };
     }
 
-    setImgLoading(true);
-    setImgError(null);
+    const t = setTimeout(() => {
+      if (cancelled) return;
+      setImgLoading(true);
+      setImgError(null);
+    }, 0);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
   }, [value]);
 
   const handleUrlChange = (newUrl: string) => {
@@ -174,19 +193,19 @@ export default function ImagePickerField({
 
   const previewShape = round
     ? 'rounded-full w-24 h-24 mx-auto'
-    : `rounded-xl w-full ${previewHeight}`;
+    : `rounded-none w-full ${previewHeight}`;
 
   return (
     <div className={`space-y-2 ${className}`}>
       {label && (
-        <label className="block text-[11px] font-bold uppercase text-neutral-400 tracking-wider">
+        <label className="block text-[11px] font-bold uppercase text-ak-muted tracking-wider">
           {label}
         </label>
       )}
 
       {/* Preview Box */}
       <div
-        className={`relative bg-neutral-950 border border-neutral-800 overflow-hidden flex items-center justify-center ${previewShape}`}
+        className={`relative bg-ak-ink border border-ak-line overflow-hidden flex items-center justify-center ${previewShape}`}
       >
         {value ? (
           <>
@@ -212,18 +231,18 @@ export default function ImagePickerField({
 
             {/* Loading Spinner */}
             {imgLoading && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 backdrop-blur-xs gap-1.5 text-neutral-300 text-[10px]">
-                <Loader2 className="w-5 h-5 animate-spin text-orange-500" />
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 backdrop-blur-xs gap-1.5 text-white text-[10px]">
+                <Loader2 className="w-5 h-5 animate-spin text-ak-accent" />
                 <span>Loading preview...</span>
               </div>
             )}
 
             {/* Error Overlay */}
             {imgError && (
-              <div className="absolute inset-0 p-3 flex flex-col items-center justify-center bg-red-950/80 text-center gap-1 text-red-200">
-                <AlertCircle className="w-5 h-5 text-red-400 shrink-0" />
+              <div className="absolute inset-0 p-3 flex flex-col items-center justify-center bg-ak-accent/15 text-center gap-1 text-white">
+                <AlertCircle className="w-5 h-5 text-ak-accent shrink-0" />
                 <span className="text-[11px] font-semibold leading-tight">Image Inaccessible</span>
-                <span className="text-[9px] text-red-300/80 max-w-xs line-clamp-2">
+                <span className="text-[9px] text-ak-accent/80 max-w-xs line-clamp-2">
                   Verify the link returns a public image.
                 </span>
               </div>
@@ -245,14 +264,14 @@ export default function ImagePickerField({
                 setImgError(null);
                 setImgLoading(false);
               }}
-              className="absolute top-1.5 right-1.5 p-1 rounded-full bg-black/75 text-white hover:bg-red-600/90 transition-colors shadow-md"
+              className="absolute top-1.5 right-1.5 p-1 rounded-full bg-black/75 text-white hover:bg-ak-accent transition-colors shadow-md"
               title="Remove image"
             >
               <X className="w-3 h-3" />
             </button>
           </>
         ) : (
-          <div className="flex flex-col items-center gap-1.5 text-neutral-600">
+          <div className="flex flex-col items-center gap-1.5 text-ak-muted">
             <ImageIcon className="w-7 h-7" />
             <span className="text-[10px]">No image configured</span>
           </div>
@@ -260,7 +279,7 @@ export default function ImagePickerField({
       </div>
 
       {/* Mode Tabs (URL / Upload / Library) */}
-      <div className="flex rounded-lg overflow-hidden border border-neutral-800 text-[10px] font-bold uppercase tracking-wider">
+      <div className="flex rounded-none overflow-hidden border border-ak-line text-[10px] font-bold uppercase tracking-wider">
         {(['url', 'upload', 'library'] as Mode[]).map((m) => (
           <button
             type="button"
@@ -268,8 +287,8 @@ export default function ImagePickerField({
             onClick={() => setMode(m)}
             className={`flex-1 py-1.5 flex items-center justify-center gap-1 transition-colors ${
               mode === m
-                ? 'bg-orange-600 text-white shadow-sm'
-                : 'bg-neutral-900 text-neutral-400 hover:text-white hover:bg-neutral-800'
+                ? 'bg-ak-accent text-white shadow-sm'
+                : 'bg-ak-surface text-ak-muted hover:text-white hover:bg-ak-surface-2'
             }`}
           >
             {m === 'url' && <Link2 className="w-3 h-3" />}
@@ -289,13 +308,13 @@ export default function ImagePickerField({
               value={value}
               onChange={(e) => handleUrlChange(e.target.value)}
               placeholder={placeholder}
-              className="w-full bg-neutral-950 border border-neutral-800 rounded-lg pl-3 pr-8 py-2 text-xs text-white font-mono placeholder:text-neutral-600 focus:outline-none focus:border-orange-500 transition-colors"
+              className="w-full bg-ak-ink border border-ak-line rounded-none pl-3 pr-8 py-2 text-xs text-white font-mono placeholder:text-ak-muted focus:outline-none focus:border-ak-accent transition-colors"
             />
             {value && (
               <button
                 type="button"
                 onClick={() => handleUrlChange('')}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-ak-muted hover:text-white"
                 title="Clear URL"
               >
                 <X className="w-3.5 h-3.5" />
@@ -305,14 +324,14 @@ export default function ImagePickerField({
 
           {/* Validation & Error Messaging */}
           {imgError && (
-            <div className="p-2 rounded-lg bg-red-950/60 border border-red-800/80 text-red-200 text-[11px] flex items-start gap-1.5">
-              <AlertCircle className="w-3.5 h-3.5 text-red-400 shrink-0 mt-0.5" />
+            <div className="p-2 rounded-none bg-ak-accent/10 border border-ak-accent/40 text-white text-[11px] flex items-start gap-1.5">
+              <AlertCircle className="w-3.5 h-3.5 text-ak-accent shrink-0 mt-0.5" />
               <span>{imgError}</span>
             </div>
           )}
 
           {/* Helper info & Save to Library shortcut */}
-          <div className="flex items-center justify-between text-[10px] text-neutral-500 pt-0.5">
+          <div className="flex items-center justify-between text-[10px] text-ak-muted pt-0.5">
             <span className="truncate pr-2">
               Supports long external URLs from CDNs, search proxies, or /public paths.
             </span>
@@ -321,7 +340,7 @@ export default function ImagePickerField({
                 type="button"
                 onClick={handleSaveUrlToLibrary}
                 disabled={savingToLibrary || savedToLibrary}
-                className="shrink-0 inline-flex items-center gap-1 text-orange-400 hover:text-orange-300 font-semibold transition-colors disabled:opacity-50"
+                className="shrink-0 inline-flex items-center gap-1 text-ak-accent hover:text-ak-accent-light font-semibold transition-colors disabled:opacity-50"
               >
                 {savingToLibrary ? (
                   <>
@@ -349,8 +368,8 @@ export default function ImagePickerField({
       {mode === 'upload' && (
         <div className="space-y-2">
           {uploadError && (
-            <div className="p-2 rounded-lg bg-red-950/50 border border-red-800 text-red-300 text-[11px] flex items-center gap-1.5">
-              <AlertCircle className="w-3.5 h-3.5 text-red-400 shrink-0" />
+            <div className="p-2 rounded-none bg-ak-accent/10 border border-ak-accent/40 text-ak-accent text-[11px] flex items-center gap-1.5">
+              <AlertCircle className="w-3.5 h-3.5 text-ak-accent shrink-0" />
               <span>{uploadError}</span>
             </div>
           )}
@@ -362,14 +381,14 @@ export default function ImagePickerField({
             onDragLeave={() => setDragOver(false)}
             onDrop={handleDrop}
             onClick={() => fileRef.current?.click()}
-            className={`border-2 border-dashed rounded-xl p-5 text-center cursor-pointer transition-all select-none ${
+            className={`border-2 border-dashed rounded-none p-5 text-center cursor-pointer transition-all select-none ${
               dragOver
-                ? 'border-orange-500 bg-orange-950/20 scale-[0.98]'
-                : 'border-neutral-700 hover:border-orange-600/60 hover:bg-neutral-900/60'
+                ? 'border-ak-accent bg-ak-accent/10 scale-[0.98]'
+                : 'border-ak-line hover:border-ak-accent/50 hover:bg-ak-surface/60'
             }`}
           >
             {uploading ? (
-              <div className="flex items-center justify-center gap-2 text-orange-400">
+              <div className="flex items-center justify-center gap-2 text-ak-accent">
                 <Loader2 className="w-4 h-4 animate-spin" />
                 <span className="text-xs font-semibold">Uploading...</span>
               </div>
@@ -380,12 +399,12 @@ export default function ImagePickerField({
               </div>
             ) : (
               <>
-                <Upload className="w-5 h-5 text-neutral-500 mx-auto mb-1.5" />
-                <p className="text-xs text-neutral-300 font-medium">
+                <Upload className="w-5 h-5 text-ak-muted mx-auto mb-1.5" />
+                <p className="text-xs text-white font-medium">
                   Drop image here or{' '}
-                  <span className="text-orange-400 underline underline-offset-2">click to browse</span>
+                  <span className="text-ak-accent underline underline-offset-2">click to browse</span>
                 </p>
-                <p className="text-[10px] text-neutral-600 mt-1">JPEG, PNG, WebP, GIF, SVG · Max 10MB</p>
+                <p className="text-[10px] text-ak-muted mt-1">JPEG, PNG, WebP, GIF, SVG · Max 10MB</p>
               </>
             )}
           </div>
@@ -407,12 +426,12 @@ export default function ImagePickerField({
       {mode === 'library' && (
         <div>
           {mediaAssets.length === 0 ? (
-            <div className="p-4 text-center text-[11px] text-neutral-500 border border-dashed border-neutral-800 rounded-xl">
+            <div className="p-4 text-center text-[11px] text-ak-muted border border-dashed border-ak-line rounded-none">
               No media assets yet.{' '}
               <button
                 type="button"
                 onClick={() => setMode('upload')}
-                className="text-orange-400 underline underline-offset-2"
+                className="text-ak-accent underline underline-offset-2"
               >
                 Upload one
               </button>
@@ -429,10 +448,10 @@ export default function ImagePickerField({
                     setMode('url');
                   }}
                   title={asset.filename}
-                  className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all hover:opacity-90 ${
+                  className={`relative aspect-square rounded-none overflow-hidden border-2 transition-all hover:opacity-90 ${
                     value === asset.url
-                      ? 'border-orange-500 ring-1 ring-orange-400'
-                      : 'border-neutral-800 hover:border-orange-600/60'
+                      ? 'border-ak-accent ring-1 ring-ak-accent'
+                      : 'border-ak-line hover:border-ak-accent/50'
                   }`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -440,10 +459,10 @@ export default function ImagePickerField({
                     src={asset.url}
                     alt={asset.altText || asset.filename}
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover bg-neutral-900"
+                    className="w-full h-full object-cover bg-ak-surface"
                   />
                   {value === asset.url && (
-                    <div className="absolute inset-0 bg-orange-600/30 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-ak-accent/30 flex items-center justify-center">
                       <Check className="w-4 h-4 text-white drop-shadow-md" />
                     </div>
                   )}

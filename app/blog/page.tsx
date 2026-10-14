@@ -7,6 +7,7 @@ import { Calendar, User, Clock, ArrowRight, ChevronRight, BookOpen } from 'lucid
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
+import PageHero from '@/components/PageHero';
 import { store } from '@/lib/data-store';
 
 export default function BlogPage() {
@@ -20,17 +21,14 @@ export default function BlogPage() {
       <section className="relative pt-36 sm:pt-40 pb-16 bg-ak-surface border-b border-ak-line">
         <div className="absolute inset-0 ak-stripe opacity-40 pointer-events-none" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <div className="ak-eyebrow mb-4">
-              Knowledge &bull; Education &bull; Gorkhali Gym
-            </div>
-            <h1 className="font-display text-4xl sm:text-5xl text-white mt-2">
-              Fitness & Training Insights
-            </h1>
-            <p className="text-ak-muted text-base sm:text-lg mt-4 leading-relaxed">
-              Practical guides on progressive overload, recovery nutrition, injury avoidance, and building lasting fitness habits in Nepal.
-            </p>
-          </div>
+          <PageHero
+            pageSlug="blog"
+            fallback={{
+              eyebrow: 'Knowledge • Education • Gorkhali Gym',
+              heading: 'Fitness & Training Insights',
+              body: 'Practical guides on progressive overload, recovery nutrition, injury avoidance, and building lasting fitness habits in Nepal.',
+            }}
+          />
         </div>
       </section>
 

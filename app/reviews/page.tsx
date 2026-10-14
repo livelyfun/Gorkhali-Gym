@@ -6,6 +6,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ReviewModal from '@/components/ReviewModal';
 import ApplyModal from '@/components/ApplyModal';
+import PageHero from '@/components/PageHero';
 import { store } from '@/lib/data-store';
 
 export default function ReviewsPage() {
@@ -26,17 +27,15 @@ export default function ReviewsPage() {
       <section className="relative pt-36 sm:pt-40 pb-16 bg-ak-surface border-b border-ak-line">
         <div className="absolute inset-0 ak-stripe opacity-40 pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="max-w-2xl">
-            <div className="ak-eyebrow">
-              Member Testimonials &bull; Gorkhali Gym Itahari
-            </div>
-            <h1 className="font-display text-4xl sm:text-5xl text-white mt-4">
-              Genuine Stories & Reviews
-            </h1>
-            <p className="text-ak-muted text-base mt-3 leading-relaxed">
-              Read how members of all fitness levels found consistency, power, and mutual respect training under the Gorkhali banner.
-            </p>
-          </div>
+          <PageHero
+            pageSlug="reviews"
+            wrapperClassName="max-w-2xl"
+            fallback={{
+              eyebrow: 'Member Testimonials • Gorkhali Gym Itahari',
+              heading: 'Genuine Stories & Reviews',
+              body: 'Read how members of all fitness levels found consistency, power, and mutual respect training under the Gorkhali banner.',
+            }}
+          />
 
           <div className="flex items-center space-x-4 shrink-0">
             <div className="ak-panel ak-cut-bl p-4 text-center">

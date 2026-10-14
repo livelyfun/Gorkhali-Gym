@@ -3,6 +3,7 @@ import { requireAuth } from '@/lib/auth';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { store } from '@/lib/data-store';
+import { persistStore } from '@/lib/store-persistence';
 
 export async function POST(req: NextRequest) {
   const authResult = await requireAuth(req);
@@ -60,6 +61,7 @@ export async function POST(req: NextRequest) {
       altText,
       caption,
     });
+    await persistStore();
 
     return NextResponse.json({
       success: true,

@@ -1,8 +1,9 @@
 import { MetadataRoute } from 'next';
 import { store } from '@/lib/data-store';
+import { getSiteUrl } from '@/lib/site-url';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.APP_URL || 'https://gorkhaligym.com';
+  const baseUrl = getSiteUrl();
   const lastModified = new Date();
 
   // Static public routes

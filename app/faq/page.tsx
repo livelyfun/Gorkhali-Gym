@@ -6,6 +6,7 @@ import { HelpCircle, ChevronRight, MessageCircle, Phone, ArrowRight } from 'luci
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
+import PageHero from '@/components/PageHero';
 import { store } from '@/lib/data-store';
 
 export default function FaqPage() {
@@ -27,17 +28,14 @@ export default function FaqPage() {
       <section className="relative pt-36 sm:pt-40 pb-16 bg-ak-surface border-b border-ak-line">
         <div className="absolute inset-0 ak-stripe opacity-40 pointer-events-none" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <div className="ak-eyebrow mb-4">
-              Answers &bull; Information &bull; Gorkhali Gym Itahari
-            </div>
-            <h1 className="font-display text-4xl sm:text-5xl text-white mt-2">
-              Frequently Asked Questions
-            </h1>
-            <p className="text-ak-muted text-base sm:text-lg mt-4 leading-relaxed">
-              Find answers to questions regarding membership, timings, locker usage, beginner orientation, personal training, and gym policies.
-            </p>
-          </div>
+          <PageHero
+            pageSlug="faq"
+            fallback={{
+              eyebrow: 'Answers • Information • Gorkhali Gym Itahari',
+              heading: 'Frequently Asked Questions',
+              body: 'Find answers to questions regarding membership, timings, locker usage, beginner orientation, personal training, and gym policies.',
+            }}
+          />
         </div>
       </section>
 

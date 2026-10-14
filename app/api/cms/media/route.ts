@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { store } from '@/lib/data-store';
+import { persistStore } from '@/lib/store-persistence';
 import { requireAuth } from '@/lib/auth';
 
 export async function GET(req: NextRequest) {
@@ -20,6 +21,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Asset URL is required' }, { status: 400 });
     }
     const asset = store.saveMediaAsset(body);
+    await persistStore();
     return NextResponse.json({ success: true, asset });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Failed to save media metadata';
@@ -35,6 +37,7 @@ export async function DELETE(req: NextRequest) {
   if (!id) return NextResponse.json({ error: 'Asset ID is required' }, { status: 400 });
 
   const result = store.deleteMediaAsset(id);
+  await persistStore();
   if (!result.success) {
     return NextResponse.json(
       { error: result.message || 'Cannot delete media asset' },

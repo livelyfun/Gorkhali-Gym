@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { store } from '@/lib/data-store';
+import { persistStore } from '@/lib/store-persistence';
 import { requireAuth } from '@/lib/auth';
 
 export async function GET(req: NextRequest) {
   const adminMode = req.nextUrl.searchParams.get('all') === 'true';
+  if (adminMode) {
+    const authResult = await requireAuth(req);
+    if (authResult instanceof NextResponse) return authResult;
+  }
   const categoryParam = req.nextUrl.searchParams.get('category');
   const category = categoryParam === 'service' || categoryParam === 'training' ? categoryParam : undefined;
 
@@ -21,6 +26,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Title and slug are required' }, { status: 400 });
     }
     const program = store.saveProgram(body);
+    await persistStore();
     return NextResponse.json({ success: true, program });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Failed to save program';
@@ -36,5 +42,6 @@ export async function DELETE(req: NextRequest) {
   if (!id) return NextResponse.json({ error: 'Program ID required' }, { status: 400 });
 
   const deleted = store.deleteProgram(id);
+  await persistStore();
   return NextResponse.json({ success: deleted });
 }

@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import PageHero from '@/components/PageHero';
 import { store } from '@/lib/data-store';
 
 export default function ApplyPage() {
@@ -72,15 +73,15 @@ export default function ApplyPage() {
       <section className="relative pt-36 sm:pt-40 pb-16 bg-ak-surface border-b border-ak-line">
         <div className="absolute inset-0 ak-stripe opacity-40 pointer-events-none" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-3xl">
-          <div className="ak-eyebrow mb-4">
-            Membership Application &bull; Gorkhali Gym Itahari
-          </div>
-          <h1 className="font-display text-4xl sm:text-5xl text-white mt-2">
-            Start Your Transformation
-          </h1>
-          <p className="text-ak-muted text-base sm:text-lg mt-4 leading-relaxed">
-            Apply online for quick onboarding. Our team prepares your member profile and sets up your initial gym orientation.
-          </p>
+          <PageHero
+            pageSlug="apply"
+            wrapperClassName="max-w-3xl mx-auto"
+            fallback={{
+              eyebrow: 'Membership Application • Gorkhali Gym Itahari',
+              heading: 'Start Your Transformation',
+              body: 'Apply online for quick onboarding. Our team prepares your member profile and sets up your initial gym orientation.',
+            }}
+          />
         </div>
       </section>
 
@@ -113,7 +114,7 @@ export default function ApplyPage() {
                     <span>Open WhatsApp for Instant Confirmation</span>
                   </a>
                   <p className="text-xs text-neutral-500">
-                    Direct line to Head Coach at +977 982-8405453.
+                    Direct line to Head Coach at {settings.phone}.
                   </p>
                 </div>
 
