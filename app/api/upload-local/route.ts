@@ -4,60 +4,55 @@ import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { store } from '@/lib/data-store';
 import { persistStore } from '@/lib/store-persistence';
+import { validateUploadFile } from '@/lib/upload-validation';
 
+// Development-only upload endpoint. Files written to public/uploads are NOT
+// persistent on Vercel's serverless filesystem; production uploads must use
+// /api/upload (Vercel Blob). This route returns 404 in production.
 export async function POST(req: NextRequest) {
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
+
   const authResult = await requireAuth(req);
   if (authResult instanceof NextResponse) return authResult;
 
   try {
     const formData = await req.formData();
-    const file = formData.get('file') as File | null;
+    const file = formData.get('file');
     const altText = (formData.get('altText') as string | null) || null;
     const caption = (formData.get('caption') as string | null) || null;
 
-    if (!file) {
-      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+    if (!(file instanceof File)) {
+      return NextResponse.json(
+        { error: 'No valid image file was provided.', code: 'UPLOAD_MISSING_FILE' },
+        { status: 400 }
+      );
     }
 
-    // Validate file type
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
-    if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json({ error: 'Only image files are allowed (JPEG, PNG, GIF, WebP, SVG)' }, { status: 400 });
+    const validation = validateUploadFile(file);
+    if (!validation.ok) {
+      return NextResponse.json(
+        { error: validation.message, code: validation.code },
+        { status: validation.status }
+      );
     }
 
-    // Max 10MB
-    if (file.size > 10 * 1024 * 1024) {
-      return NextResponse.json({ error: 'File too large. Maximum size is 10MB.' }, { status: 400 });
-    }
-
-    // Create unique filename
-    const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
-    const safeName = file.name
-      .replace(/\.[^/.]+$/, '')           // remove extension
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '_')        // replace special chars with underscore
-      .slice(0, 40);
-    const filename = `${safeName}_${Date.now()}.${ext}`;
-
-    // Ensure uploads directory exists
     const uploadsDir = join(process.cwd(), 'public', 'uploads');
     await mkdir(uploadsDir, { recursive: true });
 
-    // Write file to disk
+    const filename = `${Date.now()}-${validation.filename}`;
     const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    const filepath = join(uploadsDir, filename);
-    await writeFile(filepath, buffer);
+    await writeFile(join(uploadsDir, filename), Buffer.from(bytes));
 
     const publicUrl = `/uploads/${filename}`;
 
-    // Save to media asset library
     const asset = store.saveMediaAsset({
       url: publicUrl,
       pathname: `/uploads/${filename}`,
-      filename: file.name,
+      filename: validation.filename,
       size: file.size,
-      mimeType: file.type,
+      mimeType: validation.mimeType,
       altText,
       caption,
     });
@@ -70,7 +65,10 @@ export async function POST(req: NextRequest) {
       asset,
     });
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : 'Upload failed';
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error('[api/upload-local] local upload failed', err);
+    return NextResponse.json(
+      { error: 'The upload could not be completed. Please try again.', code: 'UPLOAD_FAILED' },
+      { status: 500 }
+    );
   }
 }

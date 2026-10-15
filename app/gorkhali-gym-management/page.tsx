@@ -1076,19 +1076,11 @@ export default function AdminPortalPage() {
     formData.append('caption', uploadCaption);
 
     try {
-      let res = await fetch('/api/upload', {
+      const res = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
       });
-      let data = await res.json();
-      // If Vercel Blob is not configured, fallback gracefully to /api/upload-local
-      if (!res.ok && (data.error?.includes('BLOB_READ_WRITE_TOKEN') || res.status === 503)) {
-        res = await fetch('/api/upload-local', {
-          method: 'POST',
-          body: formData,
-        });
-        data = await res.json();
-      }
+      const data = await res.json();
 
       if (data.success && data.asset) {
         setMediaAssets((prev) => [data.asset, ...prev]);
@@ -4451,7 +4443,7 @@ export default function AdminPortalPage() {
                         </label>
                         <input
                           type="file"
-                          accept="image/*"
+                          accept="image/jpeg,image/png,image/webp,image/gif"
                           required
                           onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
                           className="w-full text-xs text-ak-muted file:mr-2 file:py-2 file:px-3 file:rounded-none file:border-0 file:text-xs file:font-bold file:bg-ak-accent file:text-white hover:file:bg-ak-accent cursor-pointer"

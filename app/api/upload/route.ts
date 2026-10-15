@@ -3,6 +3,11 @@ import { requireAuth } from '@/lib/auth';
 import { put } from '@vercel/blob';
 import { store } from '@/lib/data-store';
 import { persistStore } from '@/lib/store-persistence';
+import {
+  classifyStorageError,
+  storageNotConfigured,
+  validateUploadFile,
+} from '@/lib/upload-validation';
 
 export async function POST(req: NextRequest) {
   const authResult = await requireAuth(req);
@@ -10,37 +15,47 @@ export async function POST(req: NextRequest) {
 
   try {
     const formData = await req.formData();
-    const file = formData.get('file') as File | null;
+    const file = formData.get('file');
     const altText = (formData.get('altText') as string | null) || null;
     const caption = (formData.get('caption') as string | null) || null;
 
-    if (!file) {
-      return NextResponse.json({ error: 'No file provided in form submission' }, { status: 400 });
+    if (!(file instanceof File)) {
+      return NextResponse.json(
+        { error: 'No valid image file was provided.', code: 'UPLOAD_MISSING_FILE' },
+        { status: 400 }
+      );
+    }
+
+    const validation = validateUploadFile(file);
+    if (!validation.ok) {
+      return NextResponse.json(
+        { error: validation.message, code: validation.code },
+        { status: validation.status }
+      );
     }
 
     const token = process.env.BLOB_READ_WRITE_TOKEN;
     if (!token) {
+      const notConfigured = storageNotConfigured();
+      console.error('[api/upload] BLOB_READ_WRITE_TOKEN is not configured');
       return NextResponse.json(
-        {
-          error:
-            'BLOB_READ_WRITE_TOKEN is not configured in environment. To enable persistent media storage on Vercel Blob, configure the token in your deployment environment variables.',
-        },
-        { status: 503 }
+        { error: notConfigured.message, code: notConfigured.code },
+        { status: notConfigured.status }
       );
     }
 
-    const blob = await put(file.name, file, {
+    const blob = await put(validation.pathname, file, {
       access: 'public',
       token,
+      contentType: validation.mimeType,
     });
 
-    // Persist in media asset library
     const asset = store.saveMediaAsset({
       url: blob.url,
       pathname: blob.pathname,
-      filename: file.name,
+      filename: validation.filename,
       size: file.size,
-      mimeType: blob.contentType || file.type || 'image/jpeg',
+      mimeType: blob.contentType || validation.mimeType,
       altText,
       caption,
     });
@@ -54,7 +69,8 @@ export async function POST(req: NextRequest) {
       contentType: blob.contentType,
     });
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : 'Media upload failed';
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error('[api/upload] media upload failed', err);
+    const info = classifyStorageError(err);
+    return NextResponse.json({ error: info.message, code: info.code }, { status: info.status });
   }
 }

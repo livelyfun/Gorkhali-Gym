@@ -122,7 +122,7 @@ export default function ImagePickerField({
       form.append('altText', file.name.replace(/\.[^/.]+$/, ''));
 
       try {
-        const res = await fetch('/api/upload-local', { method: 'POST', body: form });
+        const res = await fetch('/api/upload', { method: 'POST', body: form });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Upload failed');
         onChange(data.url);
@@ -404,14 +404,14 @@ export default function ImagePickerField({
                   Drop image here or{' '}
                   <span className="text-ak-accent underline underline-offset-2">click to browse</span>
                 </p>
-                <p className="text-[10px] text-ak-muted mt-1">JPEG, PNG, WebP, GIF, SVG · Max 10MB</p>
+                <p className="text-[10px] text-ak-muted mt-1">JPEG, PNG, WebP, GIF · Max 10MB</p>
               </>
             )}
           </div>
           <input
             ref={fileRef}
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp,image/gif"
             className="hidden"
             onChange={(e) => {
               const f = e.target.files?.[0];
