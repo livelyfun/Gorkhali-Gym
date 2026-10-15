@@ -18,7 +18,15 @@ export async function POST(req: NextRequest) {
   if (authResult instanceof NextResponse) return authResult;
 
   try {
-    const formData = await req.formData();
+    let formData: FormData;
+    try {
+      formData = await req.formData();
+    } catch {
+      return NextResponse.json(
+        { error: 'No valid image file was provided.', code: 'UPLOAD_MISSING_FILE' },
+        { status: 400 }
+      );
+    }
     const file = formData.get('file');
     const altText = (formData.get('altText') as string | null) || null;
     const caption = (formData.get('caption') as string | null) || null;
