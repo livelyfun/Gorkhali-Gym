@@ -2,8 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { store } from '@/lib/data-store';
 import { persistStore } from '@/lib/store-persistence';
 import { requireAuth } from '@/lib/auth';
+import { requireHydrated } from '@/lib/cms-request';
 
 export async function POST(req: NextRequest) {
+  const notReady = await requireHydrated();
+  if (notReady) return notReady;
   try {
     const { fullName, phone, email, goal, program, preferredTime, message, selectedOffer } = await req.json();
 
@@ -48,6 +51,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
+  const notReady = await requireHydrated();
+  if (notReady) return notReady;
   const authResult = await requireAuth(req);
   if (authResult instanceof NextResponse) return authResult;
 
@@ -56,6 +61,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
+  const notReady = await requireHydrated();
+  if (notReady) return notReady;
   const authResult = await requireAuth(req);
   if (authResult instanceof NextResponse) return authResult;
 
@@ -75,6 +82,8 @@ export async function PATCH(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const notReady = await requireHydrated();
+  if (notReady) return notReady;
   const authResult = await requireAuth(req);
   if (authResult instanceof NextResponse) return authResult;
 

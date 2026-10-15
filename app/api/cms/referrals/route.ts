@@ -2,13 +2,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import { store } from '@/lib/data-store';
 import { persistStore } from '@/lib/store-persistence';
 import { requireAuth } from '@/lib/auth';
+import { requireHydrated } from '@/lib/cms-request';
 
 export async function GET() {
+  const notReady = await requireHydrated();
+  if (notReady) return notReady;
   const referral = store.getReferralProgram();
   return NextResponse.json({ referral });
 }
 
 export async function POST(req: NextRequest) {
+  const notReady = await requireHydrated();
+  if (notReady) return notReady;
   const authResult = await requireAuth(req);
   if (authResult instanceof NextResponse) return authResult;
 
@@ -24,5 +29,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
+  const notReady = await requireHydrated();
+  if (notReady) return notReady;
   return POST(req);
 }

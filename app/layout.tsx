@@ -1,11 +1,14 @@
 import type {Metadata} from 'next';
 import './globals.css';
-import { store } from '@/lib/data-store';
+import { store, type PageSectionItem } from '@/lib/data-store';
+import { ensureHydrated } from '@/lib/store-persistence';
 import { getSiteUrl } from '@/lib/site-url';
+import { CmsProvider } from '@/components/cms/CmsProvider';
 
 const baseUrl = getSiteUrl();
 
 export async function generateMetadata(): Promise<Metadata> {
+  await ensureHydrated();
   const settings = store.getSettings();
   const title = settings.metaTitle || 'Gorkhali Gym — Premium Fitness Club & Training Center | Itahari, Nepal';
   const description =
@@ -72,13 +75,47 @@ function buildJsonLd() {
   };
 }
 
-export default function RootLayout({children}: {children: React.ReactNode}) {
+export default async function RootLayout({children}: {children: React.ReactNode}) {
+  const hydrated = (await ensureHydrated()).ready;
+
+  // Only inject authoritative data when hydration succeeded. On failure the
+  // store still holds built-in seeds, which must never be rendered as if they
+  // were database content.
+  const initialCms = hydrated
+    ? {
+        settings: store.getSettings(),
+        announcement: store.getAnnouncement(),
+        navigation: store.getNavigation(true),
+        programs: store.getPrograms(true),
+        membershipPlans: store.getMembershipPlans(true),
+        trainers: store.getTrainers(true),
+        offers: store.getOffers(true),
+        events: store.getEvents(true),
+        gallery: store.getGallery(true),
+        reviews: store.getReviews(true),
+        blog: store.getBlogPosts(true),
+        faqs: store.getFaqs(true),
+        socialVideos: store.getSocialVideos(true),
+        referral: store.getReferralProgram(),
+      }
+    : undefined;
+  const initialSections = hydrated
+    ? store
+        .getAllSections()
+        .filter((s) => s.isVisible !== false)
+        .reduce<Record<string, PageSectionItem[]>>((acc, section) => {
+          (acc[section.pageSlug] ??= []).push(section);
+          return acc;
+        }, {})
+    : undefined;
   const jsonLd = buildJsonLd();
 
   return (
     <html lang="en">
       <body suppressHydrationWarning>
-        {children}
+        <CmsProvider initialData={initialCms} initialSections={initialSections}>
+          {children}
+        </CmsProvider>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

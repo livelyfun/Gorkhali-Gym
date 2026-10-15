@@ -8,14 +8,16 @@ import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
 import SocialVideoEmbed from '@/components/SocialVideoEmbed';
 import PageHero from '@/components/PageHero';
-import { store, type SocialVideoItem } from '@/lib/data-store';
+import type { SocialVideoItem } from '@/lib/data-store';
+import { useCms } from '@/components/cms/CmsProvider';
 
 export default function GalleryPage() {
   const [applyModalOpen, setApplyModalOpen] = useState(false);
   const [filter, setFilter] = useState('all');
   const [videos, setVideos] = useState<SocialVideoItem[]>([]);
 
-  const galleryItems = store.getGalleryItems().filter((item) => item.isPublished);
+  const { data } = useCms();
+  const galleryItems = (data.gallery ?? []).filter((item) => item.isPublished);
 
   // Social videos are CMS-managed and live in the API's store instance, so the
   // public page reads published videos from the same CMS endpoint the admin writes to.

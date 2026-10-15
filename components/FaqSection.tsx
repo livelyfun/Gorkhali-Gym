@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { ChevronDown, HelpCircle, ArrowRight } from 'lucide-react';
-import { FaqItem } from '@/lib/data-store';
+import type { FaqItem } from '@/lib/data-store';
 
 interface FaqSectionProps {
   faqs: FaqItem[];

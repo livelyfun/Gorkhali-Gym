@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Calendar, ArrowRight, BookOpen } from 'lucide-react';
-import { BlogPostItem } from '@/lib/data-store';
+import type { BlogPostItem } from '@/lib/data-store';
 
 interface BlogSectionProps {
   posts: BlogPostItem[];

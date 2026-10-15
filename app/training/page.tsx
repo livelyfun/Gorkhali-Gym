@@ -8,13 +8,14 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
 import PageHero from '@/components/PageHero';
-import { store } from '@/lib/data-store';
+import { useCms } from '@/components/cms/CmsProvider';
 
 export default function TrainingPage() {
   const [applyModalOpen, setApplyModalOpen] = useState(false);
   const [selectedProgram, setSelectedProgram] = useState<string | undefined>();
 
-  const programs = store.getPrograms().filter((p) => p.category === 'training' && p.isPublished);
+  const { data } = useCms();
+  const programs = (data.programs ?? []).filter((p) => p.category === 'training' && p.isPublished);
 
   const openApply = (prog: string) => {
     setSelectedProgram(prog);

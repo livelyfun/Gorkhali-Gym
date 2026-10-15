@@ -7,19 +7,22 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
 import PageHero from '@/components/PageHero';
-import { store } from '@/lib/data-store';
+import { useCms } from '@/components/cms/CmsProvider';
 
 export default function FaqPage() {
   const [applyModalOpen, setApplyModalOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState('all');
 
-  const faqs = store.getFaqs().filter((f) => f.isPublished);
+  const { data } = useCms();
+  const faqs = (data.faqs ?? []).filter((f) => f.isPublished);
   const categories = ['all', ...Array.from(new Set(faqs.map((f) => f.category).filter(Boolean)))];
 
   const filteredFaqs =
     activeCategory === 'all' ? faqs : faqs.filter((f) => f.category === activeCategory);
 
-  const settings = store.getSettings();
+  const settings = data.settings;
+
+  if (!settings) return null;
 
   return (
     <div className="min-h-screen bg-ak-ink text-white flex flex-col">

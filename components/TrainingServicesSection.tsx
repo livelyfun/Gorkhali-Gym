@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Dumbbell, UserCheck, Flame, Apple } from 'lucide-react';
-import { ProgramItem } from '@/lib/data-store';
+import type { ProgramItem } from '@/lib/data-store';
 
 interface TrainingServicesSectionProps {
   programs: ProgramItem[];

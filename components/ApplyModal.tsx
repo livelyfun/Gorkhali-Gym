@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { X, CheckCircle, MessageCircle, Send, Loader2, Sparkles, Phone, User, MessageSquare } from 'lucide-react';
-import { store } from '@/lib/data-store';
+import { useCms } from '@/components/cms/CmsProvider';
 
 interface ApplyModalProps {
   isOpen: boolean;
@@ -23,10 +23,11 @@ export default function ApplyModal({
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { data: cms } = useCms();
 
   if (!isOpen) return null;
 
-  const settings = store.getSettings();
+  const settings = cms.settings;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,7 +77,7 @@ export default function ApplyModal({
   const waText = encodeURIComponent(
     `Namaste Gorkhali Gym! I just applied for ${program}. My name is ${fullName || 'a prospective member'} (${phone}). I'd like to get started!`
   );
-  const waUrl = `https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, '')}?text=${waText}`;
+  const waUrl = `https://wa.me/${(settings?.whatsapp || '').replace(/[^0-9]/g, '')}?text=${waText}`;
 
   const label = 'block text-xs font-bold text-neutral-300 uppercase tracking-[0.14em] mb-1.5';
 

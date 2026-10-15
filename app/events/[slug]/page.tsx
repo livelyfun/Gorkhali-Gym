@@ -8,7 +8,7 @@ import { Calendar, MapPin, ArrowRight, ChevronLeft, MessageCircle } from 'lucide
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
-import { store } from '@/lib/data-store';
+import { useCms } from '@/components/cms/CmsProvider';
 
 export default function EventDetailPage({
   params,
@@ -20,13 +20,17 @@ export default function EventDetailPage({
 
   const [applyModalOpen, setApplyModalOpen] = useState(false);
 
-  const event = store.getEvents().find((e) => e.slug === slug && e.isPublished);
+  const { data } = useCms();
+  const events = data.events;
+  if (!events) return null;
+  const event = events.find((e) => e.slug === slug && e.isPublished);
 
   if (!event) {
     notFound();
   }
 
-  const settings = store.getSettings();
+  const settings = data.settings;
+  if (!settings) return null;
 
   return (
     <div className="min-h-screen bg-ak-ink text-white flex flex-col">

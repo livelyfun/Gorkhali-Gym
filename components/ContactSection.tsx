@@ -14,7 +14,7 @@ import {
   Facebook,
   Instagram,
 } from 'lucide-react';
-import { SiteSettings } from '@/lib/data-store';
+import type { SiteSettings } from '@/lib/data-store';
 
 interface ContactSectionProps {
   settings: SiteSettings;

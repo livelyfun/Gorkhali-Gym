@@ -3,6 +3,7 @@ import { store } from '@/lib/data-store';
 import { persistStore } from '@/lib/store-persistence';
 import { requireAuth } from '@/lib/auth';
 import { validateSocialVideo } from '@/lib/social-video';
+import { requireHydrated } from '@/lib/cms-request';
 
 const FB_RESOLVE_TIMEOUT_MS = 6000;
 
@@ -44,6 +45,8 @@ async function resolveFacebookShareEmbed(shareUrl: string): Promise<string | nul
 }
 
 export async function GET(req: NextRequest) {
+  const notReady = await requireHydrated();
+  if (notReady) return notReady;
   const adminMode = req.nextUrl.searchParams.get('all') === 'true';
   if (adminMode) {
     const authResult = await requireAuth(req);
@@ -63,6 +66,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const notReady = await requireHydrated();
+  if (notReady) return notReady;
   const authResult = await requireAuth(req);
   if (authResult instanceof NextResponse) return authResult;
 
@@ -108,6 +113,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const notReady = await requireHydrated();
+  if (notReady) return notReady;
   const authResult = await requireAuth(req);
   if (authResult instanceof NextResponse) return authResult;
 

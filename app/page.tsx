@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -27,59 +27,33 @@ import ApplyModal from '@/components/ApplyModal';
 import ReviewModal from '@/components/ReviewModal';
 import SocialVideoEmbed from '@/components/SocialVideoEmbed';
 import GenericSection from '@/components/GenericSection';
-import { store, type SocialVideoItem, type PageSectionItem } from '@/lib/data-store';
+import type { PageSectionItem } from '@/lib/data-store';
+import { useCms } from '@/components/cms/CmsProvider';
+import { usePageSections } from '@/lib/use-page-sections';
 
 export default function HomePage() {
   const [applyModalOpen, setApplyModalOpen] = useState(false);
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [selectedProgram, setSelectedProgram] = useState<string | undefined>();
-  const [featuredVideos, setFeaturedVideos] = useState<SocialVideoItem[]>([]);
-  const [sections, setSections] = useState<PageSectionItem[]>(() => store.getSections('home'));
 
-  useEffect(() => {
-    let ignore = false;
-    fetch('/api/cms/social-videos')
-      .then((res) => (res.ok ? res.json() : { videos: [] }))
-      .then((data) => {
-        if (!ignore && Array.isArray(data.videos)) setFeaturedVideos(data.videos.slice(0, 3));
-      })
-      .catch(() => {
-        // Featured videos are optional; hide the block if the CMS is unreachable.
-      });
-    return () => {
-      ignore = true;
-    };
-  }, []);
+  const { data } = useCms();
+  const sections = usePageSections('home');
 
-  useEffect(() => {
-    let ignore = false;
-    fetch('/api/cms/sections?page=home')
-      .then((res) => (res.ok ? res.json() : { sections: [] }))
-      .then((data) => {
-        if (!ignore && Array.isArray(data.sections) && data.sections.length > 0) {
-          setSections(data.sections);
-        }
-      })
-      .catch(() => {
-        // Fall back to the seeded homepage copy if the CMS is unreachable.
-      });
-    return () => {
-      ignore = true;
-    };
-  }, []);
-
-  const settings = store.getSettings();
+  const settings = data.settings;
   const orderedSections = [...sections].sort((a, b) => a.displayOrder - b.displayOrder);
 
-  const programs = store.getPrograms().filter((p) => p.isPublished);
+  const programs = (data.programs ?? []).filter((p) => p.isPublished);
   const trainingPrograms = programs.filter((p) => p.category === 'training');
   const servicePrograms = programs.filter((p) => p.category === 'service');
-  const plans = store.getMembershipPlans().filter((p) => p.isPublished);
-  const trainers = store.getTrainers().filter((t) => t.isPublished);
-  const reviews = store.getReviews().filter((r) => r.isPublished);
-  const offers = store.getOffers().filter((o) => o.isPublished);
-  const faqs = store.getFaqs().filter((f) => f.isPublished).slice(0, 5);
-  const galleryPhotos = store.getGallery().slice(0, 6);
+  const plans = (data.membershipPlans ?? []).filter((p) => p.isPublished);
+  const trainers = (data.trainers ?? []).filter((t) => t.isPublished);
+  const reviews = (data.reviews ?? []).filter((r) => r.isPublished);
+  const offers = (data.offers ?? []).filter((o) => o.isPublished);
+  const faqs = (data.faqs ?? []).filter((f) => f.isPublished).slice(0, 5);
+  const galleryPhotos = (data.gallery ?? []).slice(0, 6);
+  const featuredVideos = data.socialVideos ?? [];
+
+  if (!settings) return null;
 
   const openApply = (progName?: string) => {
     setSelectedProgram(progName || 'General Strength & Conditioning');

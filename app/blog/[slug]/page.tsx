@@ -8,7 +8,7 @@ import { Calendar, User, ArrowRight, ChevronLeft, Share2 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
-import { store } from '@/lib/data-store';
+import { useCms } from '@/components/cms/CmsProvider';
 
 export default function BlogDetailPage({
   params,
@@ -20,7 +20,10 @@ export default function BlogDetailPage({
 
   const [applyModalOpen, setApplyModalOpen] = useState(false);
 
-  const post = store.getBlogPosts().find((p) => p.slug === slug && p.isPublished);
+  const { data } = useCms();
+  const posts = data.blog;
+  if (!posts) return null;
+  const post = posts.find((p) => p.slug === slug && p.isPublished);
 
   if (!post) {
     notFound();

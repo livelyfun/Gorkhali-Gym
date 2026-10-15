@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -11,28 +11,19 @@ import {
   MessageCircle,
   Sparkles,
 } from 'lucide-react';
-import { store, SiteSettings, Announcement, NavigationItemType } from '@/lib/data-store';
+import type { NavigationItemType } from '@/lib/data-store';
+import { useCms } from '@/components/cms/CmsProvider';
 
 interface HeaderProps {
-  initialSettings?: SiteSettings;
-  initialAnnouncement?: Announcement;
-  initialNavigation?: NavigationItemType[];
   onOpenApplyModal?: () => void;
 }
 
-export default function Header({
-  initialSettings,
-  initialAnnouncement,
-  initialNavigation,
-  onOpenApplyModal,
-}: HeaderProps) {
-  const [settings, setSettings] = useState<SiteSettings>(initialSettings || store.getSettings());
-  const [announcement, setAnnouncement] = useState<Announcement>(
-    initialAnnouncement || store.getAnnouncement()
-  );
-  const [navigation, setNavigation] = useState<NavigationItemType[]>(
-    initialNavigation || store.getNavigation()
-  );
+export default function Header({ onOpenApplyModal }: HeaderProps) {
+  const { data } = useCms();
+  const settings = data.settings;
+  const announcement = data.announcement;
+  const navigation = useMemo(() => data.navigation ?? [], [data.navigation]);
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -61,31 +52,6 @@ export default function Header({
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    fetch('/api/cms/settings')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.settings) setSettings(data.settings);
-      })
-      .catch(() => {});
-
-    fetch('/api/cms/announcement')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.announcement) setAnnouncement(data.announcement);
-      })
-      .catch(() => {});
-
-    fetch('/api/cms/navigation')
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data.navigation) && data.navigation.length > 0) {
-          setNavigation(data.navigation);
-        }
-      })
-      .catch(() => {});
   }, []);
 
   const [prevPathname, setPrevPathname] = useState(pathname);
@@ -124,6 +90,8 @@ export default function Header({
   const dropdownAll =
     'block px-4 py-2.5 text-xs font-extrabold uppercase tracking-wider text-ak-accent hover:text-white hover:bg-ak-accent/20 border-l-2 border-ak-accent transition-colors';
 
+  if (!settings) return null;
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ${
@@ -135,7 +103,7 @@ export default function Header({
       }`}
     >
       {/* Announcement Banner */}
-      {announcement.isActive && (
+      {announcement?.isActive && (
         <div className="relative bg-ak-ink border-b border-ak-line overflow-hidden">
           <div className="absolute inset-y-0 left-0 w-1.5 bg-ak-accent skew-x-[-18deg] -translate-x-1/2" />
           <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-center text-center gap-2">

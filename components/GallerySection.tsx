@@ -11,7 +11,7 @@ import {
   ArrowRight,
   SlidersHorizontal,
 } from 'lucide-react';
-import { GalleryItemType } from '@/lib/data-store';
+import type { GalleryItemType } from '@/lib/data-store';
 
 interface GallerySectionProps {
   items: GalleryItemType[];

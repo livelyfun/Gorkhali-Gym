@@ -2,8 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { store } from '@/lib/data-store';
 import { persistStore } from '@/lib/store-persistence';
 import { requireAuth } from '@/lib/auth';
+import { requireHydrated } from '@/lib/cms-request';
 
 export async function GET(req: NextRequest) {
+  const notReady = await requireHydrated();
+  if (notReady) return notReady;
   const adminMode = req.nextUrl.searchParams.get('all') === 'true';
   if (adminMode) {
     const authResult = await requireAuth(req);
@@ -14,6 +17,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const notReady = await requireHydrated();
+  if (notReady) return notReady;
   const authResult = await requireAuth(req);
   if (authResult instanceof NextResponse) return authResult;
 
@@ -32,6 +37,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const notReady = await requireHydrated();
+  if (notReady) return notReady;
   const authResult = await requireAuth(req);
   if (authResult instanceof NextResponse) return authResult;
 

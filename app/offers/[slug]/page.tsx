@@ -8,7 +8,7 @@ import { Clock, Tag, ArrowRight, ChevronLeft, MessageCircle } from 'lucide-react
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
-import { store } from '@/lib/data-store';
+import { useCms } from '@/components/cms/CmsProvider';
 
 export default function OfferDetailPage({
   params,
@@ -20,13 +20,17 @@ export default function OfferDetailPage({
 
   const [applyModalOpen, setApplyModalOpen] = useState(false);
 
-  const offer = store.getOffers().find((o) => o.slug === slug && o.isPublished);
+  const { data } = useCms();
+  const offers = data.offers;
+  if (!offers) return null;
+  const offer = offers.find((o) => o.slug === slug && o.isPublished);
 
   if (!offer) {
     notFound();
   }
 
-  const settings = store.getSettings();
+  const settings = data.settings;
+  if (!settings) return null;
 
   return (
     <div className="min-h-screen bg-ak-ink text-white flex flex-col">

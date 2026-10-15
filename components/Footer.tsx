@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import Link from 'next/link';
 import {
   MapPin,
@@ -13,41 +13,24 @@ import {
   Award,
   Flame,
 } from 'lucide-react';
-import { store, SiteSettings, ProgramItem, NavigationItemType } from '@/lib/data-store';
+import type { NavigationItemType } from '@/lib/data-store';
+import { useCms } from '@/components/cms/CmsProvider';
 
 interface FooterProps {
-  settings?: SiteSettings;
   onOpenApplyModal?: () => void;
 }
 
-export default function Footer({ settings: initialSettings, onOpenApplyModal }: FooterProps) {
-  const settings = initialSettings || store.getSettings();
-  const [programs, setPrograms] = useState<ProgramItem[]>(() => store.getPrograms(true));
-  const [footerNav, setFooterNav] = useState<NavigationItemType[]>(() =>
-    store.getAllNavigation().filter((n) => n.location === 'footer' && n.isPublished !== false)
+export default function Footer({ onOpenApplyModal }: FooterProps) {
+  const { data } = useCms();
+  const settings = data.settings;
+  const programs = data.programs ?? [];
+  const footerNav: NavigationItemType[] = useMemo(
+    () =>
+      (data.navigation ?? []).filter(
+        (n) => n.location === 'footer' && n.isPublished !== false
+      ),
+    [data.navigation]
   );
-
-  useEffect(() => {
-    fetch('/api/cms/programs')
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data.programs)) setPrograms(data.programs);
-      })
-      .catch(() => {});
-
-    fetch('/api/cms/navigation')
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data.navigation)) {
-          setFooterNav(
-            data.navigation.filter(
-              (n: NavigationItemType) => n.location === 'footer' && n.isPublished !== false
-            )
-          );
-        }
-      })
-      .catch(() => {});
-  }, []);
 
   const footerColumns = useMemo(() => {
     const groups = new Map<string, NavigationItemType[]>();
@@ -73,6 +56,8 @@ export default function Footer({ settings: initialSettings, onOpenApplyModal }: 
   const columnTitle =
     'ak-heading text-xs text-white tracking-[0.18em] mb-4 flex items-center gap-2';
   const footLink = 'ak-focus transition-colors hover:text-ak-accent';
+
+  if (!settings) return null;
 
   return (
     <footer className="ak-page text-neutral-300 border-t border-ak-line">

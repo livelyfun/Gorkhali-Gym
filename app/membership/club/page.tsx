@@ -7,11 +7,13 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
 import PageHero from '@/components/PageHero';
-import { store } from '@/lib/data-store';
+import { useCms } from '@/components/cms/CmsProvider';
 
 export default function ClubMembershipPage() {
   const [applyModalOpen, setApplyModalOpen] = useState(false);
-  const settings = store.getSettings();
+  const settings = useCms().data.settings;
+
+  if (!settings) return null;
 
   return (
     <div className="min-h-screen bg-ak-ink text-white flex flex-col">

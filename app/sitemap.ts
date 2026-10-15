@@ -1,8 +1,10 @@
 import { MetadataRoute } from 'next';
 import { store } from '@/lib/data-store';
+import { ensureHydrated } from '@/lib/store-persistence';
 import { getSiteUrl } from '@/lib/site-url';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  await ensureHydrated();
   const baseUrl = getSiteUrl();
   const lastModified = new Date();
 

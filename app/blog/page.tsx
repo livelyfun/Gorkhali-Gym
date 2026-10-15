@@ -8,11 +8,12 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
 import PageHero from '@/components/PageHero';
-import { store } from '@/lib/data-store';
+import { useCms } from '@/components/cms/CmsProvider';
 
 export default function BlogPage() {
   const [applyModalOpen, setApplyModalOpen] = useState(false);
-  const posts = store.getBlogPosts().filter((p) => p.isPublished);
+  const { data } = useCms();
+  const posts = (data.blog ?? []).filter((p) => p.isPublished);
 
   return (
     <div className="min-h-screen bg-ak-ink text-white flex flex-col">

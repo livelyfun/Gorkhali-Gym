@@ -17,7 +17,7 @@ import {
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
-import { store } from '@/lib/data-store';
+import { useCms } from '@/components/cms/CmsProvider';
 
 export default function TrainingDetailPage({
   params,
@@ -29,13 +29,17 @@ export default function TrainingDetailPage({
 
   const [applyModalOpen, setApplyModalOpen] = useState(false);
 
-  const program = store.getProgramBySlug(slug);
+  const { data } = useCms();
+  const programs = data.programs;
+  if (!programs) return null;
+  const program = programs.find((p) => p.slug === slug);
 
   if (!program || !program.isPublished) {
     notFound();
   }
 
-  const settings = store.getSettings();
+  const settings = data.settings;
+  if (!settings) return null;
 
   return (
     <div className="min-h-screen bg-ak-ink text-white flex flex-col">

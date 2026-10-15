@@ -7,19 +7,22 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
 import PageHero from '@/components/PageHero';
-import { store } from '@/lib/data-store';
+import { useCms } from '@/components/cms/CmsProvider';
 
 export default function TeamPage() {
   const [applyModalOpen, setApplyModalOpen] = useState(false);
   const [selectedCoach, setSelectedCoach] = useState<string | undefined>();
 
-  const trainers = store.getTrainers().filter((t) => t.isPublished);
-  const settings = store.getSettings();
+  const { data } = useCms();
+  const trainers = (data.trainers ?? []).filter((t) => t.isPublished);
+  const settings = data.settings;
 
   const openApplyForCoach = (name: string) => {
     setSelectedCoach(`PT with ${name}`);
     setApplyModalOpen(true);
   };
+
+  if (!settings) return null;
 
   return (
     <div className="min-h-screen bg-ak-ink text-white flex flex-col">

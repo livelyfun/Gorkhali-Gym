@@ -1,29 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { store, type PageSectionItem } from './data-store';
+import type { PageSectionItem } from './data-store';
+import { useCmsPageSections } from '@/components/cms/CmsProvider';
 
+/**
+ * Per-page CMS sections from the shared provider (server-injected where
+ * available, otherwise fetched once on mount). Returns an empty array while
+ * loading so callers render their own fallbacks rather than bundled seed data.
+ */
 export function usePageSections(pageSlug: string): PageSectionItem[] {
-  const [sections, setSections] = useState<PageSectionItem[]>(() => store.getSections(pageSlug));
-
-  useEffect(() => {
-    let ignore = false;
-    fetch(`/api/cms/sections?page=${encodeURIComponent(pageSlug)}`)
-      .then((res) => (res.ok ? res.json() : { sections: [] }))
-      .then((data) => {
-        if (!ignore && Array.isArray(data.sections) && data.sections.length > 0) {
-          setSections(data.sections);
-        }
-      })
-      .catch(() => {
-        // Fall back to seeded sections if the CMS is unreachable.
-      });
-    return () => {
-      ignore = true;
-    };
-  }, [pageSlug]);
-
-  return sections;
+  return useCmsPageSections(pageSlug) ?? [];
 }
 
 export function findSection(

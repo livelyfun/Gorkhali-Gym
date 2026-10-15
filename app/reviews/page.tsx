@@ -7,13 +7,14 @@ import Footer from '@/components/Footer';
 import ReviewModal from '@/components/ReviewModal';
 import ApplyModal from '@/components/ApplyModal';
 import PageHero from '@/components/PageHero';
-import { store } from '@/lib/data-store';
+import { useCms } from '@/components/cms/CmsProvider';
 
 export default function ReviewsPage() {
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [applyModalOpen, setApplyModalOpen] = useState(false);
 
-  const reviews = store.getReviews().filter((r) => r.isPublished);
+  const { data } = useCms();
+  const reviews = (data.reviews ?? []).filter((r) => r.isPublished);
 
   const avgRating =
     reviews.length > 0

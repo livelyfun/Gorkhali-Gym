@@ -8,8 +8,11 @@ import {
   storageNotConfigured,
   validateUploadFile,
 } from '@/lib/upload-validation';
+import { requireHydrated } from '@/lib/cms-request';
 
 export async function POST(req: NextRequest) {
+  const notReady = await requireHydrated();
+  if (notReady) return notReady;
   const authResult = await requireAuth(req);
   if (authResult instanceof NextResponse) return authResult;
 

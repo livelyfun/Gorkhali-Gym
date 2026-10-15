@@ -5,11 +5,14 @@ import { join } from 'path';
 import { store } from '@/lib/data-store';
 import { persistStore } from '@/lib/store-persistence';
 import { validateUploadFile } from '@/lib/upload-validation';
+import { requireHydrated } from '@/lib/cms-request';
 
 // Development-only upload endpoint. Files written to public/uploads are NOT
 // persistent on Vercel's serverless filesystem; production uploads must use
 // /api/upload (Vercel Blob). This route returns 404 in production.
 export async function POST(req: NextRequest) {
+  const notReady = await requireHydrated();
+  if (notReady) return notReady;
   if (process.env.NODE_ENV === 'production') {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }

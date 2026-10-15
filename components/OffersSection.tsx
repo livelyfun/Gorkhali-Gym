@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Sparkles, Calendar, ArrowRight } from 'lucide-react';
-import { OfferItem } from '@/lib/data-store';
+import type { OfferItem } from '@/lib/data-store';
 
 interface OffersSectionProps {
   offers: OfferItem[];

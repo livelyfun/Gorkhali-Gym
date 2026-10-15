@@ -8,13 +8,16 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
 import PageHero from '@/components/PageHero';
-import { store } from '@/lib/data-store';
+import { useCms } from '@/components/cms/CmsProvider';
 
 export default function OffersPage() {
   const [applyModalOpen, setApplyModalOpen] = useState(false);
   const [selectedOffer, setSelectedOffer] = useState<string | undefined>();
 
-  const offers = store.getOffers(true, true);
+  const { data } = useCms();
+  const offers = (data.offers ?? []).filter(
+    (o) => o.isPublished && (!o.validUntil || new Date(o.validUntil) >= new Date())
+  );
 
   const openApply = (title: string) => {
     setSelectedOffer(`Claim Offer: ${title}`);

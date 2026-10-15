@@ -9,7 +9,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
 import PageHero from '@/components/PageHero';
-import { store } from '@/lib/data-store';
+import { useCms } from '@/components/cms/CmsProvider';
 import { usePageSections, findSection, splitParagraphs } from '@/lib/use-page-sections';
 
 const VALUE_ICONS: Record<string, LucideIcon> = {
@@ -24,7 +24,7 @@ const VALUE_ICONS: Record<string, LucideIcon> = {
 
 export default function AboutPage() {
   const [applyModalOpen, setApplyModalOpen] = useState(false);
-  const settings = store.getSettings();
+  const settings = useCms().data.settings;
   const sections = usePageSections('about');
   const heritage = findSection(sections, 'heritage');
   const values = findSection(sections, 'values');
@@ -32,6 +32,8 @@ export default function AboutPage() {
   const heritageParagraphs = splitParagraphs(heritage?.bodyText);
   const heritageStats = heritage?.items || [];
   const valueItems = values?.items || [];
+
+  if (!settings) return null;
 
   return (
     <div className="min-h-screen bg-ak-ink text-white flex flex-col">

@@ -15,7 +15,7 @@ import {
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import PageHero from '@/components/PageHero';
-import { store } from '@/lib/data-store';
+import { useCms } from '@/components/cms/CmsProvider';
 
 export default function ApplyPage() {
   const [fullName, setFullName] = useState('');
@@ -27,7 +27,9 @@ export default function ApplyPage() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const settings = store.getSettings();
+  const settings = useCms().data.settings;
+
+  if (!settings) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

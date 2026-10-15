@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { MapPin, ArrowRight, ShieldCheck, Dumbbell } from 'lucide-react';
-import { SiteSettings } from '@/lib/data-store';
+import type { SiteSettings } from '@/lib/data-store';
 
 interface HeroProps {
   settings: SiteSettings;

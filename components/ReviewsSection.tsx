@@ -12,7 +12,7 @@ import {
   CheckCircle,
   Loader2,
 } from 'lucide-react';
-import { ReviewItem } from '@/lib/data-store';
+import type { ReviewItem } from '@/lib/data-store';
 
 interface ReviewsSectionProps {
   reviews: ReviewItem[];

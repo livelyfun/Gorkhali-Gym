@@ -11,7 +11,7 @@ import {
   ArrowRight,
   ShieldCheck,
 } from 'lucide-react';
-import { TrainerItem } from '@/lib/data-store';
+import type { TrainerItem } from '@/lib/data-store';
 
 interface TrainersSectionProps {
   trainers: TrainerItem[];

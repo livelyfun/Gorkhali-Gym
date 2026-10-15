@@ -8,13 +8,14 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
 import PageHero from '@/components/PageHero';
-import { store } from '@/lib/data-store';
+import { useCms } from '@/components/cms/CmsProvider';
 
 export default function EventsPage() {
   const [applyModalOpen, setApplyModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<string | undefined>();
 
-  const events = store.getEvents().filter((e) => e.isPublished);
+  const { data } = useCms();
+  const events = (data.events ?? []).filter((e) => e.isPublished);
 
   const openApply = (title: string) => {
     setSelectedEvent(`Event Registration: ${title}`);

@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { store, PageSectionItem } from '@/lib/data-store';
+import React from 'react';
+import { usePageSections } from '@/lib/use-page-sections';
 
 export interface PageHeroFallback {
   eyebrow?: string;
@@ -22,27 +22,8 @@ export default function PageHero({
   fallback,
   wrapperClassName,
 }: PageHeroProps) {
-  const [section, setSection] = useState<PageSectionItem | null>(() => {
-    const found = store.getSections(pageSlug, true).find((s) => s.sectionKey === sectionKey);
-    return found ?? null;
-  });
-
-  useEffect(() => {
-    let cancelled = false;
-    fetch(`/api/cms/sections?page=${encodeURIComponent(pageSlug)}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (cancelled) return;
-        const found = (data.sections as PageSectionItem[] | undefined)?.find(
-          (s) => s.sectionKey === sectionKey
-        );
-        if (found) setSection(found);
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, [pageSlug, sectionKey]);
+  const sections = usePageSections(pageSlug);
+  const section = sections?.find((s) => s.sectionKey === sectionKey) ?? null;
 
   const eyebrow = section?.subheading || fallback.eyebrow;
   const heading = section?.heading || fallback.heading;

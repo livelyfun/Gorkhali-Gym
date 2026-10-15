@@ -8,13 +8,14 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ApplyModal from '@/components/ApplyModal';
 import PageHero from '@/components/PageHero';
-import { store } from '@/lib/data-store';
+import { useCms } from '@/components/cms/CmsProvider';
 
 export default function ServicesPage() {
   const [applyModalOpen, setApplyModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<string | undefined>();
 
-  const services = store.getPrograms().filter((p) => p.category === 'service' && p.isPublished);
+  const { data } = useCms();
+  const services = (data.programs ?? []).filter((p) => p.category === 'service' && p.isPublished);
 
   const openApply = (name: string) => {
     setSelectedService(name);
